@@ -1,13 +1,16 @@
 "use client";
 
-import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Popup from "./components/popup/Popup";
 import IntroText from "./components/introText/IntroText";
 import Carousel from "./components/carousel/Carousel";
 import { CollectionProducts, Product } from "./api/collection-products/route";
 
 export default function HomePage() {
+  useEffect(() => {
+    document.title = "Edouard Caviste personnel - Vins propres de vignerons";
+  }, []);
+
   const [popupOpen, setPopupOpen] = useState(false);
   const [popupTitle, setPopupTitle] = useState<string>("");
   const [currentHandle, setCurrentHandle] = useState<string>("");
@@ -66,17 +69,8 @@ export default function HomePage() {
   }
 
   return (
-    <>
-      <Head>
-        <title>Sélection intuitive - Caviste</title>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Prata&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
-
-      <main className="bg-[#f4f1ee] min-h-screen overflow-hidden touch-pan-y space-y-10">
-        <h1 className="text-center text-4xl text-[#7a2d2d] mt-8 font-[Prata]">
+    <main className="bg-[#f4f1ee] min-h-screen overflow-hidden touch-pan-y space-y-10">
+        <h1 className="text-center text-4xl text-[#7a2d2d] mt-8 font-prata">
           Edouard, Caviste personnel
         </h1>
         <IntroText />
@@ -92,6 +86,5 @@ export default function HomePage() {
           />
         )}
       </main>
-    </>
   );
 }
