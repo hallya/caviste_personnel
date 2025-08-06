@@ -12,8 +12,10 @@ export const NOTIFICATION_TYPES = {
   ERROR: "error",
 } as const;
 
+import { Z_INDEX } from '../../styles/z-index';
+
 export const NOTIFICATION_DEFAULTS = {
   AUTO_CLOSE_DELAY: 5000,
   ANIMATION_DURATION: 300,
-  Z_INDEX: 10001,
+  Z_INDEX: Z_INDEX.NOTIFICATION,
 } as const; 

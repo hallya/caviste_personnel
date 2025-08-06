@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { SimplifiedProduct } from "../../types/shopify";
 import Image from "next/image";
 import ImagePlaceholder from "./ImagePlaceholder";
+import { Z_INDEX } from "../../styles/z-index";
 import { addToCart } from "../../lib/cart";
 import { useNotification } from "../../contexts/NotificationContext";
 
@@ -32,7 +33,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Erreur lors de l'ajout au panier";
       
-      // Log l'erreur complète pour le debugging
+      // Log complete error for debugging
       const errorWithStatus = error as Error & { status?: number; isNetworkError?: boolean };
       console.error("Cart error:", {
         product: product.title,
@@ -73,7 +74,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
 
         {hasPrice && (
-          <figcaption className="absolute bottom-2 right-2 bg-white/90 px-2 py-1 rounded text-xs font-medium text-[#7a2d2d]">
+          <figcaption className={`absolute bottom-2 right-2 bg-white/90 px-2 py-1 rounded text-xs font-medium text-[#7a2d2d] z-[${Z_INDEX.TOOLTIP}]`}>
             {product.price} {product.currency}
           </figcaption>
         )}

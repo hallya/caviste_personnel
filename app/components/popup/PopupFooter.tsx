@@ -1,3 +1,5 @@
+import { Z_INDEX } from "../../styles/z-index";
+
 interface PopupFooterProps {
   hasNext: boolean;
   loading: boolean;
@@ -14,7 +16,7 @@ export default function PopupFooter({
   const buttonText = loading ? "Chargement…" : hasNext ? "Charger plus" : "Tout est chargé";
   
   return (
-    <footer className="sticky bottom-0 bg-white rounded-b-xl px-8 pt-4 pb-4 border-t border-gray-100 z-10">
+    <footer className={`sticky bottom-0 bg-white rounded-b-xl px-8 pt-4 pb-4 border-t border-gray-100 z-[${Z_INDEX.MODAL_FOOTER}]`}>
       <div className="flex justify-center">
         <button
           type="button"

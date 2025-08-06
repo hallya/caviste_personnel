@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import type { SimplifiedProduct } from "../../types/shopify";
+import { Z_INDEX } from "../../styles/z-index";
 import PopupHeader from "./PopupHeader";
 import PopupFooter from "./PopupFooter";
 import ProductCard from "./ProductCard";
@@ -35,7 +36,7 @@ export default function Popup({
 
   return (
     <div
-      className="fixed top-0 left-0 w-screen h-screen bg-black/60 flex justify-center items-center z-[10000] animate-fadeIn"
+      className={`fixed top-0 left-0 w-screen h-screen bg-black/60 flex justify-center items-center z-[${Z_INDEX.MODAL}] animate-fadeIn`}
       role="dialog"
       aria-modal="true"
       aria-labelledby="popup-title"
