@@ -92,10 +92,10 @@ export default function CartNotification({
       {type === "success" && checkoutUrl && (
         <div className="mt-3 flex flex-col gap-2">
           <button
-            onClick={() => window.open(checkoutUrl, '_blank')}
-            className="w-full px-3 py-2 bg-[#7a2d2d] text-white text-sm rounded-md hover:bg-[#5a1d1d] transition-colors font-medium"
+            onClick={() => window.open(checkoutUrl, '_blank', 'noopener,noreferrer')}
+            className="w-full px-3 py-2 bg-primary-600 text-white text-sm rounded-md hover:bg-primary-700 transition-colors font-medium"
           >
-            Voir le panier et commander
+            Procéder au paiement
           </button>
           <button
             onClick={handleClose}

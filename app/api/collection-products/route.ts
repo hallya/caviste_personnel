@@ -53,6 +53,7 @@ export async function GET(req: Request) {
                   amount
                   currencyCode
                 }
+                availableForSale
               }
             }
           }
@@ -97,14 +98,17 @@ export async function GET(req: Request) {
     endCursor: null,
   };
 
-  const products = edges.map((e: { node: ShopifyProduct }) => ({
-    id: e.node.id,
-    title: e.node.title,
-    image: e.node.featuredImage?.url ?? null,
-    price: e.node.selectedOrFirstAvailableVariant?.price?.amount ?? null,
-    currency: e.node.selectedOrFirstAvailableVariant?.price?.currencyCode ?? null,
-    variantId: e.node.selectedOrFirstAvailableVariant?.id ?? null,
-  }));
+  const products = edges.map((e: { node: ShopifyProduct }) => {
+    const variant = e.node.selectedOrFirstAvailableVariant;
+    return {
+      id: e.node.id,
+      title: e.node.title,
+      image: e.node.featuredImage?.url ?? null,
+      price: variant?.price?.amount ?? null,
+      currency: variant?.price?.currencyCode ?? null,
+      variantId: variant?.availableForSale ? variant.id : null,
+    };
+  });
 
   return NextResponse.json({
     title: collection?.title ?? null,

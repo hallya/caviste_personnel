@@ -15,34 +15,54 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
   const { showNotification } = useNotification();
   const hasPrice = product.price ?? product.currency;
-  
+
   const handleAddToCart = async () => {
-    if (!product.variantId) return;
-    
+    if (!product.variantId) {
+      console.warn(
+        "Cannot add to cart: no variantId for product",
+        product.title
+      );
+      return;
+    }
+
+    // Debug logging
+    console.log("Adding to cart:", {
+      productTitle: product.title,
+      variantId: product.variantId,
+    });
+
     setIsAdding(true);
     try {
       const result = await addToCart(product.variantId, 1);
       showNotification({
         type: "success",
         title: "Produit ajouté",
-        message: `${product.title} ajouté au panier (${result.totalQuantity} article${result.totalQuantity > 1 ? 's' : ''})`,
+        message: `${product.title} ajouté au panier (${
+          result.totalQuantity
+        } article${result.totalQuantity > 1 ? "s" : ""})`,
         autoClose: false,
         checkoutUrl: result.checkoutUrl,
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Erreur lors de l'ajout au panier";
-      
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Erreur lors de l'ajout au panier";
+
       // Log complete error for debugging
-      const errorWithStatus = error as Error & { status?: number; isNetworkError?: boolean };
+      const errorWithStatus = error as Error & {
+        status?: number;
+        isNetworkError?: boolean;
+      };
       console.error("Cart error:", {
         product: product.title,
         variantId: product.variantId,
         error: error instanceof Error ? error.message : error,
         status: errorWithStatus.status || "N/A (network error)",
         isNetworkError: errorWithStatus.isNetworkError || false,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-      
+
       showNotification({
         type: "error",
         title: "Erreur d'ajout",
@@ -53,7 +73,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       setIsAdding(false);
     }
   };
-  
+
   return (
     <article
       className="bg-[#f4f1ee] rounded-md p-4 text-center flex flex-col min-h-100"
@@ -78,7 +98,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </figcaption>
         )}
       </figure>
-      
+
       <header className="h-16 flex items-center justify-center mb-3">
         <h3
           id={`product-title-${product.id}`}
@@ -87,16 +107,18 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.title}
         </h3>
       </header>
-      
-      {product.variantId && (
-        <button
-          onClick={handleAddToCart}
-          disabled={isAdding}
-          className="w-full bg-[#7a2d2d] text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-[#5a1d1d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isAdding ? "Ajout..." : "Ajouter"}
-        </button>
-      )}
+
+      <button
+        onClick={handleAddToCart}
+        disabled={isAdding || !product.variantId}
+        className="w-full bg-primary-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 disabled:hover:bg-gray-300"
+      >
+        {isAdding
+          ? "Ajout..."
+          : product.variantId
+          ? "Ajouter"
+          : "Non disponible"}
+      </button>
     </article>
   );
-} 
+}

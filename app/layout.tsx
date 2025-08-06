@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Prata } from "next/font/google";
 import "./globals.css";
 import { NotificationProvider } from "./contexts/NotificationContext";
+import CartFloatingButton from "./components/cart/CartFloatingButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({
         <NotificationProvider>
           {children}
         </NotificationProvider>
+        <CartFloatingButton />
       </body>
     </html>
   );

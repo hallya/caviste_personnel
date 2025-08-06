@@ -1,5 +1,5 @@
 export async function addToCart(variantId: string, qty = 1) {
-  const cartId = localStorage.getItem("shopifyCartId");
+  const cartId = getCartId();
   
   try {
     const res = await fetch("/api/cart/add", {
@@ -15,7 +15,8 @@ export async function addToCart(variantId: string, qty = 1) {
       throw error;
     }
     
-    if (data.cartId) localStorage.setItem("shopifyCartId", data.cartId);
+    if (data.cartId) setCartId(data.cartId);
+    
     return data as { cartId: string; checkoutUrl: string; totalQuantity: number };
   } catch (fetchError) {
     const error = new Error(
@@ -28,6 +29,11 @@ export async function addToCart(variantId: string, qty = 1) {
 
 export function getCartId(): string | null {
   return localStorage.getItem("shopifyCartId");
+}
+
+export function setCartId(cartId: string): void {
+  localStorage.setItem("shopifyCartId", cartId);
+  window.dispatchEvent(new CustomEvent("cart-updated"));
 }
 
 export function clearCart(): void {

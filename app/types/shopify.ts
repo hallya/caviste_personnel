@@ -46,6 +46,7 @@ export interface ShopifyProduct {
   selectedOrFirstAvailableVariant: {
     id: string;
     price: ShopifyMoney;
+    availableForSale: boolean;
   };
   availableForSale: boolean;
   productType?: string;
