@@ -1,5 +1,3 @@
-import { Z_INDEX } from "../../styles/z-index";
-
 interface PopupHeaderProps {
   title: string;
   onClose: () => void;
@@ -7,14 +5,14 @@ interface PopupHeaderProps {
 
 export default function PopupHeader({ title, onClose }: PopupHeaderProps) {
   return (
-    <header className={`sticky top-0 bg-white rounded-t-xl px-8 pt-4 pb-4 border-b border-gray-100 z-[${Z_INDEX.MODAL_HEADER}]`}>
+    <header className="sticky top-0 bg-primary-50 rounded-t-xl px-8 pt-4 pb-4 border-b border-primary-200 z-modal-header">
       <div className="flex justify-between items-start">
-        <h2 id="popup-title" className="text-xl font-[Prata] text-[#7a2d2d] flex-1 pr-4">
+        <h2 id="popup-title" className="text-xl font-prata text-primary-600 flex-1 pr-4">
           {title}
         </h2>
         <button
           onClick={onClose}
-          className="text-2xl text-[#7a2d2d] leading-none hover:text-[#5a1d1d] transition-colors duration-200 flex-shrink-0"
+          className="text-2xl text-primary-600 leading-none hover:text-primary-700 transition-colors duration-200 flex-shrink-0"
           aria-label="Fermer la fenêtre"
         >
           &times;

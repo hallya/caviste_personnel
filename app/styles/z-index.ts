@@ -5,6 +5,9 @@
  * - Use intervals of 100 to leave space for future additions
  * - Document each level
  * - Avoid arbitrary values
+ * 
+ * Note: These values are also defined in tailwind.config.ts
+ * for use with Tailwind classes like z-modal, z-notification, etc.
  */
 
 export const Z_INDEX = {

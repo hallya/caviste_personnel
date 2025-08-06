@@ -31,14 +31,14 @@ describe('CartNotification', () => {
     render(<CartNotification {...defaultProps} />);
 
     const notification = screen.getByRole('alert');
-    expect(notification).toHaveClass('border-[#7a2d2d]');
+    expect(notification).toHaveClass('border-primary-600');
   });
 
   it('applies correct styling for error type', () => {
     render(<CartNotification {...defaultProps} type="error" />);
 
     const notification = screen.getByRole('alert');
-    expect(notification).toHaveClass('border-[#7a2d2d]');
+    expect(notification).toHaveClass('border-primary-600');
   });
 
   it('shows checkout button when checkoutUrl is provided and type is success', () => {

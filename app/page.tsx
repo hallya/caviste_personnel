@@ -24,7 +24,7 @@ export default function HomePage() {
   } = useCollections();
 
   return (
-    <main className="bg-[#f4f1ee] min-h-screen overflow-hidden touch-pan-y space-y-10">
+    <main className="bg-primary-50 min-h-screen overflow-hidden touch-pan-y space-y-10">
       <PageHeader />
       <IntroText />
       <Carousel onItemClick={openCollection} />

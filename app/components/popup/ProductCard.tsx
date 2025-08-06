@@ -4,7 +4,6 @@ import { useState } from "react";
 import type { SimplifiedProduct } from "../../types/shopify";
 import Image from "next/image";
 import ImagePlaceholder from "./ImagePlaceholder";
-import { Z_INDEX } from "../../styles/z-index";
 import { addToCart } from "../../lib/cart";
 import { useNotification } from "../../contexts/NotificationContext";
 
@@ -74,7 +73,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
 
         {hasPrice && (
-          <figcaption className={`absolute bottom-2 right-2 bg-white/90 px-2 py-1 rounded text-xs font-medium text-[#7a2d2d] z-[${Z_INDEX.TOOLTIP}]`}>
+          <figcaption className="absolute bottom-2 right-2 bg-white/90 px-2 py-1 rounded text-xs font-medium text-primary-600 z-tooltip">
             {product.price} {product.currency}
           </figcaption>
         )}
@@ -83,7 +82,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <header className="h-16 flex items-center justify-center mb-3">
         <h3
           id={`product-title-${product.id}`}
-          className="text-sm text-[#7a2d2d] line-clamp-2 font-semibold"
+          className="text-sm text-primary-600 line-clamp-2 font-semibold"
         >
           {product.title}
         </h3>

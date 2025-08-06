@@ -31,7 +31,7 @@ export default function CartNotification({
     setTimeout(onClose, NOTIFICATION_DEFAULTS.ANIMATION_DURATION);
   };
 
-  const baseClasses = `fixed top-4 right-4 z-[${NOTIFICATION_DEFAULTS.Z_INDEX}] max-w-sm w-full bg-[#f4f1ee] rounded-lg shadow-lg border-l-4 p-4 transform transition-all duration-${NOTIFICATION_DEFAULTS.ANIMATION_DURATION}`;
+  const baseClasses = `fixed top-4 right-4 z-notification max-w-sm w-full bg-primary-50 rounded-lg shadow-lg border-l-4 p-4 transform transition-all duration-${NOTIFICATION_DEFAULTS.ANIMATION_DURATION}`;
   const typeClasses = type === "success" 
     ? "border-[#7a2d2d]" 
     : "border-[#7a2d2d]";

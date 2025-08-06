@@ -54,6 +54,36 @@ import { ComponentName } from "./ComponentName";
 2. ✅ **Avoid arbitrary values** (`[#color]`) - use theme colors
 3. ✅ **Use CSS variables** for dynamic values only
 4. ✅ **Keep CSS modules** for complex 3D transforms only
+5. ✅ **Use custom utility classes** for common patterns
+
+### **Typography System**
+```typescript
+// ✅ Use custom typography classes
+className="text-heading"    // Prata font + primary color
+className="text-body"       // Geist font + neutral color
+className="text-caption"    // Small text + gray color
+className="text-button"     // Medium weight + small size
+className="text-title"      // Prata font + xl size
+className="text-subtitle"   // Prata font + lg size
+
+// ✅ Use extended font sizes
+className="text-2xs"        // 10px
+className="text-xs"         // 12px
+className="text-sm"         // 14px
+className="text-base"       // 16px
+className="text-lg"         // 18px
+className="text-xl"         // 20px
+className="text-2xl"        // 24px
+className="text-3xl"        // 30px
+className="text-4xl"        // 36px
+className="text-5xl"        // 48px
+className="text-6xl"        // 60px
+
+// ✅ Use font families
+className="font-prata"      // Serif font for headings
+className="font-sans"       // Geist font for body text
+className="font-mono"       // Monospace font for code
+```
 
 ### **Color System**
 ```typescript
@@ -65,15 +95,32 @@ className="text-neutral-700 border-neutral-200"
 className="bg-[#f4f1ee] text-[#7a2d2d]"
 ```
 
+**Available color palettes:**
+- `primary-50` to `primary-900` - Wine theme colors
+- `neutral-50` to `neutral-900` - Grayscale colors
+- `background` and `foreground` - CSS variables for theming
+
 ### **Z-Index System**
 ```typescript
-// ✅ Use centralized z-index system
+// ✅ Use Tailwind z-index classes (preferred)
+className="z-modal"
+className="z-notification"
+className="z-tooltip"
+
+// ✅ Use centralized z-index system for dynamic values
 import { Z_INDEX } from '../../styles/z-index';
 className={`z-[${Z_INDEX.MODAL}]`}
 
 // ❌ Avoid arbitrary z-index values
 className="z-[10000]"
 ```
+
+**Available z-index classes:**
+- `z-modal` (3000) - Main modal containers
+- `z-modal-header` (3100) - Modal headers
+- `z-modal-footer` (3200) - Modal footers
+- `z-notification` (4000) - Notifications and toasts
+- `z-tooltip` (300) - Tooltips and overlays
 
 ### **Responsive Design**
 ```typescript
@@ -83,6 +130,21 @@ className="text-sm md:text-base lg:text-lg"
 
 // ✅ Use semantic breakpoints
 className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+
+// ✅ Use extended line heights
+className="leading-tight"    // 1.25
+className="leading-snug"     // 1.375
+className="leading-normal"   // 1.5
+className="leading-relaxed"  // 1.625
+className="leading-loose"    // 2.0
+
+// ✅ Use letter spacing
+className="tracking-tighter" // -0.05em
+className="tracking-tight"   // -0.025em
+className="tracking-normal"  // 0em
+className="tracking-wide"    // 0.025em
+className="tracking-wider"   // 0.05em
+className="tracking-widest"  // 0.1em
 ```
 
 ## 🧪 Testing Standards
@@ -242,6 +304,13 @@ npx jest --bail --findRelatedTests --passWithNoTests $CHANGED_FILES
 
 ## 🎯 Specific Project Requirements
 
+### **Tailwind Configuration**
+- ✅ **Extended color palette** with wine theme colors
+- ✅ **Custom typography system** with Prata and Geist fonts
+- ✅ **Z-index scale** for consistent layering
+- ✅ **Custom utility classes** for common patterns
+- ✅ **Responsive design** with mobile-first approach
+
 ### **Shopify Integration**
 - ✅ **Type-safe API calls** with comprehensive types
 - ✅ **Error handling** for network and API errors
@@ -260,6 +329,35 @@ npx jest --bail --findRelatedTests --passWithNoTests $CHANGED_FILES
 - ✅ **Performance optimization** for mobile
 - ✅ **Progressive enhancement**
 
+## 🔧 Configuration Best Practices
+
+### **Tailwind Configuration Updates**
+When updating `tailwind.config.ts`:
+1. ✅ **Add new colors** to the `colors` object
+2. ✅ **Extend font families** in `fontFamily`
+3. ✅ **Add custom utilities** in `globals.css` with `@layer utilities`
+4. ✅ **Use semantic naming** for custom classes
+5. ✅ **Test configuration** with `npm run build`
+6. ✅ **Update documentation** with new classes
+
+### **CSS Organization**
+```css
+/* ✅ Structure in globals.css */
+@import "tailwindcss";
+
+:root {
+  /* CSS variables for theming */
+}
+
+@layer base {
+  /* Base styles and resets */
+}
+
+@layer utilities {
+  /* Custom utility classes */
+}
+```
+
 ## 🔄 Future Development Guidelines
 
 ### **When Adding New Features**
@@ -269,6 +367,8 @@ npx jest --bail --findRelatedTests --passWithNoTests $CHANGED_FILES
 4. ✅ **Add TypeScript types** for all data
 5. ✅ **Document the feature** with comments
 6. ✅ **Test accessibility** and mobile responsiveness
+7. ✅ **Use custom typography classes** for consistent text styling
+8. ✅ **Use z-index classes** for proper layering
 
 ### **When Refactoring**
 1. ✅ **Maintain existing tests** or update them
@@ -276,6 +376,8 @@ npx jest --bail --findRelatedTests --passWithNoTests $CHANGED_FILES
 3. ✅ **Update documentation** if needed
 4. ✅ **Ensure mobile compatibility**
 5. ✅ **Run full test suite** before committing
+6. ✅ **Update typography classes** to use new system
+7. ✅ **Replace arbitrary values** with theme classes
 
 ### **When Debugging**
 1. ✅ **Check console errors** first
@@ -283,6 +385,8 @@ npx jest --bail --findRelatedTests --passWithNoTests $CHANGED_FILES
 3. ✅ **Test on mobile devices** if UI-related
 4. ✅ **Check accessibility** with screen readers
 5. ✅ **Verify performance** with React DevTools
+6. ✅ **Check Tailwind classes** are properly generated
+7. ✅ **Verify z-index layering** is correct
 
 ## 📋 Quality Checklist
 
@@ -294,6 +398,9 @@ Before any commit, ensure:
 - ✅ **Accessibility** features are intact
 - ✅ **Performance** is not degraded
 - ✅ **Documentation** is updated if needed
+- ✅ **Tailwind classes** are properly configured
+- ✅ **Typography system** is used consistently
+- ✅ **Z-index layering** follows the established system
 
 ---
 

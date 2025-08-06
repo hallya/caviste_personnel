@@ -36,7 +36,7 @@ export default function IntroText() {
       aria-labelledby="intro-heading"
       className={[
         "mx-auto max-w-prose px-5",
-        "font-[Prata] text-[#3a3a3a] text-[1.1rem] leading-[1.6]",
+        "font-prata text-neutral-700 text-1.1rem leading-1.6",
         "transition-all duration-700",
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5",
       ].join(" ")}
