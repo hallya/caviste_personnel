@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
+import { useRouter } from "next/navigation";
 import { getCartId } from "../../lib/cart";
 
 export default function CartFloatingButton() {
   const [cartCount, setCartCount] = useState(0);
-  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchCart() {
@@ -21,7 +22,6 @@ export default function CartFloatingButton() {
       if (!res.ok) return;
       const cart = await res.json();
       setCartCount(cart?.totalQuantity ?? 0);
-      setCheckoutUrl(cart?.checkoutUrl ?? null);
     }
 
     function handleStorageChange() {
@@ -52,17 +52,14 @@ export default function CartFloatingButton() {
   if (cartCount === 0) return null; // On n'affiche rien si le panier est vide
 
   const handleClick = () => {
-    if (checkoutUrl) {
-      // Ouvrir la page de checkout Shopify dans une nouvelle fenêtre
-      window.open(checkoutUrl, '_blank', 'noopener,noreferrer');
-    }
+    router.push("/cart");
   };
 
   return (
     <button
       onClick={handleClick}
       className="fixed bottom-4 right-4 bg-primary-600 text-white p-3 rounded-full shadow-lg flex items-center justify-center hover:bg-primary-700 transition-colors z-tooltip-global"
-      aria-label={`Procéder au paiement (${cartCount} articles)`}
+      aria-label={`Voir le panier (${cartCount} articles)`}
     >
       <ShoppingCartIcon className="h-6 w-6" />
       {cartCount > 0 && (

@@ -1,3 +1,5 @@
+import { CART_CONSTANTS } from "../components/cart/constants";
+
 export async function addToCart(variantId: string, qty = 1) {
   const cartId = getCartId();
   
@@ -28,14 +30,14 @@ export async function addToCart(variantId: string, qty = 1) {
 }
 
 export function getCartId(): string | null {
-  return localStorage.getItem("shopifyCartId");
+  return localStorage.getItem(CART_CONSTANTS.CART_ID_KEY);
 }
 
 export function setCartId(cartId: string): void {
-  localStorage.setItem("shopifyCartId", cartId);
+  localStorage.setItem(CART_CONSTANTS.CART_ID_KEY, cartId);
   window.dispatchEvent(new CustomEvent("cart-updated"));
 }
 
 export function clearCart(): void {
-  localStorage.removeItem("shopifyCartId");
+  localStorage.removeItem(CART_CONSTANTS.CART_ID_KEY);
 } 

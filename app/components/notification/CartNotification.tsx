@@ -11,7 +11,6 @@ export default function CartNotification({
   onClose,
   autoClose = false,
   autoCloseDelay,
-  checkoutUrl,
 }: NotificationProps) {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -32,9 +31,7 @@ export default function CartNotification({
   };
 
   const baseClasses = `fixed top-4 right-4 z-notification max-w-sm w-full bg-primary-50 rounded-lg shadow-lg border-l-4 p-4 transform transition-all duration-${NOTIFICATION_DEFAULTS.ANIMATION_DURATION}`;
-  const typeClasses = type === "success" 
-    ? "border-[#7a2d2d]" 
-    : "border-[#7a2d2d]";
+  const typeClasses = "border-primary-600";
   const visibilityClasses = isVisible 
     ? "translate-x-0 opacity-100" 
     : "translate-x-full opacity-0";
@@ -43,12 +40,10 @@ export default function CartNotification({
     <div className={`${baseClasses} ${typeClasses} ${visibilityClasses}`} role="alert">
       <div className="flex items-start justify-between">
         <div className="flex items-center">
-          <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${
-            type === "success" ? "bg-[#7a2d2d]/10" : "bg-[#7a2d2d]/10"
-          }`}>
+          <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-primary-600/10">
             {type === "success" ? (
               <svg 
-                className="w-3 h-3 text-[#7a2d2d]" 
+                className="w-3 h-3 text-primary-600" 
                 fill="currentColor" 
                 viewBox="0 0 20 20"
                 data-testid="success-icon"
@@ -57,7 +52,7 @@ export default function CartNotification({
               </svg>
             ) : (
               <svg 
-                className="w-3 h-3 text-[#7a2d2d]" 
+                className="w-3 h-3 text-primary-600" 
                 fill="currentColor" 
                 viewBox="0 0 20 20"
                 data-testid="error-icon"
@@ -67,35 +62,32 @@ export default function CartNotification({
             )}
           </div>
           <div className="ml-3">
-            <p className={`text-sm font-bold ${
-              type === "success" ? "text-[#7a2d2d]" : "text-[#7a2d2d]"
-            }`}>
+            <p className="text-sm font-bold text-primary-600">
               {title}
             </p>
-            <p className={`text-sm ${
-              type === "success" ? "text-[#3a3a3a]" : "text-[#3a3a3a]"
-            }`}>
+            <p className="text-sm text-neutral-700">
               {message}
             </p>
           </div>
         </div>
-        <button
-          onClick={handleClose}
-          className="flex-shrink-0 text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
-        >
+                    <button
+              onClick={handleClose}
+              className="flex-shrink-0 text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
+              aria-label="Fermer la notification"
+            >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
           </svg>
         </button>
       </div>
       
-      {type === "success" && checkoutUrl && (
+      {type === "success" && (
         <div className="mt-3 flex flex-col gap-2">
           <button
-            onClick={() => window.open(checkoutUrl, '_blank', 'noopener,noreferrer')}
+            onClick={() => window.location.href = "/cart"}
             className="w-full px-3 py-2 bg-primary-600 text-white text-sm rounded-md hover:bg-primary-700 transition-colors font-medium"
           >
-            Procéder au paiement
+            Voir le panier
           </button>
           <button
             onClick={handleClose}

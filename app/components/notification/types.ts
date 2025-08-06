@@ -5,7 +5,6 @@ export interface NotificationProps {
   onClose: () => void;
   autoClose?: boolean;
   autoCloseDelay?: number;
-  checkoutUrl?: string;
 }
 
 export interface NotificationData {
@@ -15,7 +14,6 @@ export interface NotificationData {
   message: string;
   autoClose?: boolean;
   autoCloseDelay?: number;
-  checkoutUrl?: string;
 }
 
 export interface NotificationContextType {

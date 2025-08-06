@@ -31,7 +31,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
           onClose={() => hideNotification(notification.id)}
           autoClose={notification.autoClose}
           autoCloseDelay={notification.autoCloseDelay}
-          checkoutUrl={notification.checkoutUrl}
+
         />
       ))}
     </NotificationContext.Provider>

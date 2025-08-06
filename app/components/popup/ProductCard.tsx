@@ -34,15 +34,14 @@ export default function ProductCard({ product }: ProductCardProps) {
     setIsAdding(true);
     try {
       const result = await addToCart(product.variantId, 1);
-      showNotification({
-        type: "success",
-        title: "Produit ajouté",
-        message: `${product.title} ajouté au panier (${
-          result.totalQuantity
-        } article${result.totalQuantity > 1 ? "s" : ""})`,
-        autoClose: false,
-        checkoutUrl: result.checkoutUrl,
-      });
+              showNotification({
+          type: "success",
+          title: "Produit ajouté",
+          message: `${product.title} ajouté au panier (${
+            result.totalQuantity
+          } article${result.totalQuantity > 1 ? "s" : ""})`,
+          autoClose: false,
+        });
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -76,7 +75,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <article
-      className="bg-[#f4f1ee] rounded-md p-4 text-center flex flex-col min-h-100"
+      className="bg-primary-50 rounded-md p-4 text-center flex flex-col min-h-100"
       aria-labelledby={`product-title-${product.id}`}
     >
       <figure className="relative flex-1 mb-2 min-h-0 rounded overflow-hidden">
