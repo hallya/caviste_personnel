@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-import type { 
+import type {
   ShopifyProduct,
-  CollectionProductsVars
+  CollectionProductsVars,
 } from "../../types/shopify";
-
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -44,6 +43,13 @@ export async function GET(req: Request) {
               }
               priceRange {
                 minVariantPrice {
+                  amount
+                  currencyCode
+                }
+              }
+              selectedOrFirstAvailableVariant {
+                id
+                price {
                   amount
                   currencyCode
                 }
@@ -95,8 +101,9 @@ export async function GET(req: Request) {
     id: e.node.id,
     title: e.node.title,
     image: e.node.featuredImage?.url ?? null,
-    price: e.node.priceRange?.minVariantPrice?.amount ?? null,
-    currency: e.node.priceRange?.minVariantPrice?.currencyCode ?? null,
+    price: e.node.selectedOrFirstAvailableVariant?.price?.amount ?? null,
+    currency: e.node.selectedOrFirstAvailableVariant?.price?.currencyCode ?? null,
+    variantId: e.node.selectedOrFirstAvailableVariant?.id ?? null,
   }));
 
   return NextResponse.json({

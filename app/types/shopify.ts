@@ -43,9 +43,9 @@ export interface ShopifyProduct {
       node: ShopifyProductVariant;
     }[];
   };
-  priceRange: {
-    minVariantPrice: ShopifyMoney;
-    maxVariantPrice: ShopifyMoney;
+  selectedOrFirstAvailableVariant: {
+    id: string;
+    price: ShopifyMoney;
   };
   availableForSale: boolean;
   productType?: string;
@@ -128,6 +128,7 @@ export interface SimplifiedProduct {
   image: string | null;
   price: string | null;
   currency: string | null;
+  variantId?: string; // For cart functionality
 }
 
 export interface SimplifiedCollection {
