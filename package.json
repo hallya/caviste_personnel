@@ -7,13 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky install",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:staged": "jest --bail --findRelatedTests",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "type-check": "tsc --noEmit"
+    "test:ci": "jest --ci --coverage --watchAll=false"
   },
   "dependencies": {
     "next": "15.4.5",
@@ -29,8 +29,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "husky": "^9.1.7",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
+    "lint-staged": "^16.1.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
