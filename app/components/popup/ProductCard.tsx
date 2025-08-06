@@ -1,8 +1,9 @@
-import type { Product } from "../../api/collection-products/route";
+import type { SimplifiedProduct } from "../../types/shopify";
+import Image from "next/image";
 import ImagePlaceholder from "./ImagePlaceholder";
 
 interface ProductCardProps {
-  product: Product;
+  product: SimplifiedProduct;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
@@ -15,11 +16,12 @@ export default function ProductCard({ product }: ProductCardProps) {
     >
       <figure className="relative flex-1 mb-2 min-h-0 rounded overflow-hidden">
         {product.image ? (
-          <img
+          <Image
             src={product.image}
             alt={`Image de ${product.title}`}
-            className="w-full h-full object-cover"
-            loading="lazy"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
           <ImagePlaceholder title={product.title} />
