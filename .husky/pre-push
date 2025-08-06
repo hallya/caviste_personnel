@@ -1,5 +1,15 @@
 #!/usr/bin/env sh
 
+echo "🔍 TypeScript type checking..."
+npm run type-check
+
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript errors found. Please fix them before pushing."
+  exit 1
+fi
+
+echo "✅ TypeScript check passed!"
+
 # Get the list of changed files between current branch and remote (excluding test files)
 CHANGED_FILES=$(git diff --name-only origin/main...HEAD | grep -E '\.(js|jsx|ts|tsx)$' | grep -v -E '\.(test|spec)\.(js|jsx|ts|tsx)$' | tr '\n' ' ')
 
