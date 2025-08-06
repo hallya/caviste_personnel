@@ -1,10 +1,10 @@
 import { useState, useCallback } from "react";
-import { CollectionProducts, Product } from "../api/collection-products/route";
+import { SimplifiedCollection, SimplifiedProduct } from "../types/shopify";
 
 interface UseCollectionsReturn {
   popupOpen: boolean;
   popupTitle: string;
-  popupProducts: Product[];
+  popupProducts: SimplifiedProduct[];
   popupLoading: boolean;
   hasNextPage: boolean;
   openCollection: (handle: string, title: string) => Promise<void>;
@@ -16,7 +16,7 @@ export function useCollections(): UseCollectionsReturn {
   const [popupOpen, setPopupOpen] = useState(false);
   const [popupTitle, setPopupTitle] = useState("");
   const [currentHandle, setCurrentHandle] = useState("");
-  const [popupProducts, setPopupProducts] = useState<Product[]>([]);
+  const [popupProducts, setPopupProducts] = useState<SimplifiedProduct[]>([]);
   const [popupLoading, setPopupLoading] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasNextPage, setHasNextPage] = useState(false);
@@ -33,7 +33,7 @@ export function useCollections(): UseCollectionsReturn {
       cache: "no-store",
     });
     if (!res.ok) throw new Error("fetch failed");
-    return res.json() as Promise<CollectionProducts>;
+    return res.json() as Promise<SimplifiedCollection>;
   }, []);
 
   const openCollection = useCallback(async (handle: string, title: string) => {

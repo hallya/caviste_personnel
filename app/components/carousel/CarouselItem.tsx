@@ -49,7 +49,7 @@ export const CarouselItem = memo(function CarouselItem({
       } else {
         onSelect(index);
       }
-    }, [isSelected, onOpen, onSelect, collection.handle, index]);
+    }, [isSelected, onOpen, onSelect, collection, index]);
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
       if (e.key === "Enter" || e.key === " ") {

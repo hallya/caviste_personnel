@@ -23,7 +23,6 @@ export default function Popup({
   hasNext,
   onLoadMore,
 }: PopupProps) {
-  // Gestion de la touche Escape
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();

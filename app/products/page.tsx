@@ -1,5 +1,8 @@
 // app/products/page.tsx
 
+import { SimplifiedProduct } from "../types/shopify";
+import Image from "next/image";
+
 type Product = {
   id: string;
   title: string;
@@ -52,11 +55,11 @@ async function getProducts(): Promise<Product[]> {
 
   const json = await res.json();
 
-  return json.data.products.edges.map((edge: any) => ({
+  return json.data.products.edges.map((edge: { node: SimplifiedProduct }) => ({
     id: edge.node.id,
     title: edge.node.title,
-    image: edge.node.images.edges[0]?.node,
-    price: edge.node.variants.edges[0]?.node.price.amount ?? "N/A",
+    image: edge.node.image,
+    price: edge.node.price,
   }));
 }
 
@@ -71,11 +74,15 @@ export default async function ProductsPage() {
           className="border rounded-lg shadow hover:shadow-md transition p-4"
         >
           {product.image?.url ? (
-            <img
-              src={product.image.url}
-              alt={product.title}
-              className="w-full h-60 object-cover rounded"
-            />
+            <div className="relative w-full h-60 rounded overflow-hidden">
+              <Image
+                src={product.image.url}
+                alt={product.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+              />
+            </div>
           ) : (
             <div className="w-full h-60 bg-gray-200 flex items-center justify-center text-sm text-gray-500 rounded">
               Aucune image
