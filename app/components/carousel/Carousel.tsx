@@ -70,7 +70,7 @@ export default function Carousel({
   const handleSelect = (i: number) => setCurrent(i);
   const handleOpen = (c: Collection) => onItemClick?.(c.handle, c.title ?? c.handle);
 
-  // États de chargement et d'erreur
+  // Loading and error states
   if (dataState.isLoading) {
     return (
       <div className="w-[calc(100vw-80px)] max-w-[1000px] mx-auto flex items-center justify-center h-80">

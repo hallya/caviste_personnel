@@ -7,13 +7,13 @@ function computeItemStyle(index: number, current: number, isMobile: boolean) {
     const offset = index - current;
     const abs = Math.abs(offset);
     
-    // Effet de profondeur plus marqué sur mobile
+    // More pronounced depth effect on mobile
     const z = isMobile ? -(abs * abs) * 400 : -(abs * abs) * 220;
     
-    // Espacement augmenté sur mobile pour plus de spread
+    // Increased spacing on mobile for more spread
     const x = isMobile ? 100 * offset : 200 * offset;
     
-    // Scale plus marqué sur mobile pour l'effet de profondeur
+    // More pronounced scale on mobile for depth effect
     const scale = isMobile ? 1 - abs * 0.15 : 1 - abs * 0.05;
     
     return {
@@ -42,13 +42,11 @@ export const CarouselItem = memo(function CarouselItem({
   }) {
     const isSelected = index === current;
     
-    // Optimisation avec useMemo pour éviter les recalculs
     const style = useMemo(() => 
       computeItemStyle(index, current, isMobile), 
       [index, current, isMobile]
     );
 
-    // Optimisation des handlers avec useCallback
     const handleClick = useCallback(() => {
       if (isSelected) {
         onOpen(collection);

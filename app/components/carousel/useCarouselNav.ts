@@ -8,7 +8,6 @@ import { useDeviceDetection } from "./hooks/useDeviceDetection";
 const clamp = (n: number, min: number, max: number) => Math.min(Math.max(n, min), max);
 
 export function useCarouselNav(totalItems: number, opts?: CarouselOptions): CarouselReturn {
-  // État
   const [current, setCurrent] = useState(() => {
     if (totalItems <= 0) return 0;
     if (opts?.initial === "center") return Math.floor(totalItems / 2);
@@ -16,16 +15,13 @@ export function useCarouselNav(totalItems: number, opts?: CarouselOptions): Caro
     return 0;
   });
 
-  // Hooks
   const isMobile = useDeviceDetection();
 
-  // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
   const touchStartX = useRef<number | null>(null);
   const touchStartTime = useRef<number>(0);
 
-  // Mise à jour de l'index initial si totalItems change
   useEffect(() => {
     if (totalItems <= 0) {
       setCurrent(0);
@@ -39,7 +35,6 @@ export function useCarouselNav(totalItems: number, opts?: CarouselOptions): Caro
     }
   }, [totalItems, opts?.initial]);
 
-  // Navigation - Optimisé avec useCallback
   const navigateTo = useCallback((index: number) => {
     if (totalItems <= 0) return;
     
@@ -54,7 +49,6 @@ export function useCarouselNav(totalItems: number, opts?: CarouselOptions): Caro
     navigateTo(current + direction);
   }, [current, totalItems, navigateTo]);
 
-  // Gestionnaires d'événements - Optimisés avec useCallback
   const handleWheel = useCallback((e: WheelEvent) => {
     if (isMobile) return;
     
@@ -99,7 +93,6 @@ export function useCarouselNav(totalItems: number, opts?: CarouselOptions): Caro
     touchStartX.current = null;
   }, [goStep]);
 
-  // Event listeners
   useEffect(() => {
     const node = containerRef.current;
     if (!node) return;

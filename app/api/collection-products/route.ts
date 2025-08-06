@@ -25,7 +25,7 @@ export async function GET(req: Request) {
   const first = Number(searchParams.get("first") || 12);
   const after = searchParams.get("after");
 
-  // 🔹 Ne pas passer "null" comme curseur à Shopify
+  // 🔹 Don't pass "null" as cursor to Shopify
   const cursor = after && after !== "null" ? after : null;
 
   if (!handle) {
