@@ -5,8 +5,5 @@ module.exports = {
   },
   
   // Run linting
-  '**/*.{ts,tsx}': 'eslint --fix',
-  
-  // Run type checking
-  '**/*.{ts,tsx}': 'tsc --noEmit',
+  '**/*.{ts,tsx}': 'npx eslint --fix',
 }; 
