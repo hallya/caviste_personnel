@@ -41,7 +41,7 @@ export default function Popup({
       aria-modal="true"
       aria-labelledby="popup-title"
     >
-      <div className="bg-white rounded-xl w-[90vw] h-[80vh] shadow-lg animate-scaleIn relative flex flex-col">
+      <div className="bg-white rounded-xl w-[90vw] max-w-[80vw] h-[80vh] shadow-lg animate-scaleIn relative flex flex-col">
         <PopupHeader title={title} onClose={onClose} />
 
         <main className="flex-1 overflow-y-auto px-8 py-4">
@@ -51,7 +51,7 @@ export default function Popup({
 
           <section
             id={gridId}
-            className="grid grid-cols-1 md:grid-cols-6 gap-4"
+            className="grid gap-4 auto-rows-fr grid-cols-[repeat(auto-fill,minmax(200px,1fr))] max-w-full"
             aria-label={`Liste des produits de ${title}`}
             aria-busy={loading ? "true" : "false"}
           >
