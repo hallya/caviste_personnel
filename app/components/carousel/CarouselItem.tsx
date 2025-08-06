@@ -3,25 +3,6 @@ import styles from "./Carousel.module.css";
 import { Collection } from "./types";
 import Image from "next/image";
 
-function computeItemStyle(index: number, current: number, isMobile: boolean) {
-    const offset = index - current;
-    const abs = Math.abs(offset);
-    
-    // More pronounced depth effect on mobile
-    const z = isMobile ? -(abs * abs) * 400 : -(abs * abs) * 220;
-    
-    // Increased spacing on mobile for more spread
-    const x = isMobile ? 100 * offset : 200 * offset;
-    
-    // More pronounced scale on mobile for depth effect
-    const scale = isMobile ? 1 - abs * 0.15 : 1 - abs * 0.05;
-    
-    return {
-      transform: `translate3d(${x}px,0,0) translateZ(${z}px) scale(${scale})`,
-      zIndex: 100 - abs,
-      opacity: 1,
-    } as const;
-  }
 
 export const CarouselItem = memo(function CarouselItem({
     collection,
@@ -42,10 +23,25 @@ export const CarouselItem = memo(function CarouselItem({
   }) {
     const isSelected = index === current;
     
-    const style = useMemo(() => 
-      computeItemStyle(index, current, isMobile), 
-      [index, current, isMobile]
-    );
+    const style = useMemo(() => {
+      const offset = index - current;
+      const abs = Math.abs(offset);
+      
+      // More pronounced depth effect on mobile
+      const z = isMobile ? -(abs * abs) * 400 : -(abs * abs) * 220;
+      
+      // Increased spacing on mobile for more spread
+      const x = isMobile ? 100 * offset : 200 * offset;
+      
+      // More pronounced scale on mobile for depth effect
+      const scale = isMobile ? 1 - abs * 0.15 : 1 - abs * 0.05;
+      
+      return {
+        transform: `translate3d(${x}px,0,0) translateZ(${z}px) scale(${scale})`,
+        zIndex: 100 - abs,
+        opacity: 1,
+      };
+    }, [index, current, isMobile]);
 
     const handleClick = useCallback(() => {
       if (isSelected) {
@@ -53,7 +49,7 @@ export const CarouselItem = memo(function CarouselItem({
       } else {
         onSelect(index);
       }
-    }, [isSelected, onOpen, onSelect, collection, index]);
+    }, [isSelected, onOpen, onSelect, collection.handle, index]);
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
       if (e.key === "Enter" || e.key === " ") {
@@ -62,15 +58,35 @@ export const CarouselItem = memo(function CarouselItem({
       }
     }, [handleClick]);
 
+    const ImageComponent = useMemo(() => (
+      collection.image ? (
+        <Image
+          src={collection.image}
+          alt={`Image de ${collection.title}`}
+          width={isMobile ? 60 : 80}
+          height={isMobile ? 60 : 80}
+          unoptimized
+        />
+      ) : (
+        <div
+          aria-hidden="true"
+          className={`${isMobile ? "w-16 h-16" : "w-20 h-20"} rounded bg-gray-100`}
+          title={collection.title}
+        />
+      )
+    ), [collection.image, collection.title, isMobile]);
+
+    const className = useMemo(() => `
+      ${styles.item}
+      absolute bg-white rounded-xl shadow-lg
+      flex flex-col items-center justify-center text-center cursor-pointer
+      ${isMobile ? 'w-36 h-56 p-1.5' : 'w-52 h-80 p-2'}
+      ${isSelected ? styles.selected : ''}
+    `, [isMobile, isSelected]);
+
     return (
       <div
-        className={`
-          ${styles.item}
-          absolute bg-white rounded-xl shadow-lg
-          flex flex-col items-center justify-center text-center cursor-pointer
-          ${isMobile ? 'w-36 h-56 p-1.5' : 'w-52 h-80 p-2'}
-          ${isSelected ? styles.selected : ''}
-        `}
+        className={className}
         style={style}
         onClick={handleClick}
         role="listitem"
@@ -79,21 +95,7 @@ export const CarouselItem = memo(function CarouselItem({
         tabIndex={isSelected ? 0 : -1}
         onKeyDown={handleKeyDown}
       >
-        {collection.image ? (
-          <Image
-            src={collection.image}
-            alt={`Image de ${collection.title}`}
-            width={isMobile ? 60 : 80}
-            height={isMobile ? 60 : 80}
-            unoptimized
-          />
-        ) : (
-          <div
-            aria-hidden="true"
-            className={`${isMobile ? "w-16 h-16" : "w-20 h-20"} rounded bg-gray-100`}
-            title={collection.title}
-          />
-        )}
+        {ImageComponent}
         <p className={`
           text-gray-800 font-semibold px-2
           ${isMobile ? 'mt-2 text-sm' : 'mt-4'}

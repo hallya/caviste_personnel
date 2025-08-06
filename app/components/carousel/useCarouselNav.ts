@@ -39,15 +39,16 @@ export function useCarouselNav(totalItems: number, opts?: CarouselOptions): Caro
     if (totalItems <= 0) return;
     
     const nextIndex = clamp(index, 0, totalItems - 1);
-    if (nextIndex !== current) {
-      setCurrent(nextIndex);
-    }
-  }, [current, totalItems]);
+    setCurrent(nextIndex);
+  }, [totalItems]);
 
   const goStep = useCallback((direction: 1 | -1) => {
     if (totalItems <= 1) return;
-    navigateTo(current + direction);
-  }, [current, totalItems, navigateTo]);
+    setCurrent(prev => {
+      const nextIndex = prev + direction;
+      return clamp(nextIndex, 0, totalItems - 1);
+    });
+  }, [totalItems]);
 
   const handleWheel = useCallback((e: WheelEvent) => {
     if (isMobile) return;
@@ -106,7 +107,8 @@ export function useCarouselNav(totalItems: number, opts?: CarouselOptions): Caro
     return () => window.removeEventListener("keydown", handleKeydown);
   }, [handleKeydown]);
 
-  return {
+  // Memoize the return object to prevent unnecessary re-renders
+  const returnValue = useCallback(() => ({
     current,
     isMobile,
     containerRef,
@@ -114,5 +116,7 @@ export function useCarouselNav(totalItems: number, opts?: CarouselOptions): Caro
     handleTouchStart,
     handleTouchEnd,
     setCurrent: navigateTo,
-  };
+  }), [current, isMobile, goStep, handleTouchStart, handleTouchEnd, navigateTo]);
+
+  return returnValue();
 }
