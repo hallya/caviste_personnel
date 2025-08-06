@@ -139,6 +139,28 @@ export interface SimplifiedCollection {
   };
 }
 
+// Shopify Cart Types
+export interface ShopifyCart {
+  id: string;
+  checkoutUrl: string;
+  totalQuantity: number;
+}
+
+export interface ShopifyUserError {
+  field: string[];
+  message: string;
+}
+
+export interface ShopifyCartCreatePayload {
+  cart: ShopifyCart;
+  userErrors: ShopifyUserError[];
+}
+
+export interface ShopifyCartLinesAddPayload {
+  cart: ShopifyCart;
+  userErrors: ShopifyUserError[];
+}
+
 // Type guards
 export function isShopifyProduct(obj: unknown): obj is ShopifyProduct {
   return Boolean(obj && typeof obj === 'object' && obj !== null && 
