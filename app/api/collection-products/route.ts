@@ -1,23 +1,9 @@
 import { NextResponse } from "next/server";
+import type { 
+  ShopifyProduct,
+  CollectionProductsVars
+} from "../../types/shopify";
 
-type Vars = { handle: string; first: number; after?: string | null };
-
-export type CollectionProducts = {
-  title: string | null;
-  products: {
-    id: string;
-    title: string;
-    image: string | null;
-    price: string | null;
-    currency: string | null;
-  }[];
-  pageInfo: {
-    hasNextPage: boolean;
-    endCursor: string | null;
-  };
-};
-
-export type Product = CollectionProducts["products"][0];
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -73,7 +59,7 @@ export async function GET(req: Request) {
     }
   `;
 
-  const variables: Vars = { handle, first, after: cursor };
+  const variables: CollectionProductsVars = { handle, first, after: cursor };
 
   const res = await fetch(`https://${domain}/api/2023-07/graphql.json`, {
     method: "POST",
@@ -105,7 +91,7 @@ export async function GET(req: Request) {
     endCursor: null,
   };
 
-  const products = edges.map((e: any) => ({
+  const products = edges.map((e: { node: ShopifyProduct }) => ({
     id: e.node.id,
     title: e.node.title,
     image: e.node.featuredImage?.url ?? null,

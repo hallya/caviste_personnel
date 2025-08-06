@@ -1,5 +1,5 @@
-// app/api/collection/route.ts
 import { NextResponse } from "next/server";
+import type { ShopifyProduct } from "../../types/shopify";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -57,7 +57,7 @@ export async function GET(req: Request) {
 
   const json = await res.json();
   const edges = json?.data?.collectionByHandle?.products?.edges ?? [];
-  const products = edges.map((e: any) => {
+  const products = edges.map((e: { node: ShopifyProduct }) => {
     const n = e.node;
     return {
       id: n.id,

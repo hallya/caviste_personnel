@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import type { Product } from "../../api/collection-products/route";
+import type { SimplifiedProduct } from "../../types/shopify";
 import PopupHeader from "./PopupHeader";
 import PopupFooter from "./PopupFooter";
 import ProductCard from "./ProductCard";
@@ -9,7 +9,7 @@ import ProductCard from "./ProductCard";
 interface PopupProps {
   title: string;
   onClose: () => void;
-  products: Product[];
+  products: SimplifiedProduct[];
   loading: boolean;
   hasNext: boolean;
   onLoadMore: () => void;
