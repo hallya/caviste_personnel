@@ -1,10 +1,27 @@
 #!/usr/bin/env sh
 
-# Get the list of changed files between current branch and remote
-CHANGED_FILES=$(git diff --name-only origin/main...HEAD | grep -E '\.(js|jsx|ts|tsx)$' | tr '\n' ' ')
+# Get the list of changed files between current branch and remote (excluding test files)
+CHANGED_FILES=$(git diff --name-only origin/main...HEAD | grep -E '\.(js|jsx|ts|tsx)$' | grep -v -E '\.(test|spec)\.(js|jsx|ts|tsx)$' | tr '\n' ' ')
 
 if [ -n "$CHANGED_FILES" ]; then
-  echo "Running tests for changed files: $CHANGED_FILES"
+  echo "🔍 Running tests for changed files:"
+  echo "$CHANGED_FILES" | tr ' ' '\n' | awk -F'/' '{
+    path=""
+    for(i=1; i<NF; i++) {
+      if(path=="") path=$i
+      else path=path"/"$i
+      if(!seen[path]) {
+        indent=""
+        for(j=1; j<i; j++) indent=indent"  "
+        print indent"📁 " path
+        seen[path]=1
+      }
+    }
+    indent=""
+    for(j=1; j<NF; j++) indent=indent"  "
+    print indent"  📄 " $NF
+  }'
+  echo ""
   npx jest --bail --findRelatedTests --passWithNoTests $CHANGED_FILES
 else
   echo "No TypeScript/JavaScript files changed, skipping tests"
