@@ -1,24 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Prata } from "next/font/google";
 import "./globals.css";
-import { NotificationProvider } from "./contexts/NotificationContext";
-import CartFloatingButton from "./components/cart/CartFloatingButton";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const prata = Prata({
-  variable: "--font-prata",
-  subsets: ["latin"],
-  weight: "400",
-});
+import LayoutContainer from "./components/layout/containers/LayoutContainer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -30,16 +12,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${prata.variable} antialiased`}
-      >
-        <NotificationProvider>
-          {children}
-        </NotificationProvider>
-        <CartFloatingButton />
-      </body>
-    </html>
-  );
+  return <LayoutContainer>{children}</LayoutContainer>;
 }
