@@ -4,7 +4,7 @@ interface CarouselErrorProps {
 
 export default function CarouselError({ error }: CarouselErrorProps) {
   return (
-    <div className="w-[calc(100vw-80px)] max-w-[1000px] mx-auto flex items-center justify-center h-80">
+    <div className="w-[calc(100vw-40px)] max-w-[1000px] mx-auto flex items-center justify-center h-80">
       <div className="text-red-600 text-center">
         <div className="text-lg font-semibold mb-2">Erreur de chargement</div>
         <div className="text-sm">{error}</div>

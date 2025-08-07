@@ -27,7 +27,7 @@ export default function CarouselView({
   return (
     <div
       ref={containerRef}
-      className="w-[calc(100vw-80px)] max-w-[1000px] mx-auto flex items-center justify-center relative"
+      className="w-[calc(100vw-40px)] max-w-[1000px] mx-auto flex items-center justify-center relative"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       role="region"

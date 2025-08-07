@@ -1,6 +1,6 @@
 /* Only keeping styles that can't be easily converted to Tailwind */
 .viewport {
-  perspective: 3000px;
+  perspective: 4000px;
 }
 
 .inner {
