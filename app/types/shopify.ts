@@ -64,6 +64,33 @@ export interface ShopifyProduct {
   updatedAt: string;
 }
 
+export interface ShopifyMetafieldReference {
+  __typename: string;
+  url?: string;
+  mimeType?: string;
+  filename?: string;
+  image?: {
+    url: string;
+  };
+  sources?: {
+    url: string;
+    mimeType: string;
+    format: string;
+  }[];
+  previewImage?: {
+    url: string;
+  };
+}
+
+export interface ShopifyMetafield {
+  type: string;
+  reference?: ShopifyMetafieldReference;
+}
+
+export interface ShopifyImageSimple {
+  url: string;
+}
+
 export interface ShopifyCollection {
   id: string;
   title: string;
@@ -71,6 +98,7 @@ export interface ShopifyCollection {
   description?: string;
   descriptionHtml?: string;
   image?: ShopifyImage;
+  videoCollection?: ShopifyMetafield;
   products: {
     edges: {
       cursor: string;
@@ -208,4 +236,24 @@ export function isShopifyCollection(obj: unknown): obj is ShopifyCollection {
   return Boolean(obj && typeof obj === 'object' && obj !== null && 
          'id' in obj && typeof (obj as ShopifyCollection).id === 'string' && 
          'title' in obj && typeof (obj as ShopifyCollection).title === 'string');
+} 
+
+export interface ShopifyCollectionGraphQLNode {
+  id: string;
+  title: string;
+  handle: string;
+  image?: ShopifyImageSimple;
+  metafield?: ShopifyMetafield;
+}
+
+export interface ShopifyCollectionGraphQLEdge {
+  node: ShopifyCollectionGraphQLNode;
+}
+
+export interface ShopifyCollectionsGraphQLResponse {
+  data: {
+    collections: {
+      edges: ShopifyCollectionGraphQLEdge[];
+    };
+  };
 } 

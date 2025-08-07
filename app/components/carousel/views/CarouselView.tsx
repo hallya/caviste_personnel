@@ -25,7 +25,7 @@ export default function CarouselView({
   onOpen,
 }: CarouselViewProps) {
   return (
-    <div
+    <nav
       ref={containerRef}
       className="w-[calc(100vw-40px)] max-w-[1000px] mx-auto flex items-center justify-center relative"
       onTouchStart={handleTouchStart}
@@ -56,26 +56,25 @@ export default function CarouselView({
         </div>
       </div>
       
-      {/* Navigation accessible */}
       <div className="sr-only">
         <button
           onClick={() => onSelect(current - 1)}
-          aria-label="Collection précédente"
+          aria-label={`Collection précédente${current > 0 ? `: ${collections[current - 1]?.title}` : ''}`}
           disabled={current === 0}
         >
           Précédent
         </button>
-        <span aria-live="polite">
-          Collection {current + 1} sur {collections.length}
+        <span aria-live="polite" aria-atomic="true">
+          Collection {current + 1} sur {collections.length}: {collections[current]?.title}
         </span>
         <button
           onClick={() => onSelect(current + 1)}
-          aria-label="Collection suivante"
+          aria-label={`Collection suivante${current < collections.length - 1 ? `: ${collections[current + 1]?.title}` : ''}`}
           disabled={current === collections.length - 1}
         >
           Suivant
         </button>
       </div>
-    </div>
+    </nav>
   );
 } 

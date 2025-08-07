@@ -28,4 +28,5 @@ export interface Collection {
   title: string;
   handle: string;
   image: string | null;
+  videoCollection?: string | null;
 } 

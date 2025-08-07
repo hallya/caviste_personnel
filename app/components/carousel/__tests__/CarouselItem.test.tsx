@@ -52,7 +52,7 @@ describe('CarouselItem', () => {
     
     const item = screen.getByRole('listitem');
     expect(item).toHaveClass('item-class');
-    expect(item).toHaveAttribute('aria-label', 'Collection 1 sur 3: Test Collection');
+    expect(item).toHaveAttribute('aria-label', 'Collection 1 sur 3: Test Collection (sélectionnée)');
   });
 
   it('applies selected state correctly', () => {
@@ -76,7 +76,16 @@ describe('CarouselItem', () => {
     render(<CarouselItem {...defaultProps} />);
     
     const item = screen.getByRole('listitem');
-    expect(item).toHaveAttribute('aria-label', 'Collection 1 sur 3: Test Collection');
+    expect(item).toHaveAttribute('aria-label', 'Collection 1 sur 3: Test Collection (sélectionnée)');
     expect(item).toHaveAttribute('tabIndex', '0');
+  });
+
+  it('shows correct aria-label for non-selected items', () => {
+    render(<CarouselItem {...defaultProps} current={1} />);
+    
+    const item = screen.getByRole('listitem');
+    expect(item).toHaveAttribute('aria-label', 'Collection 1 sur 3: Test Collection');
+    expect(item).toHaveAttribute('aria-current', 'false');
+    expect(item).toHaveAttribute('tabIndex', '-1');
   });
 }); 
