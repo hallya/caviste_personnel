@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import CartFloatingButton from "../CartFloatingButton";
 import { useCart } from "../hooks/useCart";
 import type { Cart } from "../types";
+import { CartProvider } from "../../../contexts/CartContext";
 
 jest.mock("../hooks/useCart", () => ({
   useCart: jest.fn(),
@@ -37,7 +38,11 @@ const createMockUseCartReturn = (cart: Cart | null) => ({
 });
 
 const renderCartFloatingButton = () => {
-  return render(<CartFloatingButton />);
+  return render(
+    <CartProvider>
+      <CartFloatingButton />
+    </CartProvider>
+  );
 };
 
 describe("CartFloatingButton", () => {
@@ -254,7 +259,11 @@ describe("CartFloatingButton", () => {
         })
       );
 
-      rerender(<CartFloatingButton />);
+      rerender(
+        <CartProvider>
+          <CartFloatingButton />
+        </CartProvider>
+      );
 
       expect(screen.getByRole("button")).toBeInTheDocument();
       expect(screen.getByText("2")).toBeInTheDocument();
@@ -286,7 +295,11 @@ describe("CartFloatingButton", () => {
         })
       );
 
-      rerender(<CartFloatingButton />);
+      rerender(
+        <CartProvider>
+          <CartFloatingButton />
+        </CartProvider>
+      );
 
       expect(screen.queryByRole("button")).not.toBeInTheDocument();
     });

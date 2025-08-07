@@ -1,4 +1,5 @@
 import CartFloatingButton from "../../cart/CartFloatingButton";
+import { CartProvider } from "../../../contexts/CartContext";
 
 interface LayoutViewProps {
   children: React.ReactNode;
@@ -15,9 +16,11 @@ export default function LayoutView({
     <html lang="en">
       <body className={fontClasses}>
         <NotificationProvider>
-          {children}
+          <CartProvider>
+            {children}
+            <CartFloatingButton />
+          </CartProvider>
         </NotificationProvider>
-        <CartFloatingButton />
       </body>
     </html>
   );

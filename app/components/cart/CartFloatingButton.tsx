@@ -3,11 +3,11 @@
 import { useEffect } from "react";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
-import { useCart } from "./hooks/useCart";
+import { useCartContext } from "../../contexts/CartContext";
 
 export default function CartFloatingButton() {
   const router = useRouter();
-  const { cart, refetch } = useCart();
+  const { cart, refetch } = useCartContext();
 
   const cartCount = cart?.totalQuantity ?? 0;
 

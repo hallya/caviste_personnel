@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import CartPage from '../page';
 import type { Cart } from '../../components/cart/types';
+import { CartProvider } from '../../contexts/CartContext';
 
 jest.mock('../../components/cart/hooks/useCart');
 
@@ -48,7 +49,11 @@ const createMockUseCartReturn = (overrides: Partial<ReturnType<typeof useCart>> 
   ...overrides,
 });
 
-const renderCartPage = () => render(<CartPage />);
+const renderCartPage = () => render(
+  <CartProvider>
+    <CartPage />
+  </CartProvider>
+);
 
 describe('CartPage', () => {
   beforeEach(() => {

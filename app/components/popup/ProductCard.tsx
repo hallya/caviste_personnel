@@ -5,7 +5,7 @@ import type { SimplifiedProduct } from "../../types/shopify";
 import Image from "next/image";
 import ImagePlaceholder from "./ImagePlaceholder";
 import { useNotification } from "../../contexts/NotificationContext";
-import { useCart } from "../cart/hooks/useCart";
+import { useCartContext } from "../../contexts/CartContext";
 
 interface ProductCardProps {
   product: SimplifiedProduct;
@@ -14,7 +14,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
   const { showNotification } = useNotification();
-  const { cart, refetch, addToCart } = useCart();
+  const { cart, refetch, addToCart } = useCartContext();
 
   const cartQuantity =
     cart?.lines?.find((line) => line.variantId === product.variantId)

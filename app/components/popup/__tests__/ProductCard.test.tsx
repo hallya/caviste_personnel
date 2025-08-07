@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ProductCard from '../ProductCard';
 import { NotificationProvider } from '../../../contexts/NotificationContext';
+import { CartProvider } from '../../../contexts/CartContext';
 import { SimplifiedProduct } from '../../../types/shopify';
 
 const mockAddToCart = jest.fn();
@@ -53,7 +54,9 @@ jest.mock('../../../contexts/NotificationContext', () => ({
 const renderProductCard = (product: SimplifiedProduct) => {
   return render(
     <NotificationProvider>
-      <ProductCard product={product} />
+      <CartProvider>
+        <ProductCard product={product} />
+      </CartProvider>
     </NotificationProvider>
   );
 };
