@@ -1,16 +1,17 @@
-// app/components/cart/hooks/useCart.ts
 import { useState, useEffect } from "react";
-import { getCartId } from "../../../lib/cart";
 import type { Cart } from "../types";
 import type { CartAddResult } from "../../../types/shopify";
 
+const getCartId = (): string | null => {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("cartId");
+};
+
 interface UseCartReturn {
-  // Data
   cart: Cart | null;
   loading: boolean;
   error: string | null;
 
-  // Actions
   addToCart: (
     variantId: string,
     quantity?: number
@@ -18,11 +19,9 @@ interface UseCartReturn {
   updateQuantity: (lineId: string, quantity: number) => Promise<Cart | null>;
   removeItem: (lineId: string) => Promise<Cart | null>;
 
-  // Utilities
   refetch: () => Promise<void>;
   updateCart: (newCart: Cart) => void;
 
-  // Action states
   actionLoading: boolean;
   actionError: string | null;
 }

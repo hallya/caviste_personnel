@@ -10,6 +10,9 @@ export default function HomeContainer() {
   }, []);
 
   const {
+    collections,
+    collectionsLoading,
+    collectionsError,
     popupOpen,
     popupTitle,
     popupProducts,
@@ -22,6 +25,9 @@ export default function HomeContainer() {
 
   return (
     <HomeView
+      collections={collections}
+      collectionsLoading={collectionsLoading}
+      collectionsError={collectionsError}
       popupOpen={popupOpen}
       popupTitle={popupTitle}
       popupProducts={popupProducts}
@@ -32,4 +38,4 @@ export default function HomeContainer() {
       onClosePopup={closePopup}
     />
   );
-} 
+}

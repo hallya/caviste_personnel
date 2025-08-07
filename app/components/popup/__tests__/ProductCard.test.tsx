@@ -210,6 +210,32 @@ describe('ProductCard', () => {
     });
   });
 
+  describe('API Call Optimization', () => {
+    it('should not make duplicate API calls when adding product to cart', async () => {
+      const user = userEvent.setup();
+      mockAddToCart.mockResolvedValue({ 
+        cartId: 'cart-1',
+        checkoutUrl: 'https://checkout.shopify.com/cart',
+        totalQuantity: 1 
+      });
+
+      renderProductCard(baseProduct);
+      
+      const button = screen.getByRole('button');
+      await user.click(button);
+
+      expect(mockAddToCart).toHaveBeenCalledTimes(1);
+      expect(mockAddToCart).toHaveBeenCalledWith('variant-1', 1);
+      
+      expect(mockShowNotification).toHaveBeenCalledWith({
+        type: 'success',
+        title: 'Produit ajouté',
+        message: 'Test Wine ajouté au panier (1 article)',
+        autoClose: false
+      });
+    });
+  });
+
   describe('Edge Cases', () => {
     it('should handle product without variantId', () => {
       const productWithoutVariant = {

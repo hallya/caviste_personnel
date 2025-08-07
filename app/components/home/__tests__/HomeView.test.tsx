@@ -38,6 +38,9 @@ const mockProducts: SimplifiedProduct[] = [
 ];
 
 const defaultProps = {
+  collections: [],
+  collectionsLoading: false,
+  collectionsError: null,
   popupOpen: false,
   popupTitle: '',
   popupProducts: mockProducts,

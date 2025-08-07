@@ -14,7 +14,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
   const { showNotification } = useNotification();
-  const { cart, refetch, addToCart } = useCartContext();
+  const { cart, addToCart } = useCartContext();
 
   const cartQuantity =
     cart?.lines?.find((line) => line.variantId === product.variantId)
@@ -43,7 +43,6 @@ export default function ProductCard({ product }: ProductCardProps) {
     setIsAdding(true);
     try {
       const result = await addToCart(product.variantId, 1);
-      await refetch();
       if (result) {
         showNotification({
           type: "success",

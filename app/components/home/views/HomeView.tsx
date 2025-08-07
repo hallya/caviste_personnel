@@ -3,8 +3,12 @@ import IntroText from "../../introText/IntroText";
 import Carousel from "../../carousel/Carousel";
 import PageHeader from "../../PageHeader";
 import type { SimplifiedProduct } from "../../../types/shopify";
+import type { Collection } from "../../carousel/types";
 
 interface HomeViewProps {
+  collections: Collection[];
+  collectionsLoading: boolean;
+  collectionsError: string | null;
   popupOpen: boolean;
   popupTitle: string;
   popupProducts: SimplifiedProduct[];
@@ -16,6 +20,9 @@ interface HomeViewProps {
 }
 
 export default function HomeView({
+  collections,
+  collectionsLoading,
+  collectionsError,
   popupOpen,
   popupTitle,
   popupProducts,
@@ -29,7 +36,12 @@ export default function HomeView({
     <main className="bg-primary-50 min-h-screen overflow-hidden touch-pan-y space-y-10">
       <PageHeader />
       <IntroText />
-      <Carousel onItemClick={onItemClick} />
+      <Carousel
+        collections={collections}
+        isLoading={collectionsLoading}
+        error={collectionsError}
+        onItemClick={onItemClick}
+      />
       {popupOpen && (
         <Popup
           title={popupTitle}
@@ -42,4 +54,4 @@ export default function HomeView({
       )}
     </main>
   );
-} 
+}

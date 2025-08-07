@@ -239,8 +239,6 @@ describe("CartFloatingButton", () => {
 
       expect(screen.getByText("10")).toBeInTheDocument();
     });
-
-
   });
 
   describe("Integration with Cart Actions", () => {
@@ -302,6 +300,50 @@ describe("CartFloatingButton", () => {
       );
 
       expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("API Call Optimization", () => {
+    it("should only call refetch once when cart-updated event is dispatched", async () => {
+      mockUseCart.mockReturnValue(
+        createMockUseCartReturn({
+          totalQuantity: 1,
+          lines: [],
+          id: "cart-1",
+          totalAmount: "25.00 EUR",
+          checkoutUrl: "https://checkout.com",
+        })
+      );
+
+      renderCartFloatingButton();
+
+      window.dispatchEvent(new CustomEvent("cart-updated"));
+
+      await waitFor(() => {
+        expect(mockRefetch).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it("should not call refetch multiple times for multiple events in quick succession", async () => {
+      mockUseCart.mockReturnValue(
+        createMockUseCartReturn({
+          totalQuantity: 1,
+          lines: [],
+          id: "cart-1",
+          totalAmount: "25.00 EUR",
+          checkoutUrl: "https://checkout.com",
+        })
+      );
+
+      renderCartFloatingButton();
+
+      window.dispatchEvent(new CustomEvent("cart-updated"));
+      window.dispatchEvent(new CustomEvent("cart-updated"));
+      window.dispatchEvent(new CustomEvent("cart-updated"));
+
+      await waitFor(() => {
+        expect(mockRefetch).toHaveBeenCalledTimes(3);
+      });
     });
   });
 });
