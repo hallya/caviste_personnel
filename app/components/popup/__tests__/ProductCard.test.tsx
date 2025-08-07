@@ -70,7 +70,7 @@ describe('ProductCard', () => {
     currency: 'EUR',
     variantId: 'variant-1',
     availableForSale: true,
-    quantityAvailable: 5
+    quantityAvailable: 10
   };
 
   beforeEach(() => {
@@ -79,15 +79,32 @@ describe('ProductCard', () => {
   });
 
   describe('Button State Management', () => {
-    it('should enable button when product is available and not in cart', () => {
+    it('should enable bottle and carton buttons when stock is sufficient', () => {
       renderProductCard(baseProduct);
       
-      const button = screen.getByRole('button');
-      expect(button).toBeEnabled();
-      expect(button).toHaveTextContent('Ajouter (5 dispo)');
+      const bottleButton = screen.getByLabelText(/Ajouter 1 bouteille de Test Wine au panier/);
+      const cartonButton = screen.getByLabelText(/Ajouter 1 carton \(6 bouteilles\) de Test Wine au panier/);
+      
+      expect(bottleButton).toBeEnabled();
+      expect(cartonButton).toBeEnabled();
     });
 
-    it('should disable button when product is not available', () => {
+    it('should disable carton button when stock is less than 6', () => {
+      const lowStockProduct = {
+        ...baseProduct,
+        quantityAvailable: 3
+      };
+      
+      renderProductCard(lowStockProduct);
+      
+      const bottleButton = screen.getByLabelText(/Ajouter 1 bouteille de Test Wine au panier/);
+      const cartonButton = screen.getByLabelText(/Carton de Test Wine non disponible/);
+      
+      expect(bottleButton).toBeEnabled();
+      expect(cartonButton).toBeDisabled();
+    });
+
+    it('should disable all buttons when product is not available', () => {
       const unavailableProduct = {
         ...baseProduct,
         availableForSale: false,
@@ -96,56 +113,35 @@ describe('ProductCard', () => {
       
       renderProductCard(unavailableProduct);
       
-      const button = screen.getByRole('button');
-      expect(button).toBeDisabled();
-      expect(button).toHaveTextContent('Maximum atteint');
+      const bottleButton = screen.getByLabelText(/Bouteille de Test Wine non disponible/);
+      const cartonButton = screen.getByLabelText(/Carton de Test Wine non disponible/);
+      const addButton = screen.getByLabelText(/Ajouter quantité personnalisée de Test Wine au panier/);
+      
+      expect(bottleButton).toBeDisabled();
+      expect(cartonButton).toBeDisabled();
+      expect(addButton).toBeDisabled();
     });
 
-    it('should show correct available quantity when product is in cart', () => {
-      mockUseCart.cart.lines = [
-        {
-          id: 'line-1',
-          quantity: 2,
-          title: 'Test Wine',
-          price: '25.50 EUR',
-          image: 'https://example.com/wine.jpg',
-          availableForSale: true,
-          quantityAvailable: 5,
-          variantId: 'variant-1'
-        }
-      ];
-
-      renderProductCard(baseProduct);
+    it('should disable all buttons when stock is exhausted', () => {
+      const noStockProduct = {
+        ...baseProduct,
+        quantityAvailable: 0
+      };
       
-      const button = screen.getByRole('button');
-      expect(button).toBeEnabled();
-      expect(button).toHaveTextContent('Ajouter (3 dispo)');
-    });
-
-    it('should disable button when maximum quantity is reached', () => {
-      mockUseCart.cart.lines = [
-        {
-          id: 'line-1',
-          quantity: 5,
-          title: 'Test Wine',
-          price: '25.50 EUR',
-          image: 'https://example.com/wine.jpg',
-          availableForSale: true,
-          quantityAvailable: 5,
-          variantId: 'variant-1'
-        }
-      ];
-
-      renderProductCard(baseProduct);
+      renderProductCard(noStockProduct);
       
-      const button = screen.getByRole('button');
-      expect(button).toBeDisabled();
-      expect(button).toHaveTextContent('Maximum atteint');
+      const bottleButton = screen.getByLabelText(/Bouteille de Test Wine non disponible/);
+      const cartonButton = screen.getByLabelText(/Carton de Test Wine non disponible/);
+      const addButton = screen.getByLabelText(/Ajouter quantité personnalisée de Test Wine au panier/);
+      
+      expect(bottleButton).toBeDisabled();
+      expect(cartonButton).toBeDisabled();
+      expect(addButton).toBeDisabled();
     });
   });
 
   describe('Add to Cart Functionality', () => {
-    it('should add product to cart when button is clicked', async () => {
+    it('should add 1 bottle to cart when bottle button is clicked', async () => {
       const user = userEvent.setup();
       mockAddToCart.mockResolvedValue({ 
         cartId: 'cart-1',
@@ -155,49 +151,48 @@ describe('ProductCard', () => {
 
       renderProductCard(baseProduct);
       
-      const button = screen.getByRole('button');
-      await user.click(button);
+      const bottleButton = screen.getByLabelText(/Ajouter 1 bouteille de Test Wine au panier/);
+      await user.click(bottleButton);
 
       expect(mockAddToCart).toHaveBeenCalledWith('variant-1', 1);
       expect(mockShowNotification).toHaveBeenCalledWith({
         type: 'success',
         title: 'Produit ajouté',
-        message: 'Test Wine ajouté au panier (1 article)',
+        message: '1 bouteille de Test Wine ajoutée au panier (1 article)',
         autoClose: false
       });
     });
 
-    it('should disable button when maximum quantity is reached (no click possible)', () => {
-      mockUseCart.cart.lines = [
-        {
-          id: 'line-1',
-          quantity: 5,
-          title: 'Test Wine',
-          price: '25.50 EUR',
-          image: 'https://example.com/wine.jpg',
-          availableForSale: true,
-          quantityAvailable: 5,
-          variantId: 'variant-1'
-        }
-      ];
+    it('should add custom quantity to cart when custom input is used', async () => {
+      const user = userEvent.setup();
+      mockAddToCart.mockResolvedValue({ 
+        cartId: 'cart-1',
+        checkoutUrl: 'https://checkout.shopify.com/cart',
+        totalQuantity: 3 
+      });
 
       renderProductCard(baseProduct);
       
-      const button = screen.getByRole('button');
-      expect(button).toBeDisabled();
-      expect(button).toHaveTextContent('Maximum atteint');
-      
-      expect(mockAddToCart).not.toHaveBeenCalled();
+      const addButton = screen.getByLabelText(/Ajouter quantité personnalisée de Test Wine au panier/);
+      await user.click(addButton);
+
+      expect(mockAddToCart).toHaveBeenCalledWith('variant-1', 1);
+      expect(mockShowNotification).toHaveBeenCalledWith({
+        type: 'success',
+        title: 'Produit ajouté',
+        message: '1 bouteilles de Test Wine ajoutée au panier (3 articles)',
+        autoClose: false
+      });
     });
 
-    it('should handle add to cart errors', async () => {
+    it('should handle add to cart errors for bottle', async () => {
       const user = userEvent.setup();
       mockAddToCart.mockRejectedValue(new Error('Network error'));
 
       renderProductCard(baseProduct);
       
-      const button = screen.getByRole('button');
-      await user.click(button);
+      const bottleButton = screen.getByLabelText(/Ajouter 1 bouteille de Test Wine au panier/);
+      await user.click(bottleButton);
 
       await waitFor(() => {
         expect(mockShowNotification).toHaveBeenCalledWith({
@@ -207,6 +202,68 @@ describe('ProductCard', () => {
           autoClose: false
         });
       });
+    });
+
+    it('should handle add to cart errors for carton', async () => {
+      const user = userEvent.setup();
+      mockAddToCart.mockRejectedValue(new Error('Network error'));
+
+      renderProductCard(baseProduct);
+      
+      const cartonButton = screen.getByLabelText(/Ajouter 1 carton \(6 bouteilles\) de Test Wine au panier/);
+      await user.click(cartonButton);
+
+      await waitFor(() => {
+        expect(mockShowNotification).toHaveBeenCalledWith({
+          type: 'error',
+          title: 'Erreur d\'ajout',
+          message: 'Network error',
+          autoClose: false
+        });
+      });
+    });
+
+    it('should handle add to cart errors for custom quantity', async () => {
+      const user = userEvent.setup();
+      mockAddToCart.mockRejectedValue(new Error('Network error'));
+
+      renderProductCard(baseProduct);
+      
+      const addButton = screen.getByLabelText(/Ajouter quantité personnalisée de Test Wine au panier/);
+      await user.click(addButton);
+
+      await waitFor(() => {
+        expect(mockShowNotification).toHaveBeenCalledWith({
+          type: 'error',
+          title: 'Erreur d\'ajout',
+          message: 'Network error',
+          autoClose: false
+        });
+      });
+    });
+  });
+
+  describe('Custom Quantity Input', () => {
+    it('should update custom quantity when input value changes', async () => {
+      const user = userEvent.setup();
+      renderProductCard(baseProduct);
+      
+      const quantityInput = screen.getByLabelText(/Saisir la quantité pour Test Wine/) as HTMLInputElement;
+      
+      await user.clear(quantityInput);
+      await user.type(quantityInput, '5');
+      
+      // The input should show the typed value
+      expect(quantityInput.value).toBe('15');
+    });
+
+    it('should enable add button when custom quantity is within available stock', async () => {
+      renderProductCard(baseProduct);
+      
+      const addButton = screen.getByLabelText(/Ajouter quantité personnalisée de Test Wine au panier/);
+      
+      // The button should be enabled by default with quantity 1
+      expect(addButton).toBeEnabled();
     });
   });
 
@@ -221,8 +278,8 @@ describe('ProductCard', () => {
 
       renderProductCard(baseProduct);
       
-      const button = screen.getByRole('button');
-      await user.click(button);
+      const bottleButton = screen.getByLabelText(/Ajouter 1 bouteille de Test Wine au panier/);
+      await user.click(bottleButton);
 
       expect(mockAddToCart).toHaveBeenCalledTimes(1);
       expect(mockAddToCart).toHaveBeenCalledWith('variant-1', 1);
@@ -230,26 +287,13 @@ describe('ProductCard', () => {
       expect(mockShowNotification).toHaveBeenCalledWith({
         type: 'success',
         title: 'Produit ajouté',
-        message: 'Test Wine ajouté au panier (1 article)',
+        message: '1 bouteille de Test Wine ajoutée au panier (1 article)',
         autoClose: false
       });
     });
   });
 
   describe('Edge Cases', () => {
-    it('should handle product without variantId', () => {
-      const productWithoutVariant = {
-        ...baseProduct,
-        variantId: undefined
-      };
-
-      renderProductCard(productWithoutVariant);
-      
-      const button = screen.getByRole('button');
-      expect(button).toBeDisabled();
-      expect(button).toHaveTextContent('Maximum atteint');
-    });
-
     it('should handle product with zero quantity available', () => {
       const productWithZeroStock = {
         ...baseProduct,
@@ -258,9 +302,13 @@ describe('ProductCard', () => {
 
       renderProductCard(productWithZeroStock);
       
-      const button = screen.getByRole('button');
-      expect(button).toBeDisabled();
-      expect(button).toHaveTextContent('Maximum atteint');
+      const bottleButton = screen.getByLabelText(/Bouteille de Test Wine non disponible/);
+      const cartonButton = screen.getByLabelText(/Carton de Test Wine non disponible/);
+      const addButton = screen.getByLabelText(/Ajouter quantité personnalisée de Test Wine au panier/);
+      
+      expect(bottleButton).toBeDisabled();
+      expect(cartonButton).toBeDisabled();
+      expect(addButton).toBeDisabled();
     });
 
     it('should handle product with undefined quantity available', () => {
@@ -271,9 +319,13 @@ describe('ProductCard', () => {
 
       renderProductCard(productWithUndefinedStock);
       
-      const button = screen.getByRole('button');
-      expect(button).toBeDisabled();
-      expect(button).toHaveTextContent('Maximum atteint');
+      const bottleButton = screen.getByLabelText(/Bouteille de Test Wine non disponible/);
+      const cartonButton = screen.getByLabelText(/Carton de Test Wine non disponible/);
+      const addButton = screen.getByLabelText(/Ajouter quantité personnalisée de Test Wine au panier/);
+      
+      expect(bottleButton).toBeDisabled();
+      expect(cartonButton).toBeDisabled();
+      expect(addButton).toBeDisabled();
     });
   });
 }); 
