@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
+import { ImageProps } from "next/image";
 import React from "react";
 
-// Mock Next.js router
 jest.mock("next/router", () => ({
   useRouter() {
     return {
@@ -25,13 +25,12 @@ jest.mock("next/router", () => ({
   },
 }));
 
-// Mock Next.js Image component
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: (props: any) => {
-    // Filter Next.js Image specific props to avoid warnings
+  default: (props: ImageProps) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { unoptimized, ...domProps } = props;
-    // eslint-disable-next-line @next/next/no-img-element
+     
     return React.createElement("img", domProps);
   },
 }));

@@ -62,7 +62,7 @@ export function useCollections(): UseCollectionsReturn {
 
   useEffect(() => {
     loadCollections();
-  }, []); // Dépendances vides pour éviter les re-renders infinis
+  }, [loadCollections]);
 
   const loadCollection = useCallback(
     async (handle: string, lastCursor?: string | null) => {

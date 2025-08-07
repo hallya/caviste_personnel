@@ -94,13 +94,10 @@ describe("CarouselContainer", () => {
     const items = screen.getAllByRole("listitem");
     const firstItem = items[0];
 
-    // Le carousel utilise initial: "center" par défaut, donc le premier item n'est pas sélectionné
-    // D'abord sélectionner l'item (premier clic)
     act(() => {
       firstItem.click();
     });
 
-    // Puis cliquer à nouveau pour ouvrir (deuxième clic)
     act(() => {
       firstItem.click();
     });
