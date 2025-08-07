@@ -1,4 +1,9 @@
 import { NextResponse } from "next/server";
+import type { 
+  ShopifyCartQueryVars, 
+  ShopifyCart,
+  ShopifyCartLine 
+} from "../../types/shopify";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -29,24 +34,24 @@ export async function GET(req: Request) {
             node {
               id
               quantity
-                              merchandise {
-                  ... on ProductVariant {
-                    id
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  availableForSale
+                  quantityAvailable
+                  product {
                     title
-                    price {
-                      amount
-                      currencyCode
-                    }
-                    availableForSale
-                    quantityAvailable
-                    product {
-                      title
-                      featuredImage {
-                        url
-                      }
+                    featuredImage {
+                      url
                     }
                   }
                 }
+              }
             }
           }
         }
@@ -60,16 +65,17 @@ export async function GET(req: Request) {
       "Content-Type": "application/json",
       "X-Shopify-Storefront-Access-Token": token,
     },
-    body: JSON.stringify({ query, variables: { id: cartId } }),
+    body: JSON.stringify({ query, variables: { id: cartId } as ShopifyCartQueryVars }),
     cache: "no-store",
   });
 
   if (!res.ok) return NextResponse.json({ totalQuantity: 0, checkoutUrl: null }, { status: res.status });
-  const json = await res.json();
-  const cart = json?.data?.cart;
   
-  const lines = cart?.lines?.edges?.map((edge: { node: { id: string; quantity: number; merchandise: { title?: string; price?: { amount: string; currencyCode: string }; availableForSale?: boolean; quantityAvailable?: number; product?: { title?: string; featuredImage?: { url: string } } } } }) => {
-    const node = edge.node;
+  const json = await res.json();
+  const cart = json?.data?.cart as ShopifyCart;
+  
+  const lines = cart?.lines?.edges?.map((edge) => {
+    const node = edge.node as ShopifyCartLine;
     const merchandise = node.merchandise;
     return {
       id: node.id,
@@ -79,6 +85,7 @@ export async function GET(req: Request) {
       image: merchandise?.product?.featuredImage?.url || null,
       availableForSale: merchandise?.availableForSale ?? false,
       quantityAvailable: merchandise?.quantityAvailable ?? 0,
+      variantId: merchandise?.id,
     };
   }) || [];
 

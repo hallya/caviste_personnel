@@ -19,6 +19,9 @@ export async function addToCart(variantId: string, qty = 1) {
     
     if (data.cartId) setCartId(data.cartId);
     
+    // Always trigger cart-updated event after successful add
+    window.dispatchEvent(new CustomEvent("cart-updated"));
+    
     return data as { cartId: string; checkoutUrl: string; totalQuantity: number };
   } catch (fetchError) {
     const error = new Error(

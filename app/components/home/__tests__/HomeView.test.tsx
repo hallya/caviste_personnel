@@ -29,10 +29,11 @@ jest.mock('../../PageHeader', () => {
 const mockProducts: SimplifiedProduct[] = [
   {
     id: '1',
-    title: 'Product 1',
-    image: 'https://example.com/image1.jpg',
-    price: '25.00',
+    title: 'Wine 1',
+    image: 'https://example.com/wine1.jpg',
+    price: '25.50',
     currency: 'EUR',
+    availableForSale: true,
   },
 ];
 

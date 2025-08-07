@@ -54,6 +54,7 @@ export async function GET(req: Request) {
                   currencyCode
                 }
                 availableForSale
+                quantityAvailable
               }
             }
           }
@@ -107,6 +108,8 @@ export async function GET(req: Request) {
       price: variant?.price?.amount ?? null,
       currency: variant?.price?.currencyCode ?? null,
       variantId: variant?.availableForSale ? variant.id : null,
+      availableForSale: variant?.availableForSale ?? false,
+      quantityAvailable: variant?.quantityAvailable ?? 0,
     };
   });
 

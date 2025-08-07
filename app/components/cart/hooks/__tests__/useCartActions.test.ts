@@ -231,4 +231,79 @@ describe('useCartActions', () => {
       expect(result.current.error).toBeNull();
     });
   });
+
+  describe('cart-updated events', () => {
+    beforeEach(() => {
+      jest.spyOn(window, 'dispatchEvent').mockImplementation(() => true);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('should dispatch cart-updated event after successful updateQuantity', async () => {
+      (fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCart,
+      });
+
+      const { result } = renderHook(() => useCartActions());
+
+      await act(async () => {
+        await result.current.updateQuantity('line-123', 3);
+      });
+
+      expect(window.dispatchEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'cart-updated'
+        })
+      );
+    });
+
+    it('should dispatch cart-updated event after successful removeItem', async () => {
+      (fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCart,
+      });
+
+      const { result } = renderHook(() => useCartActions());
+
+      await act(async () => {
+        await result.current.removeItem('line-123');
+      });
+
+      expect(window.dispatchEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'cart-updated'
+        })
+      );
+    });
+
+    it('should not dispatch cart-updated event on failed operations', async () => {
+      (fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ error: 'Operation failed' }),
+      });
+
+      const { result } = renderHook(() => useCartActions());
+
+      await act(async () => {
+        await result.current.updateQuantity('line-123', 3);
+      });
+
+      expect(window.dispatchEvent).not.toHaveBeenCalled();
+    });
+
+    it('should not dispatch cart-updated event on network errors', async () => {
+      (fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
+
+      const { result } = renderHook(() => useCartActions());
+
+      await act(async () => {
+        await result.current.removeItem('line-123');
+      });
+
+      expect(window.dispatchEvent).not.toHaveBeenCalled();
+    });
+  });
 }); 

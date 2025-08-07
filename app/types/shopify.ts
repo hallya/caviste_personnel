@@ -20,10 +20,17 @@ export interface ShopifyProductVariant {
   price: ShopifyMoney;
   compareAtPrice?: ShopifyMoney;
   availableForSale: boolean;
+  quantityAvailable?: number;
   selectedOptions: {
     name: string;
     value: string;
   }[];
+  product?: {
+    title: string;
+    featuredImage?: {
+      url: string;
+    };
+  };
 }
 
 export interface ShopifyProduct {
@@ -47,6 +54,7 @@ export interface ShopifyProduct {
     id: string;
     price: ShopifyMoney;
     availableForSale: boolean;
+    quantityAvailable?: number;
   };
   availableForSale: boolean;
   productType?: string;
@@ -127,6 +135,8 @@ export interface SimplifiedProduct {
   price: string | null;
   currency: string | null;
   variantId?: string;
+  availableForSale: boolean;
+  quantityAvailable?: number;
 }
 
 export interface SimplifiedCollection {
@@ -142,6 +152,29 @@ export interface ShopifyCart {
   id: string;
   checkoutUrl: string;
   totalQuantity: number;
+  cost: {
+    subtotalAmount: ShopifyMoney;
+    totalAmount: ShopifyMoney;
+  };
+  lines: {
+    edges: {
+      node: ShopifyCartLine;
+    }[];
+  };
+}
+
+export interface ShopifyCartLine {
+  id: string;
+  quantity: number;
+  merchandise: ShopifyProductVariant;
+}
+
+export interface ShopifyCartQuery {
+  cart: ShopifyCart;
+}
+
+export interface ShopifyCartQueryVars {
+  id: string;
 }
 
 export interface ShopifyUserError {
@@ -157,6 +190,12 @@ export interface ShopifyCartCreatePayload {
 export interface ShopifyCartLinesAddPayload {
   cart: ShopifyCart;
   userErrors: ShopifyUserError[];
+}
+
+export interface CartAddResult {
+  cartId: string | null;
+  checkoutUrl: string | null;
+  totalQuantity: number;
 }
 
 export function isShopifyProduct(obj: unknown): obj is ShopifyProduct {

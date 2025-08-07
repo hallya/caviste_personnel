@@ -37,6 +37,9 @@ export function useCartActions(): UseCartActionsReturn {
         return null;
       }
 
+      // Trigger cart-updated event after successful update
+      window.dispatchEvent(new CustomEvent("cart-updated"));
+
       return data as Cart;
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error);
@@ -70,6 +73,9 @@ export function useCartActions(): UseCartActionsReturn {
         setError(data?.error || "Erreur lors de la suppression");
         return null;
       }
+
+      // Trigger cart-updated event after successful removal
+      window.dispatchEvent(new CustomEvent("cart-updated"));
 
       return data as Cart;
     } catch (error) {

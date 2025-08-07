@@ -6,6 +6,7 @@ export interface CartItem {
   image?: string;
   availableForSale: boolean;
   quantityAvailable: number;
+  variantId?: string;
 }
 
 export interface Cart {

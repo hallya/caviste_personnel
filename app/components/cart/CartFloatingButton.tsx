@@ -1,53 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
-import { getCartId } from "../../lib/cart";
+import { useCart } from "./hooks/useCart";
 
 export default function CartFloatingButton() {
-  const [cartCount, setCartCount] = useState(0);
   const router = useRouter();
+  const { cart, refetch } = useCart();
+
+  const cartCount = cart?.totalQuantity ?? 0;
 
   useEffect(() => {
-    async function fetchCart() {
-      const cartId = getCartId();
-      
-      if (!cartId) {
-        setCartCount(0);
-        return;
-      }
-      
-      const res = await fetch(`/api/cart?cartId=${encodeURIComponent(cartId)}`, { cache: "no-store" });
-      if (!res.ok) return;
-      const cart = await res.json();
-      setCartCount(cart?.totalQuantity ?? 0);
-    }
+    const handleCartUpdate = () => {
+      refetch();
+    };
 
-    function handleStorageChange() {
-      const cartId = getCartId();
-      if (cartId) {
-        fetchCart();
-      } else {
-        setCartCount(0);
-      }
-    }
-
-    function handleCartUpdate() {
-      fetchCart();
-    }
-
-    fetchCart();
-
-    window.addEventListener("storage", handleStorageChange);
-    
     window.addEventListener("cart-updated", handleCartUpdate);
     
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("cart-updated", handleCartUpdate);
     };
-  }, []);
+  }, [refetch]);
 
   if (cartCount === 0) return null;
 

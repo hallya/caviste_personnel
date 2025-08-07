@@ -1,17 +1,26 @@
 "use client";
 
 import { useCart } from '../hooks/useCart';
-import { useCartActions } from '../hooks/useCartActions';
 import CartView from '../views/CartView';
 
 export default function CartContainer() {
-  const { cart, loading, error, updateCart } = useCart();
-  const { updateQuantity, removeItem, loading: actionLoading, error: actionError } = useCartActions();
+  const { 
+    cart, 
+    loading, 
+    error, 
+    updateCart, 
+    refetch,
+    updateQuantity,
+    removeItem,
+    actionLoading,
+    actionError
+  } = useCart();
 
   const handleQuantityChange = async (lineId: string, quantity: number) => {
     const updatedCart = await updateQuantity(lineId, quantity);
     if (updatedCart) {
       updateCart(updatedCart);
+      await refetch();
     }
   };
 
@@ -19,6 +28,7 @@ export default function CartContainer() {
     const updatedCart = await removeItem(lineId);
     if (updatedCart) {
       updateCart(updatedCart);
+      await refetch();
     }
   };
 

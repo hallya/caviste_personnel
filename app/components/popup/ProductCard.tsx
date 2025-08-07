@@ -4,8 +4,8 @@ import { useState } from "react";
 import type { SimplifiedProduct } from "../../types/shopify";
 import Image from "next/image";
 import ImagePlaceholder from "./ImagePlaceholder";
-import { addToCart } from "../../lib/cart";
 import { useNotification } from "../../contexts/NotificationContext";
+import { useCart } from "../cart/hooks/useCart";
 
 interface ProductCardProps {
   product: SimplifiedProduct;
@@ -14,9 +14,28 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
   const { showNotification } = useNotification();
+  const { cart, refetch, addToCart } = useCart();
+
+  const cartQuantity =
+    cart?.lines?.find((line) => line.variantId === product.variantId)
+      ?.quantity || 0;
+
+  const isAvailable =
+    product.variantId && cartQuantity < (product.quantityAvailable || 0);
+
   const hasPrice = product.price ?? product.currency;
 
   const handleAddToCart = async () => {
+    if (!isAvailable) {
+      showNotification({
+        type: "error",
+        title: "Stock insuffisant",
+        message: `Vous avez déjà ajouté le maximum disponible de ${product.title}`,
+        autoClose: false,
+      });
+      return;
+    }
+
     if (!product.variantId) {
       return;
     }
@@ -24,7 +43,9 @@ export default function ProductCard({ product }: ProductCardProps) {
     setIsAdding(true);
     try {
       const result = await addToCart(product.variantId, 1);
-              showNotification({
+      await refetch();
+      if (result) {
+        showNotification({
           type: "success",
           title: "Produit ajouté",
           message: `${product.title} ajouté au panier (${
@@ -32,6 +53,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           } article${result.totalQuantity > 1 ? "s" : ""})`,
           autoClose: false,
         });
+      }
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -98,14 +120,23 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       <button
         onClick={handleAddToCart}
-        disabled={isAdding || !product.variantId}
-        className="w-full bg-primary-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 disabled:hover:bg-gray-300"
+        disabled={isAdding || !isAvailable}
+        className={`w-full py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+          isAvailable
+            ? "bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            : "bg-gray-300 text-gray-600 cursor-not-allowed"
+        }`}
+        aria-label={
+          isAvailable
+            ? `Ajouter ${product.title} au panier`
+            : `${product.title} n'est pas disponible`
+        }
       >
         {isAdding
           ? "Ajout..."
-          : product.variantId
-          ? "Ajouter"
-          : "Non disponible"}
+          : isAvailable
+          ? `Ajouter (${(product.quantityAvailable || 0) - cartQuantity} dispo)`
+          : "Maximum atteint"}
       </button>
     </article>
   );

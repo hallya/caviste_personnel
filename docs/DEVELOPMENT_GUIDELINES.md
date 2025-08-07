@@ -208,6 +208,20 @@ interface ComponentProps {
   autoClose?: boolean;
 }
 
+// ✅ Reuse existing types instead of creating inline ones
+interface ComponentProps {
+  title: string;
+  onClose: () => void;
+  autoClose?: boolean;
+}
+
+// ✅ Type imports with 'import type'
+import type { 
+  ShopifyCartQueryVars, 
+  ShopifyCart,
+  ShopifyCartLine 
+} from "../../types/shopify";
+
 // ✅ Type guards
 function isError(error: unknown): error is Error {
   return error instanceof Error;
@@ -218,6 +232,14 @@ type ApiResponse<T> = {
   data: T;
   error?: string;
 };
+
+// ❌ Avoid complex inline types
+// const lines = cart?.lines?.edges?.map((edge: { node: { id: string; quantity: number; merchandise: { ... } } }) => {
+// ✅ Reuse existing types instead
+const lines = cart?.lines?.edges?.map((edge) => {
+  const node = edge.node as ShopifyCartLine;
+  // ...
+});
 ```
 
 ### **Error Handling**
@@ -286,6 +308,21 @@ npx jest --bail --findRelatedTests --passWithNoTests $CHANGED_FILES
 // ✅ English comments only
 // ✅ JSDoc for functions and components
 // ✅ Inline comments for complex logic
+
+// ✅ Comment only when necessary - explain complex business logic
+const isAvailable = product.variantId && cartQuantity < (product.quantityAvailable || 0);
+
+// ✅ Comment workarounds or non-obvious solutions
+// Shopify's availableForSale flag doesn't reflect real-time stock, 
+// so we need to check quantityAvailable and cart contents
+
+// ❌ Don't comment obvious code
+// const title = product.title; // This is obvious
+// const price = product.price; // This is obvious
+
+// ✅ Comment complex calculations or business rules
+// Calculate remaining stock considering items already in cart
+const remainingStock = (product.quantityAvailable || 0) - cartQuantity;
 ```
 
 ### **Component Documentation**
@@ -302,6 +339,29 @@ npx jest --bail --findRelatedTests --passWithNoTests $CHANGED_FILES
  */
 ```
 
+### **Comment Guidelines**
+
+#### **✅ When to Comment**
+- **Complex business logic** that isn't immediately obvious
+- **Workarounds** for API limitations or third-party issues
+- **Non-obvious calculations** or algorithms
+- **Important architectural decisions** that affect the codebase
+- **Temporary solutions** that need to be revisited
+
+#### **❌ When NOT to Comment**
+- **Obvious variable assignments** (`const title = product.title`)
+- **Simple function calls** (`addToCart(product.id)`)
+- **Standard React patterns** (`useState`, `useEffect`)
+- **Self-explanatory code** that reads like English
+- **Redundant explanations** of what the code obviously does
+
+#### **📝 Comment Style**
+- **Always in English** - no French comments
+- **Explain the "why"** not the "what"
+- **Be concise** but informative
+- **Use present tense** for ongoing explanations
+- **Reference external constraints** when relevant
+
 ## 🎯 Specific Project Requirements
 
 ### **Tailwind Configuration**
@@ -313,6 +373,8 @@ npx jest --bail --findRelatedTests --passWithNoTests $CHANGED_FILES
 
 ### **Shopify Integration**
 - ✅ **Type-safe API calls** with comprehensive types
+- ✅ **Reuse existing types** instead of creating inline ones
+- ✅ **Centralized type definitions** in dedicated files
 - ✅ **Error handling** for network and API errors
 - ✅ **Cart persistence** in localStorage
 - ✅ **Checkout flow** integration
@@ -393,6 +455,8 @@ When updating `tailwind.config.ts`:
 Before any commit, ensure:
 - ✅ **ESLint passes** with no warnings
 - ✅ **TypeScript compiles** without errors
+- ✅ **Reuse existing types** instead of creating inline ones
+- ✅ **Avoid complex inline type definitions** in API routes or components
 - ✅ **All tests pass** including new ones
 - ✅ **Mobile responsive** design works
 - ✅ **Accessibility** features are intact
