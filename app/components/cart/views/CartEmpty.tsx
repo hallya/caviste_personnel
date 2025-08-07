@@ -16,7 +16,7 @@ export default function CartEmpty({ error }: CartEmptyProps) {
           <div className="text-center py-12">
             {error ? (
               <div className="mb-6">
-                <p className="text-body text-red-600 mb-4">{error}</p>
+                <p className="text-body text-primary-600 mb-4">{error}</p>
               </div>
             ) : (
               <div className="mb-6">

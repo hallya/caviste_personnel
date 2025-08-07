@@ -24,12 +24,12 @@ export default function ProductsView({ products }: ProductsViewProps) {
               />
             </div>
           ) : (
-            <div className="w-full h-60 bg-gray-200 flex items-center justify-center text-sm text-gray-500 rounded">
+            <div className="w-full h-60 bg-neutral-200 flex items-center justify-center text-sm text-neutral-500 rounded">
               Aucune image
             </div>
           )}
           <h2 className="mt-4 text-lg font-semibold">{product.title}</h2>
-          <p className="text-sm text-gray-700 mt-1">{product.price || 'Prix non disponible'}</p>
+          <p className="text-sm text-neutral-700 mt-1">{product.price || 'Prix non disponible'}</p>
         </div>
       ))}
     </div>

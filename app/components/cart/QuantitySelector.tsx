@@ -51,7 +51,7 @@ export default function QuantitySelector({
       <button
         onClick={handleDecrease}
         disabled={disabled || localQuantity <= 1}
-        className="w-8 h-8 flex items-center justify-center bg-gray-200 text-gray-600 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-8 h-8 flex items-center justify-center bg-neutral-200 text-neutral-600 rounded hover:bg-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         aria-label="Diminuer la quantité"
       >
         <MinusIcon className="w-4 h-4" />
@@ -64,14 +64,14 @@ export default function QuantitySelector({
         value={localQuantity}
         onChange={handleInputChange}
         disabled={disabled || !availableForSale}
-        className="w-12 h-8 text-center border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50"
+        className="w-12 h-8 text-center border border-neutral-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50"
         aria-label="Quantité"
       />
       
       <button
         onClick={handleIncrease}
         disabled={disabled || localQuantity >= actualMaxQuantity || !availableForSale}
-        className="w-8 h-8 flex items-center justify-center bg-gray-200 text-gray-600 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-8 h-8 flex items-center justify-center bg-neutral-200 text-neutral-600 rounded hover:bg-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         aria-label="Augmenter la quantité"
       >
         <PlusIcon className="w-4 h-4" />

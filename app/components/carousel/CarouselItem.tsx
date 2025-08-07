@@ -77,7 +77,7 @@ export const CarouselItem = memo(function CarouselItem({
           aria-hidden="true"
           className={`${
             isMobile ? "w-18 h-18" : "w-20 h-20"
-          } rounded bg-gray-100`}
+          } rounded bg-neutral-100`}
           title={collection.title}
         />
       ),
@@ -115,9 +115,9 @@ export const CarouselItem = memo(function CarouselItem({
           isSelected={isSelected}
         />
       )}
-      <div className="absolute inset-0 bg-white/50 rounded-xl z-10"></div>
+      <div className="absolute inset-0 bg-white/50 rounded-xl z-content"></div>
       <div
-        className={`relative z-20 transition-all duration-300 ease-in-out ${
+        className={`relative z-card transition-all duration-300 ease-in-out ${
           isSelected
             ? "ring-2 ring-primary-600 ring-offset-2 ring-offset-white/30 rounded-lg p-1"
             : ""
@@ -127,8 +127,8 @@ export const CarouselItem = memo(function CarouselItem({
       </div>
       <p
         className={`
-            font-prata font-black px-2 relative z-20 transition-colors duration-300 ease-in-out
-            ${isSelected ? "text-black" : "text-gray-800"}
+            font-prata font-black px-2 relative z-card transition-colors duration-300 ease-in-out
+            ${isSelected ? "text-black" : "text-neutral-800"}
             ${isMobile ? "mt-2 text-lg" : "mt-4"}
           `}
       >

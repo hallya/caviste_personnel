@@ -80,7 +80,7 @@ export const VideoBackground = memo(function VideoBackground({
 
           if (isSafari && attempts < 3) {
             setTimeout(() => {
-              video.play().catch((e) => console.log("Retry failed:", e));
+              video.play().catch(() => {});
             }, 1000);
           }
         }
@@ -134,10 +134,10 @@ export const VideoBackground = memo(function VideoBackground({
             if (videoRef.current) {
               videoRef.current
                 .play()
-                .catch((e) => console.log("Play failed:", e));
+                .catch(() => {});
             }
           }}
-          className="absolute top-2 right-2 bg-white/80 hover:bg-white text-primary-600 px-2 py-1 rounded text-xs font-medium transition-colors z-10"
+          className="absolute top-2 right-2 bg-white/80 hover:bg-white text-primary-600 px-2 py-1 rounded text-xs font-medium transition-colors z-tooltip"
           aria-label="Lire la vidéo"
         >
           ▶️ Lire

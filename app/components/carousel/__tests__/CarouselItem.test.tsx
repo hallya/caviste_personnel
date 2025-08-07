@@ -69,7 +69,7 @@ describe('CarouselItem', () => {
     
     const placeholder = screen.getByTitle('Test Collection');
     expect(placeholder).toBeInTheDocument();
-    expect(placeholder).toHaveClass('bg-gray-100');
+    expect(placeholder).toHaveClass('bg-neutral-100');
   });
 
   it('maintains accessibility attributes', () => {

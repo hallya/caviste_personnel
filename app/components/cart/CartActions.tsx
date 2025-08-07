@@ -9,7 +9,7 @@ export default function CartActions({ onCheckout }: CartActionsProps) {
     <div className="flex flex-col sm:flex-row gap-4">
       <Link 
         href="/"
-        className="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-md text-center hover:bg-gray-300 transition-colors text-button"
+        className="flex-1 bg-neutral-200 text-neutral-700 px-6 py-3 rounded-md text-center hover:bg-neutral-300 transition-colors text-button"
       >
         Continuer mes achats
       </Link>

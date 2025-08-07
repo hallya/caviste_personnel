@@ -34,7 +34,7 @@ export default function AddProduct({
       disabled={isDisabled}
       className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
         isDisabled
-          ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+          ? "bg-neutral-300 text-neutral-600 cursor-not-allowed"
           : "bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
       } ${className}`}
       aria-label={ariaLabel}

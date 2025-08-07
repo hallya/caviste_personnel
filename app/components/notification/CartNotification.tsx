@@ -72,7 +72,7 @@ export default function CartNotification({
         </div>
                     <button
               onClick={handleClose}
-              className="flex-shrink-0 text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
+              className="flex-shrink-0 text-neutral-400 hover:text-neutral-600 focus:outline-none focus:text-neutral-600"
               aria-label="Fermer la notification"
             >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -91,7 +91,7 @@ export default function CartNotification({
           </button>
           <button
             onClick={handleClose}
-            className="w-full px-3 py-2 border border-gray-300 text-gray-700 text-sm rounded-md hover:bg-gray-50 transition-colors"
+            className="w-full px-3 py-2 border border-neutral-300 text-neutral-700 text-sm rounded-md hover:bg-neutral-50 transition-colors"
           >
             Continuer mes achats
           </button>

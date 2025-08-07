@@ -40,6 +40,6 @@ describe('SocialLinks', () => {
     render(<SocialLinks />);
     
     const container = screen.getByLabelText('Suivez-nous sur Instagram').closest('div');
-    expect(container).toHaveClass('fixed', 'left-6', 'flex', 'flex-col', 'space-y-4', 'z-200', 'bottom-4', 'md:top-4', 'md:bottom-auto', 'm-0', 'p-0'); // fixed left-6 flex flex-col space-y-4 z-200 bottom-4 md:top-4 md:bottom-auto m-0 p-0
+    expect(container).toHaveClass('fixed', 'left-6', 'flex', 'flex-col', 'space-y-4', 'z-card', 'bottom-4', 'md:top-4', 'md:bottom-auto', 'm-0', 'p-0');
   });
 }); 
