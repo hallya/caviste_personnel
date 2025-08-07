@@ -1,5 +1,6 @@
 import CartFloatingButton from "../../cart/CartFloatingButton";
 import { CartProvider } from "../../../contexts/CartContext";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 interface LayoutViewProps {
   children: React.ReactNode;
@@ -21,6 +22,7 @@ export default function LayoutView({
             <CartFloatingButton />
           </CartProvider>
         </NotificationProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
