@@ -1,20 +1,8 @@
-// 1. React imports
 import { render, screen } from '@testing-library/react';
-
-// 2. Next.js imports
-// (none needed for this test)
-
-// 3. Third-party libraries
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-
-// 4. Internal utilities and types
 import type { Collection } from '../types';
-
-// 5. Internal components
 import { CarouselItem } from '../CarouselItem';
-
-// Mock the CSS module
 jest.mock('../Carousel.module.css', () => ({
   item: 'item-class',
   selected: 'selected-class',
@@ -43,7 +31,6 @@ describe('CarouselItem', () => {
     jest.clearAllMocks();
   });
 
-  // ✅ Component rendering and content
   it('renders collection item with correct content', () => {
     render(<CarouselItem {...defaultProps} />);
     
@@ -51,7 +38,6 @@ describe('CarouselItem', () => {
     expect(screen.getByAltText('Image de Test Collection')).toBeInTheDocument();
   });
 
-  // ✅ User interactions and callbacks
   it('handles user interactions correctly', async () => {
     render(<CarouselItem {...defaultProps} current={0} />);
     
@@ -61,7 +47,6 @@ describe('CarouselItem', () => {
     expect(defaultProps.onOpen).toHaveBeenCalledWith(mockCollection);
   });
 
-  // ✅ Styling and CSS classes
   it('maintains CSS classes and accessibility', () => {
     render(<CarouselItem {...defaultProps} />);
     
@@ -70,7 +55,6 @@ describe('CarouselItem', () => {
     expect(item).toHaveAttribute('aria-label', 'Collection 1 sur 3: Test Collection');
   });
 
-  // ✅ Conditional rendering and states
   it('applies selected state correctly', () => {
     render(<CarouselItem {...defaultProps} current={0} />);
     
@@ -79,7 +63,6 @@ describe('CarouselItem', () => {
     expect(item).toHaveAttribute('aria-current', 'true');
   });
 
-  // ✅ Error handling and edge cases
   it('handles missing image gracefully', () => {
     const collectionWithoutImage = { ...mockCollection, image: null };
     render(<CarouselItem {...defaultProps} collection={collectionWithoutImage} />);
@@ -89,7 +72,6 @@ describe('CarouselItem', () => {
     expect(placeholder).toHaveClass('bg-gray-100');
   });
 
-  // ✅ Accessibility attributes
   it('maintains accessibility attributes', () => {
     render(<CarouselItem {...defaultProps} />);
     

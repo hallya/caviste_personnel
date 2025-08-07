@@ -1,7 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { useCarouselNav } from '../useCarouselNav';
 
-// Mock window.innerWidth
 const mockWindowWidth = (width: number) => {
   Object.defineProperty(window, 'innerWidth', {
     writable: true,
@@ -18,12 +17,12 @@ describe('useCarouselNav', () => {
   describe('initialization', () => {
     it('initializes with center option for odd number of items', () => {
       const { result } = renderHook(() => useCarouselNav(5, { initial: 'center' }));
-      expect(result.current.current).toBe(2); // Middle of 5 items (0,1,2,3,4)
+      expect(result.current.current).toBe(2);
     });
 
     it('initializes with center option for even number of items', () => {
       const { result } = renderHook(() => useCarouselNav(4, { initial: 'center' }));
-      expect(result.current.current).toBe(2); // Middle of 4 items (0,1,2,3)
+      expect(result.current.current).toBe(2);
     });
 
     it('initializes with specific index', () => {

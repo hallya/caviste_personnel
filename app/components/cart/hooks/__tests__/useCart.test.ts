@@ -2,10 +2,8 @@ import { renderHook, waitFor, act } from '@testing-library/react';
 import { useCart } from '../useCart';
 import type { Cart } from '../../types';
 
-// Mock fetch
 global.fetch = jest.fn();
 
-// Mock localStorage
 const localStorageMock = {
   getItem: jest.fn(),
   setItem: jest.fn(),
@@ -112,8 +110,7 @@ describe('useCart', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      // Mock different response for refetch
-      const updatedCart = { ...mockCart, totalQuantity: 3 };
+          const updatedCart = { ...mockCart, totalQuantity: 3 };
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => updatedCart,

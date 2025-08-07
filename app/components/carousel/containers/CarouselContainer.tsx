@@ -72,22 +72,18 @@ export default function CarouselContainer({ onItemClick }: CarouselContainerProp
   const handleSelect = (i: number) => setCurrent(i);
   const handleOpen = (c: Collection) => onItemClick?.(c.handle, c.title ?? c.handle);
 
-  // Loading state
   if (dataState.isLoading) {
     return <CarouselLoading />;
   }
 
-  // Error state
   if (dataState.error) {
     return <CarouselError error={dataState.error} />;
   }
 
-  // Empty state
   if (dataState.collections.length === 0) {
     return <CarouselEmpty />;
   }
 
-  // Content state
   return (
     <CarouselView
       collections={dataState.collections}

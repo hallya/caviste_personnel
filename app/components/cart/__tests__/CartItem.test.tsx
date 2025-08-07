@@ -113,11 +113,9 @@ describe('CartItem', () => {
 
     const increaseButton = screen.getByLabelText('Augmenter la quantité');
     
-    // Click to reach max stock (3)
     await user.click(increaseButton);
     expect(defaultProps.onQuantityChange).toHaveBeenCalledWith('gid://shopify/CartLine/123', 3);
     
-    // Button should be disabled at max
     expect(increaseButton).toBeDisabled();
   });
 }); 

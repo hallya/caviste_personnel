@@ -1,19 +1,8 @@
-// 1. React imports
 import { render, screen } from '@testing-library/react';
-
-// 2. Next.js imports
-// (none needed for this test)
-
-// 3. Third-party libraries
 import '@testing-library/jest-dom';
-
-// 4. Internal utilities and types
 import type { Collection } from '../types';
-
-// 5. Internal components
 import CarouselView from '../views/CarouselView';
 
-// Mock the CSS module
 jest.mock('../Carousel.module.css', () => ({
   viewport: 'viewport-class',
   inner: 'inner-class',
@@ -48,7 +37,6 @@ describe('CarouselView', () => {
     jest.clearAllMocks();
   });
 
-  // ✅ Component rendering and content
   it('renders carousel structure correctly', () => {
     render(<CarouselView {...defaultProps} />);
     
@@ -57,19 +45,16 @@ describe('CarouselView', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
   });
 
-  // ✅ User interactions and callbacks
   it('renders with touch event handlers', () => {
     render(<CarouselView {...defaultProps} />);
     
     const carousel = screen.getByRole('region');
     
-    // Verify the component is set up to handle touch interactions
     expect(carousel).toBeInTheDocument();
     expect(defaultProps.handleTouchStart).toBeDefined();
     expect(defaultProps.handleTouchEnd).toBeDefined();
   });
 
-  // ✅ Styling and CSS classes
   it('maintains 3D effects CSS classes', () => {
     render(<CarouselView {...defaultProps} />);
     
@@ -81,7 +66,6 @@ describe('CarouselView', () => {
     expect(innerContainer).toHaveClass('inner-class');
   });
 
-  // ✅ Conditional rendering and states
   it('renders different states based on mobile prop', () => {
     const { rerender } = render(<CarouselView {...defaultProps} isMobile={false} />);
     expect(screen.getByRole('region')).toBeInTheDocument();
@@ -90,7 +74,6 @@ describe('CarouselView', () => {
     expect(screen.getByRole('region')).toBeInTheDocument();
   });
 
-  // ✅ Error handling and edge cases
   it('handles empty collections gracefully', () => {
     render(<CarouselView {...defaultProps} collections={[]} />);
     
@@ -99,7 +82,6 @@ describe('CarouselView', () => {
     expect(screen.queryAllByRole('listitem')).toHaveLength(0);
   });
 
-  // ✅ Accessibility attributes
   it('maintains accessibility attributes', () => {
     render(<CarouselView {...defaultProps} />);
     

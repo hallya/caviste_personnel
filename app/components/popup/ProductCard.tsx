@@ -18,18 +18,8 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const handleAddToCart = async () => {
     if (!product.variantId) {
-      console.warn(
-        "Cannot add to cart: no variantId for product",
-        product.title
-      );
       return;
     }
-
-    // Debug logging
-    console.log("Adding to cart:", {
-      productTitle: product.title,
-      variantId: product.variantId,
-    });
 
     setIsAdding(true);
     try {
@@ -48,7 +38,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           ? error.message
           : "Erreur lors de l'ajout au panier";
 
-      // Log complete error for debugging
       const errorWithStatus = error as Error & {
         status?: number;
         isNetworkError?: boolean;

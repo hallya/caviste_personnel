@@ -1,19 +1,7 @@
-// 1. React imports
 import { render, screen } from '@testing-library/react';
-
-// 2. Next.js imports
-// (none needed for this test)
-
-// 3. Third-party libraries
 import '@testing-library/jest-dom';
-
-// 4. Internal utilities and types
 import type { SimplifiedProduct } from '../../../types/shopify';
-
-// 5. Internal components
 import HomeView from '../views/HomeView';
-
-// Mock child components
 jest.mock('../../popup/Popup', () => {
   return function MockPopup() {
     return <div data-testid="popup">Popup</div>;
@@ -64,7 +52,6 @@ describe('HomeView', () => {
     jest.clearAllMocks();
   });
 
-  // ✅ Component rendering and content
   it('renders all main components correctly', () => {
     render(<HomeView {...defaultProps} />);
     
@@ -73,7 +60,6 @@ describe('HomeView', () => {
     expect(screen.getByTestId('carousel')).toBeInTheDocument();
   });
 
-  // ✅ User interactions and callbacks
   it('conditionally renders popup based on state', () => {
     const { rerender } = render(<HomeView {...defaultProps} popupOpen={false} />);
     expect(screen.queryByTestId('popup')).not.toBeInTheDocument();
@@ -82,7 +68,6 @@ describe('HomeView', () => {
     expect(screen.getByTestId('popup')).toBeInTheDocument();
   });
 
-  // ✅ Styling and CSS classes
   it('maintains basic layout structure', () => {
     render(<HomeView {...defaultProps} />);
     
@@ -91,7 +76,6 @@ describe('HomeView', () => {
     expect(main).toHaveClass('bg-primary-50', 'min-h-screen');
   });
 
-  // ✅ Conditional rendering and states
   it('handles different popup states correctly', () => {
     const { rerender } = render(<HomeView {...defaultProps} popupOpen={false} />);
     expect(screen.queryByTestId('popup')).not.toBeInTheDocument();
@@ -100,7 +84,6 @@ describe('HomeView', () => {
     expect(screen.getByTestId('popup')).toBeInTheDocument();
   });
 
-  // ✅ Error handling and edge cases
   it('handles empty products gracefully', () => {
     render(<HomeView {...defaultProps} popupProducts={[]} />);
     
@@ -109,7 +92,6 @@ describe('HomeView', () => {
     expect(screen.getByTestId('carousel')).toBeInTheDocument();
   });
 
-  // ✅ Accessibility attributes
   it('maintains semantic HTML structure', () => {
     render(<HomeView {...defaultProps} />);
     

@@ -49,7 +49,7 @@ export default function CartFloatingButton() {
     };
   }, []);
 
-  if (cartCount === 0) return null; // On n'affiche rien si le panier est vide
+  if (cartCount === 0) return null;
 
   const handleClick = () => {
     router.push("/cart");

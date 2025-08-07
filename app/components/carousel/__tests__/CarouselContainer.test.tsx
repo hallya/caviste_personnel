@@ -3,7 +3,6 @@ import '@testing-library/jest-dom';
 import CarouselContainer from '../containers/CarouselContainer';
 import type { Collection } from '../types';
 
-// Mock the CSS module
 jest.mock('../Carousel.module.css', () => ({
   viewport: 'viewport-class',
   inner: 'inner-class',
@@ -11,7 +10,6 @@ jest.mock('../Carousel.module.css', () => ({
   selected: 'selected-class',
 }));
 
-// Mock fetch
 global.fetch = jest.fn();
 
 const mockCollections: Collection[] = [
@@ -34,7 +32,7 @@ describe('CarouselContainer', () => {
 
   it('renders loading state initially', () => {
     (fetch as jest.Mock).mockImplementation(() => 
-      new Promise(() => {}) // Never resolves
+      new Promise(() => {})
     );
 
     render(<CarouselContainer onItemClick={jest.fn()} />);

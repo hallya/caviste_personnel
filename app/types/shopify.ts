@@ -77,7 +77,6 @@ export interface ShopifyCollection {
   };
 }
 
-// GraphQL Query Types
 export interface CollectionProductsQuery {
   collectionByHandle?: {
     title: string;
@@ -110,7 +109,6 @@ export interface CollectionsQuery {
   };
 }
 
-// GraphQL Variables Types
 export interface CollectionProductsVars {
   handle: string;
   first: number;
@@ -122,14 +120,13 @@ export interface CollectionsVars {
   after?: string | null;
 }
 
-// Simplified types for your current usage
 export interface SimplifiedProduct {
   id: string;
   title: string;
   image: string | null;
   price: string | null;
   currency: string | null;
-  variantId?: string; // For cart functionality
+  variantId?: string;
 }
 
 export interface SimplifiedCollection {
@@ -141,7 +138,6 @@ export interface SimplifiedCollection {
   };
 }
 
-// Shopify Cart Types
 export interface ShopifyCart {
   id: string;
   checkoutUrl: string;
@@ -163,7 +159,6 @@ export interface ShopifyCartLinesAddPayload {
   userErrors: ShopifyUserError[];
 }
 
-// Type guards
 export function isShopifyProduct(obj: unknown): obj is ShopifyProduct {
   return Boolean(obj && typeof obj === 'object' && obj !== null && 
          'id' in obj && typeof (obj as ShopifyProduct).id === 'string' && 

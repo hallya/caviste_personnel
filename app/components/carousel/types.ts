@@ -18,7 +18,6 @@ export interface CarouselReturn extends CarouselState, CarouselHandlers {
   containerRef: React.RefObject<HTMLDivElement | null>;
 }
 
-// Nouveaux types pour la gestion d'erreurs
 export interface CarouselDataState {
   collections: Collection[];
   isLoading: boolean;

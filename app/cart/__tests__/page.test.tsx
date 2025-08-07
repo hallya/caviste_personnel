@@ -4,7 +4,6 @@ import '@testing-library/jest-dom';
 import CartPage from '../page';
 import type { Cart } from '../../components/cart/types';
 
-// Mock the hooks
 jest.mock('../../components/cart/hooks/useCart');
 jest.mock('../../components/cart/hooks/useCartActions');
 
@@ -43,7 +42,6 @@ describe('CartPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Default mock implementations
     mockUseCart.mockReturnValue({
       cart: mockCart,
       loading: false,
@@ -298,7 +296,6 @@ describe('CartPage', () => {
 
     render(<CartPage />);
 
-    // Total should be (25.50 * 2) + (30.00 * 1) = 81.00 EUR
     expect(screen.getByText('81.00 EUR')).toBeInTheDocument();
   });
 }); 

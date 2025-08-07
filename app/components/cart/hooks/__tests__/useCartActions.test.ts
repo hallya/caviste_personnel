@@ -2,10 +2,8 @@ import { renderHook, act } from '@testing-library/react';
 import { useCartActions } from '../useCartActions';
 import type { Cart } from '../../types';
 
-// Mock fetch
 global.fetch = jest.fn();
 
-// Mock localStorage
 const localStorageMock = {
   getItem: jest.fn(),
   setItem: jest.fn(),
@@ -210,7 +208,6 @@ describe('useCartActions', () => {
 
   describe('error handling', () => {
     it('clears error when new action starts', async () => {
-      // First action with error
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
         json: async () => ({ error: 'First error' }),
@@ -223,7 +220,6 @@ describe('useCartActions', () => {
       });
       expect(result.current.error).toBe('First error');
 
-      // Second action should clear error
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockCart,

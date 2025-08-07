@@ -20,7 +20,6 @@ export default function QuantitySelector({
 }: QuantitySelectorProps) {
   const [localQuantity, setLocalQuantity] = useState(quantity);
 
-  // Calculer la limite réelle basée sur le stock disponible
   const actualMaxQuantity = Math.min(maxQuantity, quantityAvailable);
 
   const handleDecrease = () => {
