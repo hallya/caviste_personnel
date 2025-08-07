@@ -31,11 +31,11 @@ export function useCollections(): UseCollectionsReturn {
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasNextPage, setHasNextPage] = useState(false);
 
-  // Utiliser un ref pour éviter les doubles appels
   const hasLoaded = useRef(false);
 
   const loadCollections = useCallback(async () => {
-    if (hasLoaded.current) return; // Éviter les doubles appels
+    if (hasLoaded.current) return;
+    hasLoaded.current = true;
     
     try {
       setCollectionsLoading(true);
