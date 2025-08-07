@@ -125,7 +125,7 @@ describe('CartPage', () => {
       const user = userEvent.setup();
       renderCartPage();
 
-      const checkoutButton = screen.getByText('Procéder au paiement');
+      const checkoutButton = screen.getByText('Finaliser ma commande');
       await user.click(checkoutButton);
 
       expect(mockOpen).toHaveBeenCalledWith(

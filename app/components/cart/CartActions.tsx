@@ -17,7 +17,7 @@ export default function CartActions({ onCheckout }: CartActionsProps) {
         onClick={onCheckout}
         className="flex-1 bg-primary-600 text-white px-6 py-3 rounded-md hover:bg-primary-700 transition-colors text-button"
       >
-        Procéder au paiement
+        Finaliser ma commande
       </button>
     </div>
   );
