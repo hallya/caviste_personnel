@@ -33,15 +33,17 @@ export default function ProductCardView({
     if (availableQuantity <= 0) {
       return "Stock épuisé";
     }
-    return `${availableQuantity} bouteille${availableQuantity > 1 ? "s" : ""} disponible${availableQuantity > 1 ? "s" : ""}`;
+    return `${availableQuantity} bouteille${
+      availableQuantity > 1 ? "s" : ""
+    } disponible${availableQuantity > 1 ? "s" : ""}`;
   };
 
   return (
     <article
-      className="bg-primary-50 rounded-md p-3 text-center flex flex-col min-h-100 group"
+      className="bg-primary-50 rounded-md p-3 text-center flex flex-col min-h-150 group"
       aria-labelledby={`product-title-${product.id}`}
     >
-      <figure className="relative flex-1 mb-2 min-h-0 rounded overflow-hidden">
+      <figure className="relative flex-1 min-h-0 rounded overflow-hidden">
         {product.image ? (
           <Image
             src={product.image}
@@ -54,7 +56,7 @@ export default function ProductCardView({
           <ImagePlaceholder title={product.title} />
         )}
 
-        <figcaption className="absolute top-2 left-2 bg-white/90 px-2 py-1 rounded text-xs font-medium text-primary-600 z-tooltip opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <figcaption className="absolute top-2 left-2 bg-white/90 px-2 py-1 rounded text-xs font-medium text-primary-600 z-tooltip opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-200">
           {getStockMessage()}
         </figcaption>
 
@@ -65,7 +67,7 @@ export default function ProductCardView({
         )}
       </figure>
 
-      <header className="h-16 flex items-center justify-center mb-3">
+      <header className="h-16 flex items-center justify-center">
         <h3
           id={`product-title-${product.id}`}
           className="text-sm text-primary-600 line-clamp-2 font-semibold"
@@ -103,4 +105,4 @@ export default function ProductCardView({
       </div>
     </article>
   );
-} 
+}

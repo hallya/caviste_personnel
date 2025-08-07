@@ -36,18 +36,10 @@ describe('SocialLinks', () => {
     expect(facebookLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it('applies custom className when provided', () => {
-    const customClass = 'custom-class';
-    render(<SocialLinks className={customClass} />);
-    
-    const container = screen.getByLabelText('Suivez-nous sur Instagram').closest('div');
-    expect(container).toHaveClass(customClass);
-  });
-
   it('has correct positioning classes', () => {
     render(<SocialLinks />);
     
     const container = screen.getByLabelText('Suivez-nous sur Instagram').closest('div');
-    expect(container).toHaveClass('fixed', 'top-4', 'left-6', 'flex', 'flex-col', 'space-y-4');
+    expect(container).toHaveClass('fixed', 'left-6', 'flex', 'flex-col', 'space-y-4', 'z-200', 'bottom-4', 'md:top-4', 'md:bottom-auto', 'm-0', 'p-0'); // fixed left-6 flex flex-col space-y-4 z-200 bottom-4 md:top-4 md:bottom-auto m-0 p-0
   });
 }); 

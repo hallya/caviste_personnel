@@ -68,15 +68,15 @@ export const CarouselItem = memo(function CarouselItem({
         <Image
           src={collection.image}
           alt={`Image de ${collection.title}`}
-          width={isMobile ? 60 : 80}
-          height={isMobile ? 60 : 80}
+          width={isMobile ? 70 : 80}
+          height={isMobile ? 70 : 80}
           unoptimized
         />
       ) : (
         <div
           aria-hidden="true"
           className={`${
-            isMobile ? "w-16 h-16" : "w-20 h-20"
+            isMobile ? "w-18 h-18" : "w-20 h-20"
           } rounded bg-gray-100`}
           title={collection.title}
         />
@@ -89,7 +89,7 @@ export const CarouselItem = memo(function CarouselItem({
       ${styles.item}
       absolute bg-white rounded-xl shadow-lg overflow-hidden
       flex flex-col items-center justify-center text-center cursor-pointer
-      ${isMobile ? "w-36 h-56 p-1.5" : "w-52 h-80 p-2"}
+      ${isMobile ? "w-40 h-64 p-1.5" : "w-52 h-80 p-2"}
       ${isSelected ? styles.selected : ""}
     `,
     [isMobile, isSelected]
@@ -101,7 +101,9 @@ export const CarouselItem = memo(function CarouselItem({
       style={style}
       onClick={handleClick}
       role="listitem"
-      aria-label={`Collection ${index + 1} sur ${totalItems}: ${collection.title}${isSelected ? ' (sélectionnée)' : ''}`}
+      aria-label={`Collection ${index + 1} sur ${totalItems}: ${
+        collection.title
+      }${isSelected ? " (sélectionnée)" : ""}`}
       aria-current={isSelected ? "true" : "false"}
       tabIndex={isSelected ? 0 : -1}
       onKeyDown={handleKeyDown}
@@ -113,7 +115,7 @@ export const CarouselItem = memo(function CarouselItem({
           isSelected={isSelected}
         />
       )}
-      <div className="absolute inset-0 bg-white/30 rounded-xl z-10"></div>
+      <div className="absolute inset-0 bg-white/50 rounded-xl z-10"></div>
       <div
         className={`relative z-20 transition-all duration-300 ease-in-out ${
           isSelected
@@ -125,9 +127,9 @@ export const CarouselItem = memo(function CarouselItem({
       </div>
       <p
         className={`
-            font-prata font-semibold px-2 relative z-20 transition-colors duration-300 ease-in-out
+            font-prata font-black px-2 relative z-20 transition-colors duration-300 ease-in-out
             ${isSelected ? "text-black" : "text-gray-800"}
-            ${isMobile ? "mt-2 text-sm" : "mt-4"}
+            ${isMobile ? "mt-2 text-lg" : "mt-4"}
           `}
       >
         {collection.title}

@@ -1,13 +1,9 @@
-import { Z_INDEX } from "../../../styles/z-index";
 import { SOCIAL_LINKS } from "./constants";
 
-interface SocialLinksProps {
-  className?: string;
-}
 
-export default function SocialLinks({ className = "" }: SocialLinksProps) {
+export default function SocialLinks() {
   return (
-    <div className={`fixed top-4 left-6 flex flex-col space-y-4 z-[${Z_INDEX.CARD}] ${className}`}>
+    <div className="fixed left-6 flex flex-col space-y-4 z-card bottom-4 md:top-4 md:bottom-auto m-0 p-0">
       <a
         href={SOCIAL_LINKS.INSTAGRAM}
         target="_blank"

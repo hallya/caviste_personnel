@@ -29,7 +29,7 @@ export default function PopupView({
       aria-modal="true"
       aria-labelledby="popup-title"
     >
-      <div className="bg-primary-50 rounded-xl w-[90vw] max-w-[80vw] h-[80vh] shadow-lg animate-scaleIn relative flex flex-col">
+      <div className="bg-primary-50 rounded-xl w-[95vw] max-w-[90vw] h-[80vh] shadow-lg animate-scaleIn relative flex flex-col">
         <PopupHeader title={title} onClose={onClose} />
 
         <main className="flex-1 overflow-y-auto px-8 py-4">
