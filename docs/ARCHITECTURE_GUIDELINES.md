@@ -7,9 +7,10 @@ This document outlines the architectural patterns and best practices for the Cav
 ## Core Principles
 
 ### 1. Separation of Concerns
-- **Business Logic**: Handled in containers and hooks
+- **Business Logic**: Handled in custom hooks
 - **UI Logic**: Handled in presentational components
 - **Data Management**: Handled in hooks and services
+- **Container Logic**: Minimal, only for connecting hooks to views
 
 ### 2. Container/Presentational Pattern
 We follow the Container/Presentational pattern (also known as Smart/Dumb Components) to separate business logic from UI rendering.
@@ -20,16 +21,17 @@ We follow the Container/Presentational pattern (also known as Smart/Dumb Compone
 app/
 ├── components/
 │   └── [feature]/
-│       ├── containers/          # Business logic components
+│       ├── containers/          # Minimal container components
 │       │   └── [Feature]Container.tsx
 │       ├── views/               # Presentational components
 │       │   ├── [Feature]View.tsx
 │       │   ├── [Feature]Content.tsx
 │       │   ├── [Feature]Empty.tsx
 │       │   └── [Feature]Loading.tsx
-│       ├── hooks/               # Custom hooks
+│       ├── hooks/               # Custom hooks (business logic)
 │       │   ├── use[Feature].ts
-│       │   └── use[Feature]Actions.ts
+│       │   ├── use[Feature]Actions.ts
+│       │   └── use[Feature]Logic.ts
 │       ├── types.ts             # TypeScript interfaces
 │       ├── constants.ts         # Constants and configuration
 │       ├── utils.ts             # Utility functions
@@ -41,36 +43,28 @@ app/
 ## Component Types
 
 ### 1. Container Components (`containers/`)
-**Purpose**: Handle business logic, state management, and data fetching.
+**Purpose**: Connect hooks to presentational components. Should be minimal and contain no business logic.
 
 **Characteristics**:
 - Import and use hooks
-- Handle event callbacks
 - Pass data and callbacks to presentational components
+- No complex business logic
 - No direct UI rendering
-- Can contain complex logic
+- Simple data flow orchestration
 
 **Example**:
 ```tsx
 // containers/CartContainer.tsx
 export default function CartContainer() {
-  const { cart, loading, error, updateCart } = useCart();
-  const { updateQuantity, removeItem } = useCartActions();
-
-  const handleQuantityChange = async (lineId: string, quantity: number) => {
-    const updatedCart = await updateQuantity(lineId, quantity);
-    if (updatedCart) {
-      updateCart(updatedCart);
-    }
-  };
+  const { cart, loading, error, onQuantityChange, onRemoveItem } = useCartLogic();
 
   return (
     <CartView
       cart={cart}
       loading={loading}
       error={error}
-      onQuantityChange={handleQuantityChange}
-      onRemoveItem={handleRemoveItem}
+      onQuantityChange={onQuantityChange}
+      onRemoveItem={onRemoveItem}
     />
   );
 }
@@ -122,6 +116,7 @@ export default function CartPage() {
 ### Structure
 - **Data Hooks**: `use[Feature].ts` - Fetch and manage data
 - **Action Hooks**: `use[Feature]Actions.ts` - Handle user actions
+- **Logic Hooks**: `use[Feature]Logic.ts` - Complex business logic and state management
 
 ### Guidelines
 - One hook per file
@@ -129,18 +124,36 @@ export default function CartPage() {
 - Return consistent interfaces
 - Handle loading and error states
 - Use TypeScript for all interfaces
+- **Business logic should be in hooks, not containers**
 
 **Example**:
 ```tsx
-// hooks/useCart.ts
-export function useCart() {
-  const [cart, setCart] = useState<Cart | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+// hooks/useCartLogic.ts
+export function useCartLogic() {
+  const { cart, loading, error, updateCart } = useCart();
+  const { updateQuantity, removeItem } = useCartActions();
 
-  // ... implementation
+  const handleQuantityChange = async (lineId: string, quantity: number) => {
+    const updatedCart = await updateQuantity(lineId, quantity);
+    if (updatedCart) {
+      updateCart(updatedCart);
+    }
+  };
 
-  return { cart, loading, error, updateCart, refetch };
+  const handleRemoveItem = async (lineId: string) => {
+    const updatedCart = await removeItem(lineId);
+    if (updatedCart) {
+      updateCart(updatedCart);
+    }
+  };
+
+  return { 
+    cart, 
+    loading, 
+    error, 
+    onQuantityChange: handleQuantityChange,
+    onRemoveItem: handleRemoveItem
+  };
 }
 ```
 
