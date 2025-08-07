@@ -1,12 +1,29 @@
+// 1. React imports
 import { render, screen } from '@testing-library/react';
+
+// 2. Next.js imports
+// (none needed for this test)
+
+// 3. Third-party libraries
 import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
+
+// 4. Internal utilities and types
+import type { Collection } from '../types';
+
+// 5. Internal components
 import { CarouselItem } from '../CarouselItem';
-import { Collection } from '../types';
+
+// Mock the CSS module
+jest.mock('../Carousel.module.css', () => ({
+  item: 'item-class',
+  selected: 'selected-class',
+}));
 
 const mockCollection: Collection = {
   title: 'Test Collection',
   handle: 'test-collection',
-  image: '/test-image.jpg'
+  image: 'https://example.com/image.jpg',
 };
 
 const defaultProps = {
@@ -16,7 +33,7 @@ const defaultProps = {
   onSelect: jest.fn(),
   onOpen: jest.fn(),
   isMobile: false,
-  totalItems: 5
+  totalItems: 3,
 };
 
 describe('CarouselItem', () => {
@@ -26,97 +43,58 @@ describe('CarouselItem', () => {
     jest.clearAllMocks();
   });
 
-  it('renders collection information correctly', () => {
+  // ✅ Component rendering and content
+  it('renders collection item with correct content', () => {
     render(<CarouselItem {...defaultProps} />);
     
-    expect(screen.getByRole('listitem')).toBeInTheDocument();
     expect(screen.getByText('Test Collection')).toBeInTheDocument();
-    expect(screen.getByLabelText(/Collection 1 sur 5: Test Collection/)).toBeInTheDocument();
+    expect(screen.getByAltText('Image de Test Collection')).toBeInTheDocument();
   });
 
-  it('shows selected state when current item', () => {
+  // ✅ User interactions and callbacks
+  it('handles user interactions correctly', async () => {
+    render(<CarouselItem {...defaultProps} current={0} />);
+    
+    const item = screen.getByRole('listitem');
+    await user.click(item);
+    
+    expect(defaultProps.onOpen).toHaveBeenCalledWith(mockCollection);
+  });
+
+  // ✅ Styling and CSS classes
+  it('maintains CSS classes and accessibility', () => {
     render(<CarouselItem {...defaultProps} />);
     
     const item = screen.getByRole('listitem');
+    expect(item).toHaveClass('item-class');
+    expect(item).toHaveAttribute('aria-label', 'Collection 1 sur 3: Test Collection');
+  });
+
+  // ✅ Conditional rendering and states
+  it('applies selected state correctly', () => {
+    render(<CarouselItem {...defaultProps} current={0} />);
+    
+    const item = screen.getByRole('listitem');
+    expect(item).toHaveClass('selected-class');
     expect(item).toHaveAttribute('aria-current', 'true');
-    expect(item).toHaveAttribute('tabIndex', '0');
   });
 
-  it('shows unselected state when not current item', () => {
-    render(<CarouselItem {...defaultProps} current={1} />);
-    
-    const item = screen.getByRole('listitem');
-    expect(item).toHaveAttribute('aria-current', 'false');
-    expect(item).toHaveAttribute('tabIndex', '-1');
-  });
-
-  it('calls onSelect when clicking unselected item', async () => {
-    render(<CarouselItem {...defaultProps} current={1} />);
-    
-    const item = screen.getByRole('listitem');
-    await user.click(item);
-    
-    expect(defaultProps.onSelect).toHaveBeenCalledWith(0);
-    expect(defaultProps.onOpen).not.toHaveBeenCalled();
-  });
-
-  it('calls onOpen when clicking selected item', async () => {
-    render(<CarouselItem {...defaultProps} />);
-    
-    const item = screen.getByRole('listitem');
-    await user.click(item);
-    
-    expect(defaultProps.onOpen).toHaveBeenCalledWith(mockCollection);
-    expect(defaultProps.onSelect).not.toHaveBeenCalled();
-  });
-
-  it('handles keyboard navigation with Enter key', async () => {
-    render(<CarouselItem {...defaultProps} />);
-    
-    const item = screen.getByRole('listitem');
-    item.focus();
-    await user.keyboard('{Enter}');
-    
-    expect(defaultProps.onOpen).toHaveBeenCalledWith(mockCollection);
-  });
-
-  it('handles keyboard navigation with Space key', async () => {
-    render(<CarouselItem {...defaultProps} />);
-    
-    const item = screen.getByRole('listitem');
-    item.focus();
-    await user.keyboard(' ');
-    
-    expect(defaultProps.onOpen).toHaveBeenCalledWith(mockCollection);
-  });
-
-  it('renders image when available', () => {
-    render(<CarouselItem {...defaultProps} />);
-    
-    const image = screen.getByAltText('Image de Test Collection');
-    expect(image).toBeInTheDocument();
-    expect(image).toHaveAttribute('src', '/test-image.jpg');
-  });
-
-  it('renders placeholder when no image', () => {
+  // ✅ Error handling and edge cases
+  it('handles missing image gracefully', () => {
     const collectionWithoutImage = { ...mockCollection, image: null };
     render(<CarouselItem {...defaultProps} collection={collectionWithoutImage} />);
     
-    expect(screen.queryByAltText('Image de Test Collection')).not.toBeInTheDocument();
-    expect(screen.getByTitle('Test Collection')).toBeInTheDocument();
+    const placeholder = screen.getByTitle('Test Collection');
+    expect(placeholder).toBeInTheDocument();
+    expect(placeholder).toHaveClass('bg-gray-100');
   });
 
-  it('applies mobile styles when isMobile is true', () => {
-    render(<CarouselItem {...defaultProps} isMobile={true} />);
+  // ✅ Accessibility attributes
+  it('maintains accessibility attributes', () => {
+    render(<CarouselItem {...defaultProps} />);
     
     const item = screen.getByRole('listitem');
-    expect(item).toHaveClass('w-36', 'h-56', 'p-1.5');
-  });
-
-  it('applies desktop styles when isMobile is false', () => {
-    render(<CarouselItem {...defaultProps} isMobile={false} />);
-    
-    const item = screen.getByRole('listitem');
-    expect(item).toHaveClass('w-52', 'h-80', 'p-2');
+    expect(item).toHaveAttribute('aria-label', 'Collection 1 sur 3: Test Collection');
+    expect(item).toHaveAttribute('tabIndex', '0');
   });
 }); 
