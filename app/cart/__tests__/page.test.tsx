@@ -12,19 +12,23 @@ import { useCart } from '../../components/cart/hooks/useCart';
 const mockUseCart = jest.mocked(useCart);
 
 const mockCart: Cart = {
-  id: 'gid://shopify/Cart/123',
+  id: "gid://shopify/Cart/123",
   totalQuantity: 2,
-  totalAmount: '300.00 EUR',
-  checkoutUrl: 'https://checkout.shopify.com/123',
+  totalAmount: "300.00 EUR",
+  checkoutUrl: "https://checkout.shopify.com/123",
   lines: [
     {
-      id: 'gid://shopify/CartLine/1',
-      title: 'Château Margaux 2018',
-      price: '150.00 EUR',
+      id: "gid://shopify/CartLine/1",
+      title: "Château Margaux 2018",
+      price: "150.00 EUR",
+      unitPrice: 150.00,
+      currency: "EUR",
+      lineTotal: "300.00 EUR",
       quantity: 2,
-      image: 'https://example.com/wine.jpg',
+      image: "https://example.com/wine.jpg",
       availableForSale: true,
       quantityAvailable: 10,
+      variantId: "gid://shopify/ProductVariant/456",
     },
   ],
 };
@@ -104,9 +108,9 @@ describe('CartPage', () => {
 
       expect(screen.getByText('Votre panier')).toBeInTheDocument();
       expect(screen.getByText('Château Margaux 2018')).toBeInTheDocument();
-      expect(screen.getByText('150.00 EUR')).toBeInTheDocument();
+      expect(screen.getByText('150.00 EUR l\'unité')).toBeInTheDocument();
       expect(screen.getByText('Total:')).toBeInTheDocument();
-      expect(screen.getByText('300.00 EUR')).toBeInTheDocument();
+      expect(screen.getAllByText('300.00 EUR')).toHaveLength(2);
     });
   });
 
@@ -241,19 +245,27 @@ describe('CartPage', () => {
             id: 'gid://shopify/CartLine/1',
             title: 'Château Margaux 2018',
             price: '150.00 EUR',
+            unitPrice: 150.00,
+            currency: 'EUR',
+            lineTotal: '300.00 EUR',
             quantity: 2,
             image: 'https://example.com/wine.jpg',
             availableForSale: true,
             quantityAvailable: 10,
+            variantId: 'gid://shopify/ProductVariant/456',
           },
           {
             id: 'gid://shopify/CartLine/2',
             title: 'Château Lafite 2019',
             price: '200.00 EUR',
+            unitPrice: 200.00,
+            currency: 'EUR',
+            lineTotal: '200.00 EUR',
             quantity: 1,
             image: 'https://example.com/wine2.jpg',
             availableForSale: true,
             quantityAvailable: 5,
+            variantId: 'gid://shopify/ProductVariant/789',
           },
         ],
         totalAmount: '500.00 EUR',

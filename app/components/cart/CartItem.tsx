@@ -18,27 +18,31 @@ export default function CartItem({
   loading = false 
 }: CartItemProps) {
   return (
-    <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-      <div className="flex items-center space-x-4 flex-1">
+    <div className="flex items-stretch justify-between border-b border-gray-200 pb-4">
+      <div className="flex items-stretch space-x-4 flex-1">
         {item.image && (
-          <Image 
-            src={item.image} 
-            alt={item.title}
-            width={64}
-            height={64}
-            className="w-16 h-16 object-cover rounded"
-          />
+          <div className="flex-shrink-0">
+            <Image 
+              src={item.image} 
+              alt={item.title}
+              width={80}
+              height={120}
+              className="w-20 h-full object-cover rounded"
+            />
+          </div>
         )}
-        <div className="flex-1">
-          <h3 className="text-subtitle text-primary-600">{item.title}</h3>
-          {!item.availableForSale && (
-            <p className="text-caption text-red-600 mt-1">Rupture de stock</p>
-          )}
-          {item.availableForSale && item.quantityAvailable < 10 && (
-            <p className="text-caption text-orange-600 mt-1">
-              Plus que {item.quantityAvailable} en stock
-            </p>
-          )}
+        <div className="flex-1 flex flex-col justify-between">
+          <div>
+            <h3 className="text-subtitle text-primary-600">{item.title}</h3>
+            {!item.availableForSale && (
+              <p className="text-caption text-red-600 mt-1">Rupture de stock</p>
+            )}
+            {item.availableForSale && item.quantityAvailable < 10 && (
+              <p className="text-caption text-orange-600 mt-1">
+                Plus que {item.quantityAvailable} en stock
+              </p>
+            )}
+          </div>
           <div className="flex items-center space-x-4 mt-2">
             <QuantitySelector
               quantity={item.quantity}
@@ -58,8 +62,11 @@ export default function CartItem({
           </div>
         </div>
       </div>
-      <div className="text-right ml-4">
-        <p className="text-subtitle text-primary-600">{formatPrice(item.price)}</p>
+      <div className="text-right ml-4 flex flex-col justify-center">
+        <p className="text-subtitle text-primary-600">{item.lineTotal}</p>
+        <p className="text-caption text-gray-500 mt-1">
+          {formatPrice(item.price)} l&apos;unité
+        </p>
       </div>
     </div>
   );

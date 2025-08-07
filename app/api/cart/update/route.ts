@@ -4,7 +4,10 @@ export async function POST(req: Request) {
   const { cartId, lineId, quantity } = await req.json();
 
   if (!cartId || !lineId || quantity === undefined) {
-    return NextResponse.json({ error: "cartId, lineId et quantity requis" }, { status: 400 });
+    return NextResponse.json(
+      { error: "cartId, lineId et quantity requis" },
+      { status: 400 }
+    );
   }
 
   if (quantity < 0) {
@@ -63,22 +66,27 @@ export async function POST(req: Request) {
         "Content-Type": "application/json",
         "X-Shopify-Storefront-Access-Token": token,
       },
-      body: JSON.stringify({ 
-        query, 
-        variables: { 
-          cartId, 
-          lines: [{ id: lineId, quantity }] 
-        } 
+      body: JSON.stringify({
+        query,
+        variables: {
+          cartId,
+          lines: [{ id: lineId, quantity }],
+        },
       }),
     });
 
     if (!res.ok) {
-      return NextResponse.json({ error: "Erreur Shopify" }, { status: res.status });
+      return NextResponse.json(
+        { error: "Erreur Shopify" },
+        { status: res.status }
+      );
     }
 
     const json = await res.json();
     const payload = json?.data?.cartLinesUpdate;
-    const errors = payload?.userErrors?.filter((e: { message?: string }) => e?.message) ?? [];
+    const errors =
+      payload?.userErrors?.filter((e: { message?: string }) => e?.message) ??
+      [];
 
     if (errors.length) {
       return NextResponse.json(
@@ -92,41 +100,72 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Panier non trouvé" }, { status: 404 });
     }
 
-    const lines = cart?.lines?.edges?.map((edge: { node: { id: string; quantity: number; merchandise: { title?: string; price?: { amount: string; currencyCode: string }; availableForSale?: boolean; quantityAvailable?: number; product?: { title?: string; featuredImage?: { url: string } } } } }) => {
-      const node = edge.node;
-      const merchandise = node.merchandise;
-      return {
-        id: node.id,
-        quantity: node.quantity,
-        title: merchandise?.product?.title || merchandise?.title || "Produit inconnu",
-        price: merchandise?.price?.amount ? `${merchandise.price.amount} ${merchandise.price.currencyCode}` : "Prix non disponible",
-        image: merchandise?.product?.featuredImage?.url || null,
-        availableForSale: merchandise?.availableForSale ?? false,
-        quantityAvailable: merchandise?.quantityAvailable ?? 0,
-      };
-    }) || [];
+    const lines =
+      cart?.lines?.edges?.map(
+        (edge: {
+          node: {
+            id: string;
+            quantity: number;
+            merchandise: {
+              title?: string;
+              price?: { amount: string; currencyCode: string };
+              availableForSale?: boolean;
+              quantityAvailable?: number;
+              product?: { title?: string; featuredImage?: { url: string } };
+            };
+          };
+        }) => {
+          const node = edge.node;
+          const merchandise = node.merchandise;
+          const unitPrice = merchandise?.price?.amount
+            ? parseFloat(merchandise.price.amount)
+            : 0;
+          const currency = merchandise?.price?.currencyCode || "EUR";
+          const lineTotal = (unitPrice * node.quantity).toFixed(2);
 
-    const totalAmount = lines.reduce((total: number, line: { price: string; quantity: number }) => {
-      const priceMatch = line.price.match(/(\d+\.?\d*)/);
-      if (priceMatch) {
-        const price = parseFloat(priceMatch[1]);
-        return total + (price * line.quantity);
-      }
-      return total;
-    }, 0);
+          return {
+            id: node.id,
+            quantity: node.quantity,
+            title:
+              merchandise?.product?.title ||
+              merchandise?.title ||
+              "Produit inconnu",
+            price: merchandise?.price?.amount
+              ? `${merchandise.price.amount} ${merchandise.price.currencyCode}`
+              : "Prix non disponible",
+            unitPrice,
+            currency,
+            lineTotal: `${lineTotal} ${currency}`,
+            image: merchandise?.product?.featuredImage?.url || null,
+            availableForSale: merchandise?.availableForSale ?? false,
+            quantityAvailable: merchandise?.quantityAvailable ?? 0,
+          };
+        }
+      ) || [];
 
-    const currency = lines.length > 0 ? lines[0].price.split(' ')[1] || 'EUR' : 'EUR';
+    const totalAmount = cart?.cost?.subtotalAmount
+      ? `${cart.cost.subtotalAmount.amount} ${cart.cost.subtotalAmount.currencyCode}`
+      : lines.length > 0
+      ? `${lines
+          .reduce(
+            (
+              total: number,
+              line: { unitPrice: number; quantity: number; currency: string }
+            ) => total + line.unitPrice * line.quantity,
+            0
+          )
+          .toFixed(2)} ${lines[0].currency}`
+      : "0.00 EUR";
 
     return NextResponse.json({
       id: cart?.id || null,
       totalQuantity: cart?.totalQuantity ?? 0,
-      totalAmount: `${totalAmount.toFixed(2)} ${currency}`,
+      totalAmount: totalAmount,
       checkoutUrl: cart?.checkoutUrl ?? null,
       lines,
     });
-
   } catch (error) {
     console.error("Erreur lors de la mise à jour:", error);
     return NextResponse.json({ error: "Erreur de connexion" }, { status: 500 });
   }
-} 
+}

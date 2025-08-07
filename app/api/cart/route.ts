@@ -77,11 +77,18 @@ export async function GET(req: Request) {
   const lines = cart?.lines?.edges?.map((edge) => {
     const node = edge.node as ShopifyCartLine;
     const merchandise = node.merchandise;
+    const unitPrice = merchandise?.price?.amount ? parseFloat(merchandise.price.amount) : 0;
+    const currency = merchandise?.price?.currencyCode || 'EUR';
+    const lineTotal = (unitPrice * node.quantity).toFixed(2);
+    
     return {
       id: node.id,
       quantity: node.quantity,
       title: merchandise?.product?.title || merchandise?.title || "Produit inconnu",
       price: merchandise?.price?.amount ? `${merchandise.price.amount} ${merchandise.price.currencyCode}` : "Prix non disponible",
+      unitPrice,
+      currency,
+      lineTotal: `${lineTotal} ${currency}`,
       image: merchandise?.product?.featuredImage?.url || null,
       availableForSale: merchandise?.availableForSale ?? false,
       quantityAvailable: merchandise?.quantityAvailable ?? 0,
@@ -89,21 +96,17 @@ export async function GET(req: Request) {
     };
   }) || [];
 
-  const totalAmount = lines.reduce((total: number, line: { price: string; quantity: number }) => {
-    const priceMatch = line.price.match(/(\d+\.?\d*)/);
-    if (priceMatch) {
-      const price = parseFloat(priceMatch[1]);
-      return total + (price * line.quantity);
-    }
-    return total;
-  }, 0);
-
-  const currency = lines.length > 0 ? lines[0].price.split(' ')[1] || 'EUR' : 'EUR';
+  // Utiliser le total calculé par Shopify si disponible, sinon calculer nous-mêmes
+  const totalAmount = cart?.cost?.subtotalAmount 
+    ? `${cart.cost.subtotalAmount.amount} ${cart.cost.subtotalAmount.currencyCode}`
+    : lines.length > 0 
+    ? `${lines.reduce((total, line) => total + (line.unitPrice * line.quantity), 0).toFixed(2)} ${lines[0].currency}`
+    : "0.00 EUR";
 
   return NextResponse.json({
     id: cart?.id || null,
     totalQuantity: cart?.totalQuantity ?? 0,
-    totalAmount: `${totalAmount.toFixed(2)} ${currency}`,
+    totalAmount: totalAmount,
     checkoutUrl: cart?.checkoutUrl ?? null,
     lines,
   });

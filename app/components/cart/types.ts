@@ -2,6 +2,9 @@ export interface CartItem {
   id: string;
   title: string;
   price: string;
+  unitPrice: number;
+  currency: string;
+  lineTotal: string;
   quantity: number;
   image?: string;
   availableForSale: boolean;

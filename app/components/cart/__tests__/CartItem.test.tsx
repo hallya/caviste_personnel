@@ -2,16 +2,19 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import CartItem from '../CartItem';
-import type { CartItem as CartItemType } from '../types';
 
-const mockItem: CartItemType = {
-  id: 'gid://shopify/CartLine/123',
-  title: 'Château Margaux 2018',
-  price: '150.00 EUR',
+const mockItem = {
+  id: "gid://shopify/CartLine/123",
+  title: "Château Margaux 2018",
+  price: "150.00 EUR",
+  unitPrice: 150.00,
+  currency: "EUR",
+  lineTotal: "300.00 EUR",
   quantity: 2,
-  image: 'https://example.com/wine.jpg',
+  image: "https://example.com/wine.jpg",
   availableForSale: true,
   quantityAvailable: 10,
+  variantId: "gid://shopify/ProductVariant/456",
 };
 
 const defaultProps = {
@@ -30,7 +33,8 @@ describe('CartItem', () => {
     render(<CartItem {...defaultProps} />);
 
     expect(screen.getByText('Château Margaux 2018')).toBeInTheDocument();
-    expect(screen.getByText('150.00 EUR')).toBeInTheDocument();
+    expect(screen.getByText('300.00 EUR')).toBeInTheDocument(); // Prix total (150 * 2)
+    expect(screen.getByText('150.00 EUR l\'unité')).toBeInTheDocument(); // Prix unitaire
     expect(screen.getByDisplayValue('2')).toBeInTheDocument();
   });
 
