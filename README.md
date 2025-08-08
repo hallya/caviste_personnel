@@ -130,7 +130,7 @@ const style = useMemo(() => {
 
 ```bash
 # Clone and setup
-git clone https://github.com/your-username/caviste-personnel.git
+git clone https://github.com/hallya/caviste_personnel.git
 cd caviste-personnel
 npm install
 
@@ -198,10 +198,8 @@ app/
 
 **Interested in discussing development approaches or exploring opportunities?**
 
-- 📧 **Email**: your.email@example.com
-- 💼 **LinkedIn**: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
-- 🐙 **GitHub**: [View Source Code](https://github.com/yourusername/caviste-personnel)
-- 🌐 **Live Demo**: [Current Implementation](https://caviste-personnel.vercel.app)
+- 💼 **LinkedIn**: [🚴🏼‍♂️ Lucien Dulac](https://www.linkedin.com/in/%F0%9F%9A%B4%F0%9F%8F%BC%E2%80%8D%E2%99%82%EF%B8%8F-lucien-dulac-7197b6ab/)
+- 🌐 **Live Demo**: [Edouard - Caviste Personnel](https://caviste-personnel.vercel.app)
 
 ---
 
