@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# lighthouse reports
+lighthouse-report.html
+lighthouse-report.json
+lighthouse-cart.json
+lighthouse-products.json
+.lighthouseci/

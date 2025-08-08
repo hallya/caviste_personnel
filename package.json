@@ -13,7 +13,13 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:staged": "jest --bail --findRelatedTests",
-    "test:ci": "jest --ci --coverage --watchAll=false"
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "audit": "lighthouse http://localhost:3000 --output=html --output-path=./lighthouse-report.html --chrome-flags=\"--headless --no-sandbox\"",
+    "audit:json": "lighthouse http://localhost:3000 --output=json --output-path=./lighthouse-report.json --chrome-flags=\"--headless --no-sandbox\" --quiet",
+    "audit:pages": "npm run audit:json -- && lighthouse http://localhost:3000/cart --output=json --output-path=./lighthouse-cart.json --chrome-flags=\"--headless --no-sandbox\" --quiet && lighthouse http://localhost:3000/products --output=json --output-path=./lighthouse-products.json --chrome-flags=\"--headless --no-sandbox\" --quiet",
+    "audit:dev": "npm run build && npm run start & sleep 10 && npm run audit && pkill -f 'next start'",
+    "perf": "npm run audit:dev && open lighthouse-report.html",
+    "audit:ci": "lhci autorun"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -24,6 +30,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
+    "@lhci/cli": "^0.12.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
@@ -37,6 +44,7 @@
     "husky": "^9.1.7",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
+    "lighthouse": "^12.8.1",
     "lint-staged": "^16.1.4",
     "tailwindcss": "^4",
     "typescript": "^5"
