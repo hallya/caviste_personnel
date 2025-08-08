@@ -39,7 +39,7 @@ export async function POST(req: Request) {
                 currencyCode
               }
             }
-            lines {
+            lines(first: 50) {
               edges {
                 node {
                   id
@@ -97,19 +97,46 @@ export async function POST(req: Request) {
     }
 
     const json = await res.json();
-    const payload = json?.data?.cartLinesRemove;
-    const errors = payload?.userErrors?.filter((e: ShopifyUserError) => e?.message) ?? [];
-
-    if (errors.length) {
+    
+    if (json?.errors?.length) {
+      const graphqlError = json.errors[0];
+      
+      if (graphqlError?.extensions?.code === "RESOURCE_NOT_FOUND") {
+        return NextResponse.json(
+          { error: "Article déjà supprimé ou panier modifié par une autre session" },
+          { status: 409 } // Conflict
+        );
+      }
+      
       return NextResponse.json(
-        { error: errors[0]?.message || "Erreur lors de la suppression" },
+        { error: graphqlError?.message || "Erreur GraphQL" },
+        { status: 400 }
+      );
+    }
+    
+    const payload = json?.data?.cartLinesRemove;
+    const userErrors = payload?.userErrors?.filter((e: ShopifyUserError) => e?.message) ?? [];
+
+    if (userErrors.length) {
+      return NextResponse.json(
+        { error: userErrors[0]?.message || "Erreur lors de la suppression" },
         { status: 400 }
       );
     }
 
     const cart = payload?.cart;
+    
+    // Si le panier est null après suppression, c'est que la suppression a réussi mais le panier est vide
     if (!cart) {
-      return NextResponse.json({ error: "Panier non trouvé" }, { status: 404 });
+
+      return NextResponse.json({
+        id: null,
+        totalQuantity: 0,
+        totalAmount: "0.00 EUR",
+        checkoutUrl: null,
+        lines: [],
+        message: "Produit supprimé avec succès"
+      });
     }
 
     const lines = cart?.lines?.edges?.map((edge: { node: ShopifyCartLine }) => {
