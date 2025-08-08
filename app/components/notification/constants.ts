@@ -1,21 +1,8 @@
-export const NOTIFICATION_POSITIONS = {
-  TOP_RIGHT: "top-right",
-  TOP_LEFT: "top-left",
-  BOTTOM_RIGHT: "bottom-right",
-  BOTTOM_LEFT: "bottom-left",
-  TOP_CENTER: "top-center",
-  BOTTOM_CENTER: "bottom-center",
-} as const;
-
-export const NOTIFICATION_TYPES = {
-  SUCCESS: "success",
-  ERROR: "error",
-} as const;
-
-import { Z_INDEX } from '../../styles/z-index';
-
 export const NOTIFICATION_DEFAULTS = {
-  AUTO_CLOSE_DELAY: 5000,
   ANIMATION_DURATION: 300,
-  Z_INDEX: Z_INDEX.NOTIFICATION,
-} as const; 
+  AUTO_CLOSE_DELAY: 5000,
+} as const;
+
+export const NOTIFICATION_GROUPS = {
+  CART: "cart",
+} as const;

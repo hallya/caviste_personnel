@@ -1,12 +1,12 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import ProductCard from "../ProductCard";
 import type { SimplifiedProduct } from "../../../types/shopify";
 import { NotificationProvider } from "../../../contexts/NotificationContext";
 import { CartProvider } from "../../../contexts/CartContext";
 
-global.fetch = jest.fn();
-
-const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
+global.fetch = mockFetch;
 
 const baseProduct: SimplifiedProduct = {
   id: "product-1",
@@ -30,6 +30,8 @@ const renderProductCard = (product: SimplifiedProduct) => {
 };
 
 describe("ProductCard", () => {
+  const user = userEvent.setup();
+
   beforeEach(() => {
     mockFetch.mockClear();  
     mockFetch.mockResolvedValueOnce({
@@ -50,7 +52,7 @@ describe("ProductCard", () => {
 
       const article = screen.getByRole("article");
 
-      fireEvent.mouseEnter(article);
+      await user.hover(article);
       
       await waitFor(() => {
         expect(screen.getByText("10 bouteilles disponibles")).toBeInTheDocument();
@@ -63,7 +65,7 @@ describe("ProductCard", () => {
 
       const article = screen.getByRole("article");
       
-      fireEvent.mouseEnter(article);
+      await user.hover(article);
       
       await waitFor(() => {
         expect(screen.getByText("Stock épuisé")).toBeInTheDocument();
@@ -76,7 +78,7 @@ describe("ProductCard", () => {
 
       const article = screen.getByRole("article");
       
-      fireEvent.mouseEnter(article);
+      await user.hover(article);
       
       await waitFor(() => {
         expect(screen.getByText("1 bouteille disponible")).toBeInTheDocument();
@@ -177,7 +179,7 @@ describe("ProductCard", () => {
         }),
       } as Response);
 
-      fireEvent.click(bottleButton);
+      await user.click(bottleButton);
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith("/api/cart/add", {
@@ -202,7 +204,7 @@ describe("ProductCard", () => {
         }),
       } as Response);
 
-      fireEvent.click(cartonButton);
+      await user.click(cartonButton);
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith("/api/cart/add", {

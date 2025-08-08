@@ -96,12 +96,7 @@ export async function GET(req: Request) {
     };
   }) || [];
 
-  // Utiliser le total calculé par Shopify si disponible, sinon calculer nous-mêmes
-  const totalAmount = cart?.cost?.subtotalAmount 
-    ? `${cart.cost.subtotalAmount.amount} ${cart.cost.subtotalAmount.currencyCode}`
-    : lines.length > 0 
-    ? `${lines.reduce((total, line) => total + (line.unitPrice * line.quantity), 0).toFixed(2)} ${lines[0].currency}`
-    : "0.00 EUR";
+  const totalAmount = `${cart.cost.subtotalAmount.amount} ${cart.cost.subtotalAmount.currencyCode}`;
 
   return NextResponse.json({
     id: cart?.id || null,

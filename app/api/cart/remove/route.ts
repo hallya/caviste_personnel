@@ -1,41 +1,64 @@
 import { NextResponse } from "next/server";
+import type { ShopifyCartLine, ShopifyUserError } from "../../../types/shopify";
 
 export async function POST(req: Request) {
-  const { cartId, lineId } = await req.json();
+  try {
+    const { cartId, lineId } = await req.json();
 
-  if (!cartId || !lineId) {
-    return NextResponse.json({ error: "cartId et lineId requis" }, { status: 400 });
-  }
+    if (!cartId || !lineId) {
+      return NextResponse.json(
+        { error: "cartId et lineId requis" },
+        { status: 400 }
+      );
+    }
 
-  const domain = process.env.SHOPIFY_STORE_DOMAIN!;
-  const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
+    const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+    const domain = process.env.SHOPIFY_STORE_DOMAIN;
 
-  const query = /* GraphQL */ `
-    mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
-      cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
-        cart {
-          id
-          totalQuantity
-          checkoutUrl
-          lines(first: 50) {
-            edges {
-              node {
-                id
-                quantity
-                merchandise {
-                  ... on ProductVariant {
-                    id
-                    title
-                    price {
-                      amount
-                      currencyCode
-                    }
-                    availableForSale
-                    quantityAvailable
-                    product {
+    if (!token || !domain) {
+      return NextResponse.json(
+        { error: "Configuration Shopify manquante" },
+        { status: 500 }
+      );
+    }
+
+    const query = `
+      mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+        cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+          cart {
+            id
+            checkoutUrl
+            totalQuantity
+            cost {
+              subtotalAmount {
+                amount
+                currencyCode
+              }
+              totalAmount {
+                amount
+                currencyCode
+              }
+            }
+            lines {
+              edges {
+                node {
+                  id
+                  quantity
+                  merchandise {
+                    ... on ProductVariant {
+                      id
                       title
-                      featuredImage {
-                        url
+                      price {
+                        amount
+                        currencyCode
+                      }
+                      availableForSale
+                      quantityAvailable
+                      product {
+                        title
+                        featuredImage {
+                          url
+                        }
                       }
                     }
                   }
@@ -43,38 +66,39 @@ export async function POST(req: Request) {
               }
             }
           }
-        }
-        userErrors {
-          field
-          message
+          userErrors {
+            field
+            message
+          }
         }
       }
-    }
-  `;
+    `;
 
-  try {
     const res = await fetch(`https://${domain}/api/2023-07/graphql.json`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-Shopify-Storefront-Access-Token": token,
       },
-      body: JSON.stringify({ 
-        query, 
-        variables: { 
-          cartId, 
-          lineIds: [lineId] 
-        } 
+      body: JSON.stringify({
+        query,
+        variables: {
+          cartId,
+          lineIds: [lineId],
+        },
       }),
     });
 
     if (!res.ok) {
-      return NextResponse.json({ error: "Erreur Shopify" }, { status: res.status });
+      return NextResponse.json(
+        { error: "Erreur Shopify" },
+        { status: res.status }
+      );
     }
 
     const json = await res.json();
     const payload = json?.data?.cartLinesRemove;
-    const errors = payload?.userErrors?.filter((e: { message?: string }) => e?.message) ?? [];
+    const errors = payload?.userErrors?.filter((e: ShopifyUserError) => e?.message) ?? [];
 
     if (errors.length) {
       return NextResponse.json(
@@ -88,18 +112,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Panier non trouvé" }, { status: 404 });
     }
 
-    const lines = cart?.lines?.edges?.map((edge: { node: { id: string; quantity: number; merchandise: { title?: string; price?: { amount: string; currencyCode: string }; availableForSale?: boolean; quantityAvailable?: number; product?: { title?: string; featuredImage?: { url: string } } } } }) => {
+    const lines = cart?.lines?.edges?.map((edge: { node: ShopifyCartLine }) => {
       const node = edge.node;
       const merchandise = node.merchandise;
-      const unitPrice = merchandise?.price?.amount ? parseFloat(merchandise.price.amount) : 0;
-      const currency = merchandise?.price?.currencyCode || 'EUR';
+      const unitPrice = merchandise?.price?.amount
+        ? parseFloat(merchandise.price.amount)
+        : 0;
+      const currency = merchandise?.price?.currencyCode || "EUR";
       const lineTotal = (unitPrice * node.quantity).toFixed(2);
-      
+
       return {
         id: node.id,
         quantity: node.quantity,
-        title: merchandise?.product?.title || merchandise?.title || "Produit inconnu",
-        price: merchandise?.price?.amount ? `${merchandise.price.amount} ${merchandise.price.currencyCode}` : "Prix non disponible",
+        title:
+          merchandise?.product?.title ||
+          merchandise?.title ||
+          "Produit inconnu",
+        price: merchandise?.price?.amount
+          ? `${merchandise.price.amount} ${merchandise.price.currencyCode}`
+          : "Prix non disponible",
         unitPrice,
         currency,
         lineTotal: `${lineTotal} ${currency}`,
@@ -109,11 +140,8 @@ export async function POST(req: Request) {
       };
     }) || [];
 
-    // Utiliser le total calculé par Shopify si disponible, sinon calculer nous-mêmes
-    const totalAmount = cart?.cost?.subtotalAmount 
+    const totalAmount = cart?.cost?.subtotalAmount
       ? `${cart.cost.subtotalAmount.amount} ${cart.cost.subtotalAmount.currencyCode}`
-      : lines.length > 0 
-      ? `${lines.reduce((total: number, line: { unitPrice: number; quantity: number; currency: string }) => total + (line.unitPrice * line.quantity), 0).toFixed(2)} ${lines[0].currency}`
       : "0.00 EUR";
 
     return NextResponse.json({
@@ -123,9 +151,8 @@ export async function POST(req: Request) {
       checkoutUrl: cart?.checkoutUrl ?? null,
       lines,
     });
-
   } catch (error) {
     console.error("Erreur lors de la suppression:", error);
     return NextResponse.json({ error: "Erreur de connexion" }, { status: 500 });
   }
-} 
+}

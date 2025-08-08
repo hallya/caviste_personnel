@@ -2,7 +2,8 @@ import { renderHook, waitFor, act } from "@testing-library/react";
 import { useCart } from "../useCart";
 import type { Cart } from "../../types";
 
-global.fetch = jest.fn();
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
+global.fetch = mockFetch;
 
 const localStorageMock = {
   getItem: jest.fn(),
@@ -21,17 +22,17 @@ const mockCart: Cart = {
   checkoutUrl: "https://checkout.shopify.com/123",
   lines: [
     {
-      id: 'gid://shopify/CartLine/1',
-      title: 'Château Margaux 2018',
-      price: '150.00 EUR',
-      unitPrice: 150.00,
-      currency: 'EUR',
-      lineTotal: '300.00 EUR',
+      id: "gid://shopify/CartLine/1",
+      title: "Château Margaux 2018",
+      price: "150.00 EUR",
+      unitPrice: 150.0,
+      currency: "EUR",
+      lineTotal: "300.00 EUR",
       quantity: 2,
-      image: 'https://example.com/wine.jpg',
+      image: "https://example.com/wine.jpg",
       availableForSale: true,
       quantityAvailable: 10,
-      variantId: 'gid://shopify/ProductVariant/456',
+      variantId: "gid://shopify/ProductVariant/456",
     },
   ],
 };
@@ -43,10 +44,10 @@ describe("useCart", () => {
   });
 
   it("fetches cart data on mount", async () => {
-    (fetch as jest.Mock).mockResolvedValueOnce({
+    mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockCart,
-    });
+    } as Response);
 
     const { result } = renderHook(() => useCart());
 
@@ -74,7 +75,7 @@ describe("useCart", () => {
   });
 
   it("handles fetch error", async () => {
-    (fetch as jest.Mock).mockRejectedValueOnce(new Error("Network error"));
+    mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
     const { result } = renderHook(() => useCart());
 
@@ -87,10 +88,10 @@ describe("useCart", () => {
   });
 
   it("handles non-ok response", async () => {
-    (fetch as jest.Mock).mockResolvedValueOnce({
+    mockFetch.mockResolvedValueOnce({
       ok: false,
       status: 404,
-    });
+    } as Response);
 
     const { result } = renderHook(() => useCart());
 
@@ -103,10 +104,10 @@ describe("useCart", () => {
   });
 
   it("refetches cart data when refetch is called", async () => {
-    (fetch as jest.Mock).mockResolvedValueOnce({
+    mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockCart,
-    });
+    } as Response);
 
     const { result } = renderHook(() => useCart());
 
@@ -115,10 +116,10 @@ describe("useCart", () => {
     });
 
     const updatedCart = { ...mockCart, totalQuantity: 3 };
-    (fetch as jest.Mock).mockResolvedValueOnce({
+    mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => updatedCart,
-    });
+    } as Response);
 
     await act(async () => {
       await result.current.refetch();
@@ -130,10 +131,10 @@ describe("useCart", () => {
   });
 
   it("updates cart when updateCart is called", async () => {
-    (fetch as jest.Mock).mockResolvedValueOnce({
+    mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockCart,
-    });
+    } as Response);
 
     const { result } = renderHook(() => useCart());
 
@@ -150,15 +151,15 @@ describe("useCart", () => {
   });
 
   it("calls fetch with correct URL and parameters", async () => {
-    (fetch as jest.Mock).mockResolvedValueOnce({
+    mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockCart,
-    });
+    } as Response);
 
     renderHook(() => useCart());
 
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith("/api/cart?cartId=cart-123", {
+      expect(mockFetch).toHaveBeenCalledWith("/api/cart?cartId=cart-123", {
         cache: "no-store",
       });
     });
