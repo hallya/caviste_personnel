@@ -41,6 +41,7 @@ export async function GET(req: Request) {
               featuredImage {
                 url
               }
+              tags
               priceRange {
                 minVariantPrice {
                   amount
@@ -110,6 +111,7 @@ export async function GET(req: Request) {
       variantId: variant?.availableForSale ? variant.id : null,
       availableForSale: variant?.availableForSale ?? false,
       quantityAvailable: variant?.quantityAvailable ?? 0,
+      tags: e.node.tags ?? [],
     };
   });
 

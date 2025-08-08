@@ -15,6 +15,8 @@ export default function HomeContainer() {
     collectionsError,
     popupOpen,
     popupTitle,
+    popupHandle,
+    popupCollectionTags,
     popupProducts,
     popupLoading,
     hasNextPage,
@@ -30,6 +32,8 @@ export default function HomeContainer() {
       collectionsError={collectionsError}
       popupOpen={popupOpen}
       popupTitle={popupTitle}
+      popupHandle={popupHandle}
+      popupCollectionTags={popupCollectionTags}
       popupProducts={popupProducts}
       popupLoading={popupLoading}
       hasNextPage={hasNextPage}

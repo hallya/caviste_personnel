@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import type { ShopifyCollectionsGraphQLResponse, ShopifyCollectionGraphQLEdge } from "../../types/shopify";
+import type {
+  ShopifyCollectionsGraphQLResponse,
+  ShopifyCollectionGraphQLEdge,
+} from "../../types/shopify";
 
 export async function GET(req: Request) {
   new URL(req.url);
@@ -38,6 +41,10 @@ export async function GET(req: Request) {
                 }
               }
             }
+            tagsMetafield: metafield(namespace: "custom", key: "balises") {
+              type
+              value
+            }
           }
         }
       }
@@ -55,14 +62,14 @@ export async function GET(req: Request) {
   });
 
   if (!res.ok) {
-    console.error('Shopify API error:', res.status, res.statusText);
+    console.error("Shopify API error:", res.status, res.statusText);
     return NextResponse.json({ collections: [] }, { status: res.status });
   }
 
   const json = await res.json();
 
   if (json.errors) {
-    console.error('GraphQL errors:', JSON.stringify(json.errors, null, 2));
+    console.error("GraphQL errors:", JSON.stringify(json.errors, null, 2));
     return NextResponse.json({ collections: [] }, { status: 500 });
   }
 
@@ -73,10 +80,33 @@ export async function GET(req: Request) {
     const node = edge.node;
 
     let videoUrl = null;
-    if (node.metafield?.reference?.__typename === 'GenericFile' && node.metafield.reference.url) {
+    if (
+      node.metafield?.reference?.__typename === "GenericFile" &&
+      node.metafield.reference.url
+    ) {
       videoUrl = node.metafield.reference.url;
-    } else if (node.metafield?.reference?.__typename === 'Video' && node.metafield.reference.sources?.[0]?.url) {
+    } else if (
+      node.metafield?.reference?.__typename === "Video" &&
+      node.metafield.reference.sources?.[0]?.url
+    ) {
       videoUrl = node.metafield.reference.sources[0].url;
+    }
+
+    let collectionTags: string[] = [];
+    if (node.tagsMetafield?.value) {
+      try {
+        const tagsValue: string = node.tagsMetafield.value;
+
+        const parsedTags = JSON.parse(tagsValue) as string[];
+        collectionTags = parsedTags
+          .map((tag: string) => tag.trim())
+          .filter((tag: string) => tag.length > 0);
+      } catch (error) {
+        console.warn(
+          `Failed to parse collection tags for ${node.handle}:`,
+          error
+        );
+      }
     }
 
     return {
@@ -85,6 +115,7 @@ export async function GET(req: Request) {
       handle: node.handle,
       image: node.image?.url ?? null,
       videoCollection: videoUrl,
+      collectionTags,
     };
   });
 

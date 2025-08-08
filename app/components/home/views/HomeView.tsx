@@ -12,10 +12,12 @@ interface HomeViewProps {
   collectionsError: string | null;
   popupOpen: boolean;
   popupTitle: string;
+  popupHandle: string;
+  popupCollectionTags: string[];
   popupProducts: SimplifiedProduct[];
   popupLoading: boolean;
   hasNextPage: boolean;
-  onItemClick: (handle: string, title: string) => Promise<void>;
+  onItemClick: (handle: string, title: string, collectionTags?: string[]) => Promise<void>;
   onLoadMore: () => Promise<void>;
   onClosePopup: () => void;
 }
@@ -26,6 +28,8 @@ export default function HomeView({
   collectionsError,
   popupOpen,
   popupTitle,
+  popupHandle,
+  popupCollectionTags,
   popupProducts,
   popupLoading,
   hasNextPage,
@@ -38,6 +42,7 @@ export default function HomeView({
       <PageHeader />
       <SocialLinks />
       <IntroText />
+      
       <Carousel
         collections={collections}
         isLoading={collectionsLoading}
@@ -52,6 +57,8 @@ export default function HomeView({
           hasNext={hasNextPage}
           onLoadMore={onLoadMore}
           onClose={onClosePopup}
+          collectionHandle={popupHandle}
+          collectionTags={popupCollectionTags}
         />
       )}
     </main>

@@ -5,7 +5,7 @@ interface CarouselProps {
   collections: Collection[];
   isLoading: boolean;
   error: string | null;
-  onItemClick?: (handle: string, title: string) => void;
+  onItemClick?: (handle: string, title: string, collectionTags?: string[]) => void;
 }
 
 export default function Carousel({

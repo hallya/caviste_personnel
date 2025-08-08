@@ -8,7 +8,7 @@ import CarouselEmpty from "../views/CarouselEmpty";
 import type { Collection } from "../types";
 
 interface CarouselContainerProps {
-  onItemClick?: (handle: string, title: string) => void;
+  onItemClick?: (handle: string, title: string, collectionTags?: string[]) => void;
   collections: Collection[];
   isLoading: boolean;
   error: string | null;
@@ -31,7 +31,7 @@ export default function CarouselContainer({
 
   const handleSelect = (i: number) => setCurrent(i);
   const handleOpen = (c: Collection) =>
-    onItemClick?.(c.handle, c.title ?? c.handle);
+    onItemClick?.(c.handle, c.title ?? c.handle, c.collectionTags);
 
   if (isLoading) {
     return <CarouselLoading />;

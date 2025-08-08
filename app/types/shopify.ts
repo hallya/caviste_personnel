@@ -82,8 +82,13 @@ export interface ShopifyMetafieldReference {
   };
 }
 
+export type ShopifyMetafieldType = 
+  | 'list.single_line_text_field' // Confirmed type for collection tags
+  | string; // fallback for other types
+
 export interface ShopifyMetafield {
-  type: string;
+  type: ShopifyMetafieldType;
+  value?: string;
   reference?: ShopifyMetafieldReference;
 }
 
@@ -165,6 +170,7 @@ export interface SimplifiedProduct {
   variantId?: string;
   availableForSale: boolean;
   quantityAvailable?: number;
+  tags: string[];
 }
 
 export interface SimplifiedCollection {
@@ -238,12 +244,15 @@ export function isShopifyCollection(obj: unknown): obj is ShopifyCollection {
          'title' in obj && typeof (obj as ShopifyCollection).title === 'string');
 } 
 
+
+
 export interface ShopifyCollectionGraphQLNode {
   id: string;
   title: string;
   handle: string;
   image?: ShopifyImageSimple;
   metafield?: ShopifyMetafield;
+  tagsMetafield?: ShopifyMetafield;
 }
 
 export interface ShopifyCollectionGraphQLEdge {

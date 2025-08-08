@@ -1,4 +1,5 @@
 import { memo, useRef, useEffect, useState } from "react";
+import { VIDEO_CONFIG } from "./constants";
 
 interface VideoBackgroundProps {
   src: string;
@@ -75,13 +76,13 @@ export const VideoBackground = memo(function VideoBackground({
       const playVideo = async () => {
         try {
           await video.play();
-        } catch (error) {
+        } catch {
           setAttempts((prev) => prev + 1);
 
-          if (isSafari && attempts < 3) {
+          if (isSafari && attempts < VIDEO_CONFIG.MAX_PLAY_ATTEMPTS) {
             setTimeout(() => {
               video.play().catch(() => {});
-            }, 1000);
+            }, VIDEO_CONFIG.RETRY_DELAY_MS);
           }
         }
       };
@@ -93,7 +94,7 @@ export const VideoBackground = memo(function VideoBackground({
     }
   }, [isSelected, isVisible, isLoaded, isSafari, attempts]);
 
-  if (hasError && attempts >= 3) {
+  if (hasError && attempts >= VIDEO_CONFIG.MAX_PLAY_ATTEMPTS) {
     return (
       <div
         className={`absolute inset-0 w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 transition-opacity duration-500 ease-in-out ${

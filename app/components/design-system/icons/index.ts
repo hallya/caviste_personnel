@@ -8,6 +8,10 @@ import NotificationIcon from "./NotificationIcon";
 import InstagramIcon from "./InstagramIcon";
 import FacebookIcon from "./FacebookIcon";
 import ImageIcon from "./ImageIcon";
+import SortIcon from "./SortIcon";
+import SortOrderIcon from "./SortOrderIcon";
+import SearchIcon from "./SearchIcon";
+import ClearIcon from "./ClearIcon";
 
 export const iconMap = {
   bottle: BottleIcon,
@@ -19,6 +23,10 @@ export const iconMap = {
   instagram: InstagramIcon,
   facebook: FacebookIcon,
   image: ImageIcon,
+  sort: SortIcon,
+  "sort-order": SortOrderIcon,
+  search: SearchIcon,
+  clear: ClearIcon,
 } as const;
 
 export type IconName = keyof typeof iconMap;
@@ -33,5 +41,9 @@ export {
   NotificationIcon,
   InstagramIcon,
   FacebookIcon,
-  ImageIcon
+  ImageIcon,
+  SortIcon, 
+  SortOrderIcon, 
+  SearchIcon, 
+  ClearIcon 
 }; 

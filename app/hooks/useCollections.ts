@@ -9,11 +9,13 @@ interface UseCollectionsReturn {
 
   popupOpen: boolean;
   popupTitle: string;
+  popupHandle: string;
+  popupCollectionTags: string[];
   popupProducts: SimplifiedProduct[];
   popupLoading: boolean;
   hasNextPage: boolean;
 
-  openCollection: (handle: string, title: string) => Promise<void>;
+  openCollection: (handle: string, title: string, collectionTags?: string[]) => Promise<void>;
   loadMore: () => Promise<void>;
   closePopup: () => void;
 }
@@ -25,7 +27,8 @@ export function useCollections(): UseCollectionsReturn {
 
   const [popupOpen, setPopupOpen] = useState(false);
   const [popupTitle, setPopupTitle] = useState("");
-  const [currentHandle, setCurrentHandle] = useState("");
+  const [popupHandle, setPopupHandle] = useState("");
+  const [popupCollectionTags, setPopupCollectionTags] = useState<string[]>([]);
   const [popupProducts, setPopupProducts] = useState<SimplifiedProduct[]>([]);
   const [popupLoading, setPopupLoading] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -68,7 +71,7 @@ export function useCollections(): UseCollectionsReturn {
     async (handle: string, lastCursor?: string | null) => {
       const params = new URLSearchParams();
       params.set("handle", handle);
-      params.set("first", "12");
+      params.set("first", "50"); // Increased from 12 to 50 to get more tags
       if (lastCursor) {
         params.set("after", lastCursor);
       }
@@ -83,10 +86,11 @@ export function useCollections(): UseCollectionsReturn {
   );
 
   const openCollection = useCallback(
-    async (handle: string, title: string) => {
+    async (handle: string, title: string, collectionTags: string[] = []) => {
       setPopupOpen(true);
       setPopupLoading(true);
-      setCurrentHandle(handle);
+      setPopupHandle(handle);
+      setPopupCollectionTags(collectionTags);
       setPopupProducts([]);
       setNextCursor(null);
 
@@ -104,11 +108,11 @@ export function useCollections(): UseCollectionsReturn {
   );
 
   const loadMore = useCallback(async () => {
-    if (!currentHandle || !nextCursor) return;
+    if (!popupHandle || !nextCursor) return;
     setPopupLoading(true);
     try {
       const { products, pageInfo } = await loadCollection(
-        currentHandle,
+        popupHandle,
         nextCursor
       );
       setPopupProducts((prev) => [...prev, ...products]);
@@ -117,7 +121,7 @@ export function useCollections(): UseCollectionsReturn {
     } finally {
       setPopupLoading(false);
     }
-  }, [currentHandle, nextCursor, loadCollection]);
+  }, [popupHandle, nextCursor, loadCollection]);
 
   const closePopup = useCallback(() => {
     setPopupOpen(false);
@@ -129,6 +133,8 @@ export function useCollections(): UseCollectionsReturn {
     collectionsError,
     popupOpen,
     popupTitle,
+    popupHandle,
+    popupCollectionTags,
     popupProducts,
     popupLoading,
     hasNextPage,

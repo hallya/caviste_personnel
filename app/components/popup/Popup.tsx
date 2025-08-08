@@ -8,6 +8,8 @@ interface PopupProps {
   loading: boolean;
   hasNext: boolean;
   onLoadMore: () => void;
+  collectionHandle?: string;
+  collectionTags?: string[];
 }
 
 export default function Popup(props: PopupProps) {

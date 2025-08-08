@@ -271,6 +271,46 @@ export const ComponentName = memo(function ComponentName({ ... }) {
 });
 ```
 
+### **Magic Numbers and Constants**
+```typescript
+// ❌ Avoid magic numbers in code
+const res = await fetch(`/api/collection-products?handle=${handle}&first=250`);
+setTimeout(() => {}, 1000);
+
+// ✅ Use named constants instead
+import { API_LIMITS, TIMING } from '../constants';
+
+const res = await fetch(`/api/collection-products?handle=${handle}&first=${API_LIMITS.MAX_PRODUCTS_PER_COLLECTION}`);
+setTimeout(() => {}, TIMING.MILLISECONDS_PER_SECOND);
+
+// ✅ Define constants in dedicated files
+// constants.ts
+export const API_LIMITS = {
+  MAX_PRODUCTS_PER_COLLECTION: 250,
+  MAX_CACHE_SIZE: 50,
+} as const;
+
+export const TIMING = {
+  MILLISECONDS_PER_SECOND: 1000,
+  SECONDS_PER_MINUTE: 60,
+  MINUTES_PER_HOUR: 60,
+} as const;
+
+// ✅ Use descriptive names for magic numbers
+export const CACHE_CONFIG = {
+  TTL: 5 * TIMING.MINUTES_PER_HOUR * TIMING.SECONDS_PER_MINUTE * TIMING.MILLISECONDS_PER_SECOND,
+} as const;
+```
+
+#### **Magic Number Guidelines**
+- ✅ **Define constants** for all numeric values that have business meaning
+- ✅ **Use descriptive names** that explain the purpose
+- ✅ **Group related constants** in objects (e.g., `API_LIMITS`, `TIMING`)
+- ✅ **Use `as const`** for type safety
+- ✅ **Import constants** from dedicated files
+- ❌ **Avoid hardcoded numbers** in component logic
+- ❌ **Avoid magic numbers** in calculations or API calls
+
 ## 🚀 Git Workflow
 
 ### **Pre-commit Hooks**
