@@ -10,6 +10,11 @@ export default function LoadingIcon({ className = "w-3 h-3" }: LoadingIconProps)
       viewBox="0 0 24 24"
       aria-label="Chargement en cours"
       role="img"
+      style={{ 
+        display: 'block',
+        width: '100%',
+        height: '100%'
+      }}
     >
       <circle 
         className="opacity-25" 
@@ -18,6 +23,7 @@ export default function LoadingIcon({ className = "w-3 h-3" }: LoadingIconProps)
         r="10" 
         stroke="currentColor" 
         strokeWidth="4"
+        fill="none"
       />
       <path 
         className="opacity-75" 

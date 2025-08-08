@@ -7,7 +7,7 @@ import type { NotificationData, NotificationContextType, NotificationGroup as No
 import { LoadingIcon } from "../components/design-system/icons";
 
 const LoadingNotification = () => (
-  <div className="bg-white rounded-lg shadow-lg border-l-4 border-primary-600 p-4 transform transition-all duration-200 ease-out w-96">
+  <div className="bg-white rounded-lg shadow-lg border-l-4 border-primary-600 p-4 transform transition-all duration-200 ease-out w-[calc(100vw-20px)] md:w-90">
     <div className="flex items-start justify-between">
       <div className="flex items-center flex-1 min-w-0">
         <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-primary-600/10">
@@ -50,7 +50,6 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     const newNotification = { ...notification, id, timestamp };
     
     setNotifications(prev => {
-      // Replace existing notification if replaceId is provided
       if (notification.replaceId) {
         return prev.map(n => n.id === notification.replaceId ? newNotification : n);
       }
@@ -135,7 +134,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     <NotificationContext.Provider value={contextValue}>
       {children}
       
-      <div className="fixed top-4 right-4 z-notification space-y-2 w-96">
+      <div className="fixed top-4 right-4 z-notification space-y-2 w-[calc(100vw-20px)] md:w-90">
         {groupedNotifications.ungrouped.map((notification) => (
           <IndividualNotification
             key={notification.id}
