@@ -33,7 +33,10 @@ const mockProducts: SimplifiedProduct[] = [
     image: 'https://example.com/wine1.jpg',
     price: '25.50',
     currency: 'EUR',
+    variantId: 'var1',
     availableForSale: true,
+    quantityAvailable: 10,
+    tags: ['test-tag'],
   },
 ];
 
@@ -43,6 +46,8 @@ const defaultProps = {
   collectionsError: null,
   popupOpen: false,
   popupTitle: '',
+  popupHandle: '',
+  popupCollectionTags: [],
   popupProducts: mockProducts,
   popupLoading: false,
   hasNextPage: false,

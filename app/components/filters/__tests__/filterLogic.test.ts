@@ -4,28 +4,37 @@ import type { SimplifiedProduct } from '../../../types/shopify';
 const mockProduct1: SimplifiedProduct = {
   id: '1',
   title: 'Vin Rouge de Bordeaux',
-  handle: 'vin-rouge-bordeaux',
-  tags: ['vin-rouge', 'bordeaux', 'premium'],
+  image: null,
   price: '25.00',
-  featuredImage: null,
+  currency: 'EUR',
+  variantId: 'var1',
+  availableForSale: true,
+  quantityAvailable: 10,
+  tags: ['vin-rouge', 'bordeaux', 'premium'],
 };
 
 const mockProduct2: SimplifiedProduct = {
   id: '2',
   title: 'Vin Blanc de Loire',
-  handle: 'vin-blanc-loire',
-  tags: ['vin-blanc', 'loire', 'bio'],
+  image: null,
   price: '18.00',
-  featuredImage: null,
+  currency: 'EUR',
+  variantId: 'var2',
+  availableForSale: true,
+  quantityAvailable: 5,
+  tags: ['vin-blanc', 'loire', 'bio'],
 };
 
 const mockProduct3: SimplifiedProduct = {
   id: '3',
   title: 'Champagne Brut',
-  handle: 'champagne-brut',
-  tags: ['champagne', 'brut', 'celebration'],
+  image: null,
   price: '45.00',
-  featuredImage: null,
+  currency: 'EUR',
+  variantId: 'var3',
+  availableForSale: false,
+  quantityAvailable: 0,
+  tags: ['champagne', 'brut', 'celebration'],
 };
 
 describe('Filter Logic', () => {

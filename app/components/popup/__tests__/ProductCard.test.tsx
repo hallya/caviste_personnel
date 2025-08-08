@@ -17,6 +17,7 @@ const baseProduct: SimplifiedProduct = {
   availableForSale: true,
   quantityAvailable: 10,
   variantId: "variant-1",
+  tags: ["test-tag"],
 };
 
 const renderProductCard = (product: SimplifiedProduct) => {
