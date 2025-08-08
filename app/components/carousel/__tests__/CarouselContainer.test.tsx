@@ -102,6 +102,6 @@ describe("CarouselContainer", () => {
       firstItem.click();
     });
 
-    expect(onItemClick).toHaveBeenCalledWith("collection-1", "Collection 1");
+    expect(onItemClick).toHaveBeenCalledWith("collection-1", "Collection 1", undefined);
   });
 });
