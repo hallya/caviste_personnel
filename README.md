@@ -94,7 +94,27 @@ const getStackedStyle = (index: number) => ({
 - **Jest + React Testing Library**: Component and hook testing
 - **Lighthouse CLI**: Automated performance auditing
 - **ESLint**: Code quality enforcement
-- **Husky + lint-staged**: Pre-commit quality checks
+- **Husky + lint-staged**: Pre-commit and pre-push quality checks
+
+## 📊 **Quality Metrics**
+
+### **Test Coverage**
+- **418 test cases** across 38 test suites
+- **83.7% statement coverage** with focus on critical business logic
+- **67.7% branch coverage** ensuring edge case handling
+- **80.1% function coverage** with comprehensive API testing
+
+### **Test Strategy**
+- **API Integration**: Complete Shopify GraphQL endpoint testing
+- **Component Testing**: React Testing Library best practices
+- **Hook Testing**: Custom hook behavior and edge cases
+- **Page Testing**: Full user journey validation
+
+### **Performance Standards**
+- **TypeScript**: 0 compilation errors with strict configuration
+- **ESLint**: Clean codebase with enforced quality standards
+- **Lighthouse**: Automated performance monitoring
+- **CI/CD**: Pre-commit and pre-push hooks ensuring code quality
 
 ## 💡 **Problem-Solving Examples**
 
