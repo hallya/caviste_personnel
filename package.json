@@ -19,7 +19,11 @@
     "audit:pages": "npm run audit:json -- && lighthouse http://localhost:3000/cart --output=json --output-path=./lighthouse-cart.json --chrome-flags=\"--headless --no-sandbox\" --quiet && lighthouse http://localhost:3000/products --output=json --output-path=./lighthouse-products.json --chrome-flags=\"--headless --no-sandbox\" --quiet",
     "audit:dev": "npm run build && npm run start & sleep 10 && npm run audit && pkill -f 'next start'",
     "perf": "npm run audit:dev && open lighthouse-report.html",
-    "audit:ci": "lhci autorun"
+    "audit:ci": "lhci autorun",
+    "audit:real:desktop": "lhci autorun --config=lighthouserc.real.desktop.js",
+    "audit:real:mobile":  "lhci autorun --config=lighthouserc.real.mobile.js",
+    "audit:real:poor":    "lhci autorun --config=lighthouserc.real.poor.js"
+
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -36,6 +40,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
+    "@types/jest-axe": "^3.5.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -43,6 +48,7 @@
     "eslint-config-next": "^15.4.5",
     "husky": "^9.1.7",
     "jest": "^30.0.5",
+    "jest-axe": "^10.0.0",
     "jest-environment-jsdom": "^30.0.5",
     "lighthouse": "^12.8.1",
     "lint-staged": "^16.1.4",

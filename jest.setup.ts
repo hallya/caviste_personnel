@@ -1,27 +1,25 @@
 import "@testing-library/jest-dom";
 import { ImageProps } from "next/image";
 import React from "react";
+import 'jest-axe/extend-expect'
 
-jest.mock("next/router", () => ({
+// Mock next/navigation (App Router) au lieu de next/router (Pages Router)
+jest.mock("next/navigation", () => ({
   useRouter() {
     return {
-      route: "/",
-      pathname: "/",
-      query: {},
-      asPath: "/",
       push: jest.fn(),
-      pop: jest.fn(),
-      reload: jest.fn(),
+      replace: jest.fn(),
+      prefetch: jest.fn(),
       back: jest.fn(),
-      prefetch: jest.fn().mockResolvedValue(undefined),
-      beforePopState: jest.fn(),
-      events: {
-        on: jest.fn(),
-        off: jest.fn(),
-        emit: jest.fn(),
-      },
-      isFallback: false,
+      forward: jest.fn(),
+      refresh: jest.fn(),
     };
+  },
+  usePathname() {
+    return "/";
+  },
+  useSearchParams() {
+    return new URLSearchParams();
   },
 }));
 
