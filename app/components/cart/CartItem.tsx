@@ -19,7 +19,7 @@ export default function CartItem({
 }: CartItemProps) {
   return (
     <div className="flex items-stretch justify-between border-b border-neutral-200 pb-4">
-      <div className="flex items-stretch space-x-4 flex-1">
+      <div className="flex items-stretch space-x-2 md:space-x-4 flex-1 min-w-0">
         {item.image && (
           <div className="flex-shrink-0">
             <Image 
@@ -27,13 +27,13 @@ export default function CartItem({
               alt={item.title}
               width={80}
               height={120}
-              className="w-20 h-full object-cover rounded"
+              className="w-12 md:w-20 h-full object-cover rounded"
             />
           </div>
         )}
-        <div className="flex-1 flex flex-col justify-between">
-          <div>
-            <h3 className="text-subtitle text-primary-600">{item.title}</h3>
+        <div className="flex-1 flex flex-col justify-between min-w-0">
+          <div className="min-w-0">
+            <h3 className="text-subtitle text-primary-600 leading-tight">{item.title}</h3>
             {!item.availableForSale && (
               <p className="text-caption text-primary-700 mt-1">Rupture de stock</p>
             )}
@@ -43,7 +43,7 @@ export default function CartItem({
               </p>
             )}
           </div>
-          <div className="flex items-center space-x-4 mt-2">
+          <div className="flex items-center space-x-2 md:space-x-4 mt-2">
             <QuantitySelector
               quantity={item.quantity}
               onQuantityChange={(quantity) => onQuantityChange(item.id, quantity)}
@@ -57,13 +57,13 @@ export default function CartItem({
               className="text-primary-500 hover:text-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               aria-label="Supprimer l'article"
             >
-              <TrashIcon className="w-5 h-5" />
+              <TrashIcon className="w-4 h-4 md:w-5 md:h-5" />
             </button>
           </div>
         </div>
       </div>
-      <div className="text-right ml-4 flex flex-col justify-center">
-        <p className="text-subtitle text-primary-600">{item.lineTotal}</p>
+      <div className="text-right ml-2 md:ml-4 flex flex-col justify-center flex-shrink-0">
+        <p className="text-subtitle text-primary-600 font-medium">{item.lineTotal}</p>
         <p className="text-caption text-neutral-500 mt-1">
           {formatPrice(item.price)} l&apos;unité
         </p>

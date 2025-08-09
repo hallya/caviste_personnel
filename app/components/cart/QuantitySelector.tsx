@@ -47,14 +47,14 @@ export default function QuantitySelector({
   };
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-1 md:space-x-2">
       <button
         onClick={handleDecrease}
         disabled={disabled || localQuantity <= 1}
-        className="w-8 h-8 flex items-center justify-center bg-neutral-200 text-neutral-600 rounded hover:bg-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center bg-neutral-200 text-neutral-600 rounded hover:bg-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         aria-label="Diminuer la quantité"
       >
-        <MinusIcon className="w-4 h-4" />
+        <MinusIcon className="w-3 h-3 md:w-4 md:h-4" />
       </button>
       
       <input
@@ -64,17 +64,17 @@ export default function QuantitySelector({
         value={localQuantity}
         onChange={handleInputChange}
         disabled={disabled || !availableForSale}
-        className="w-12 h-8 text-center border border-neutral-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50"
+        className="w-10 md:w-12 h-7 md:h-8 text-center border border-neutral-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50"
         aria-label="Quantité"
       />
       
       <button
         onClick={handleIncrease}
         disabled={disabled || localQuantity >= actualMaxQuantity || !availableForSale}
-        className="w-8 h-8 flex items-center justify-center bg-neutral-200 text-neutral-600 rounded hover:bg-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center bg-neutral-200 text-neutral-600 rounded hover:bg-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         aria-label="Augmenter la quantité"
       >
-        <PlusIcon className="w-4 h-4" />
+        <PlusIcon className="w-3 h-3 md:w-4 md:h-4" />
       </button>
     </div>
   );
