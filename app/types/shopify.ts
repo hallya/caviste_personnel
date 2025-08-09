@@ -50,6 +50,10 @@ export interface ShopifyProduct {
       node: ShopifyProductVariant;
     }[];
   };
+  priceRange?: {
+    minVariantPrice: ShopifyMoney;
+    maxVariantPrice?: ShopifyMoney;
+  };
   selectedOrFirstAvailableVariant: {
     id: string;
     price: ShopifyMoney;
