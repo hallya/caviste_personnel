@@ -199,6 +199,45 @@ it('applies correct styling for success type', () => {
 
 ## 🔧 Code Quality Standards
 
+### **Dead Code Elimination**
+```typescript
+// ❌ Unused imports
+import { useState, useEffect, useCallback } from 'react';
+import { formatPrice, validateInput } from './utils'; // validateInput not used
+
+function Component() {
+  const [count, setCount] = useState(0); // count not used
+  
+  useEffect(() => {
+    // effect logic
+  }, []);
+  
+  return <div>{formatPrice(25.99)}</div>;
+}
+
+// ✅ Clean imports and variables
+import { useEffect } from 'react';
+import { formatPrice } from './utils';
+
+function Component() {
+  useEffect(() => {
+    // effect logic
+  }, []);
+  
+  return <div>{formatPrice(25.99)}</div>;
+}
+```
+
+#### **Dead Code Guidelines**
+- ✅ **Remove unused imports** - imports that are never referenced
+- ✅ **Remove unused variables** - variables declared but never used
+- ✅ **Remove unused functions** - functions that are never called
+- ✅ **Remove unused types** - TypeScript interfaces/types with no usage
+- ✅ **Remove commented code** - old code blocks that serve no purpose
+- ✅ **Simplify overly complex mocks** - test mocks with unnecessary complexity
+- ❌ **Never leave console.log** in production code
+- ❌ **Avoid dead conditional branches** - unreachable code paths
+
 ### **TypeScript**
 ```typescript
 // ✅ Strict typing
