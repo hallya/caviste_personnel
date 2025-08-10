@@ -2,8 +2,8 @@ import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 import RootLayout, { metadata } from "../layout";
-jest.mock("../components/layout/containers/LayoutContainer", () => {
-  return function MockLayoutContainer({ children }: { children: React.ReactNode }) {
+jest.mock("../components/layout/Layout", () => {
+  return function MockLayout({ children }: { children: React.ReactNode }) {
     return <div data-testid="layout-container">{children}</div>;
   };
 });

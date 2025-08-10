@@ -1,15 +1,16 @@
-"use client";
-
 import type { Metadata } from "next";
-import FormationsView from "./views/FormationsView";
-import { useFormations } from "./hooks/useFormations";
+import FormationsClient from "./FormationsClient";
+import JsonLd from "../components/seo/JsonLd";
+import { EDUCATIONAL_ORGANIZATION_SCHEMA } from "../components/seo/schemas";
 
 export const metadata: Metadata = {
   title: "Formations Œnologie - Edouard, Caviste personnel",
-  description: "Formations personnalisées en œnologie avec Edouard. Découverte des vins, dégustations guidées et conseils d'expert pour développer votre palais.",
+  description:
+    "Formations personnalisées en œnologie avec Edouard. Découverte des vins, dégustations guidées et conseils d'expert pour développer votre palais.",
   openGraph: {
     title: "Formations Œnologie - Edouard, Caviste personnel",
-    description: "Formations personnalisées en œnologie avec Edouard. Découverte des vins, dégustations guidées et conseils d'expert pour développer votre palais.",
+    description:
+      "Formations personnalisées en œnologie avec Edouard. Découverte des vins, dégustations guidées et conseils d'expert pour développer votre palais.",
     url: "https://caviste-personnel.vercel.app/formations",
     siteName: "Edouard, Caviste personnel",
     images: [
@@ -26,27 +27,17 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Formations Œnologie - Edouard, Caviste personnel",
-    description: "Formations personnalisées en œnologie avec Edouard. Découverte des vins, dégustations guidées et conseils d'expert pour développer votre palais.",
+    description:
+      "Formations personnalisées en œnologie avec Edouard. Découverte des vins, dégustations guidées et conseils d'expert pour développer votre palais.",
     images: ["/edouard-formation.png"],
   },
 };
 
 export default function FormationsPage() {
-  const {
-    formData,
-    isSubmitting,
-    submitStatus,
-    handleSubmit,
-    handleChange,
-  } = useFormations();
-
   return (
-    <FormationsView
-      formData={formData}
-      onSubmit={handleSubmit}
-      onChange={handleChange}
-      isSubmitting={isSubmitting}
-      submitStatus={submitStatus}
-    />
+    <>
+      <JsonLd data={EDUCATIONAL_ORGANIZATION_SCHEMA} />
+      <FormationsClient />
+    </>
   );
 }

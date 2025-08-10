@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import LayoutContainer from "./components/layout/containers/LayoutContainer";
+import Layout from "./components/layout/Layout";
+import JsonLd from "./components/seo/JsonLd";
+import { ORGANIZATION_SCHEMA, WEBSITE_SCHEMA } from "./components/seo/schemas";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://caviste-personnel.vercel.app'),
@@ -42,8 +44,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <LayoutContainer>
-      {children}
-    </LayoutContainer>
+    <html lang="fr">
+      <head>
+        <JsonLd data={ORGANIZATION_SCHEMA} />
+        <JsonLd data={WEBSITE_SCHEMA} />
+      </head>
+      <body className="font-sans antialiased">
+        <Layout>{children}</Layout>
+      </body>
+    </html>
   );
 }
