@@ -7,16 +7,121 @@ This document defines the development standards and best practices for the **Cav
 ## 🏗️ Architecture Standards
 
 ### **Component Structure**
+
+**For complex features (with business logic)**:
 ```
 app/components/
-├── componentName/
-│   ├── __tests__/
-│   │   └── ComponentName.test.tsx
+├── featureName/
+│   ├── containers/
+│   │   └── FeatureContainer.tsx
+│   ├── views/
+│   │   └── FeatureView.tsx
 │   ├── hooks/
-│   │   └── useComponentName.ts
+│   │   └── useFeature.ts
 │   ├── types.ts
 │   ├── constants.ts
-│   └── ComponentName.tsx
+|   ├── index.ts # export container here
+│   └── __tests__/
+```
+
+**For simple features (presentation only)**:
+```
+app/featureName/
+├── views/
+│   └── FeatureView.tsx
+├── types.ts
+├── constants.ts
+├── FeatureName.tsx
+|   index.ts                 # export view here
+└── __tests__/
+```
+
+### **Choosing Architecture Pattern**
+
+**Use Container/View pattern either when**:
+- Multiple custom hooks required
+- Complex state management (cart, filters, etc.)
+- Async operations and side effects
+- Business logic and data transformations
+- Reusable components across pages
+
+**Use Direct View pattern when**:
+- Static content pages (contact, about)
+- Simple forms without complex logic
+- Presentation-only components
+- Marketing pages
+- Single-purpose pages
+
+**Important**: Even with Direct View pattern, business logic should be extracted to custom hooks, not embedded in page components.
+
+### **Examples of Our Architecture**
+
+**Example 1: Contact (Static Content)**:
+```tsx
+// app/contact/page.tsx
+import ContactView from './views/ContactView';
+
+export default function ContactPage() {
+  return <ContactView />;
+}
+```
+
+**Example 2: Formations (Business Logic + Hook)**:
+```tsx
+// app/formations/hooks/useFormations.ts
+export function useFormations() {
+  const [formData, setFormData] = useState(...);
+  const handleSubmit = (e) => { /* API logic */ };
+  return { formData, handleSubmit, ... };
+}
+
+// app/formations/page.tsx
+export default function FormationsPage() {
+  const props = useFormations();
+  return <FormationsView {...props} />;
+}
+```
+
+**Key Principle**: No business logic in page components, always in hooks.
+
+### **Common Anti-Patterns to Avoid**
+
+**❌ Redundant handleSubmit functions**:
+```tsx
+// Bad: Double event handling
+function FormPage() {
+  const handleSubmit = async (formData) => { /* API logic */ };
+  return <FormView onSubmit={handleSubmit} />;
+}
+
+function FormView({ onSubmit }) {
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Just a wrapper!
+    onSubmit(formData);
+  };
+  return <form onSubmit={handleSubmit}>...</form>;
+}
+```
+
+**✅ Single responsibility**:
+```tsx
+// Good: Hook handles business logic, View handles events
+function useForm() {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // API logic here
+  };
+  return { handleSubmit };
+}
+
+function FormPage() {
+  const { handleSubmit } = useForm();
+  return <FormView onSubmit={handleSubmit} />;
+}
+
+function FormView({ onSubmit }) {
+  return <form onSubmit={onSubmit}>...</form>; // Direct binding
+}
 ```
 
 ### **File Organization**
@@ -181,13 +286,34 @@ it('applies correct styling for success type', () => {
 });
 ```
 
+### **Testing Examples (Real Project)**
+```typescript
+// ✅ Good: Accessible selectors
+expect(screen.getByRole('heading', { name: 'Formations en Œnologie', level: 1 })).toBeInTheDocument();
+expect(screen.getByRole('textbox', { name: 'Nom complet *' })).toBeInTheDocument();
+await user.type(screen.getByRole('textbox', { name: 'Email *' }), 'test@example.com');
+
+// ✅ Good: User behavior testing  
+await user.click(screen.getByRole('button', { name: 'Envoyer ma demande' }));
+expect(mockOnSubmit).toHaveBeenCalledWith(expect.objectContaining({
+  preventDefault: expect.any(Function)
+}));
+
+// ❌ Avoid: Implementation details
+// expect(wrapper.find('.form-submit')).toHaveBeenCalled();
+// expect(component.state.isSubmitting).toBe(true);
+```
+
 ### **Testing Guidelines**
 - ✅ **Use `userEvent`** instead of `fireEvent`
 - ✅ **Use `waitFor`** for async assertions
 - ✅ **Use `act()`** for state updates in timers
-- ✅ **Use semantic selectors** (`getByRole`, `getByText`)
-- ✅ **Use `data-testid`** for specific elements
-- ✅ **Test accessibility** with ARIA attributes
+- ✅ **Prioritize accessible selectors**: `getByRole`, `getByLabelText`, `getByText`
+- ❌ **Avoid `getByTestId`** except for exceptional cases
+- ✅ **Test user behavior** not implementation details
+- ✅ **Use `within()` for hierarchical queries**
+- ✅ **Mock only what's necessary**
+- ✅ **Test error and loading states**
 
 ### **Test Coverage**
 - ✅ **Component rendering** and content

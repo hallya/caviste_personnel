@@ -39,7 +39,7 @@ export default function HomeView({
 }: HomeViewProps) {
   return (
     <main className="bg-primary-50 min-h-screen overflow-hidden touch-pan-y space-y-10">
-      <PageHeader />
+      <PageHeader isHomePage={true} />
       <SocialLinks />
       <IntroText />
       

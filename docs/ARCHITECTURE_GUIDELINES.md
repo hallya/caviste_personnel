@@ -99,15 +99,25 @@ export default function CartView({ cart, loading, error, onQuantityChange }: Car
 ```
 
 ### 3. Page Components
-**Purpose**: Next.js pages that should be minimal and only import containers.
+**Purpose**: Next.js pages that should be minimal and import containers for complex logic or views directly for simple pages.
 
-**Example**:
+**Complex Pages (with business logic)**:
 ```tsx
 // app/cart/page.tsx
 import CartContainer from '../components/cart/containers/CartContainer';
 
 export default function CartPage() {
   return <CartContainer />;
+}
+```
+
+**Simple Pages (static content)**:
+```tsx
+// app/contact/page.tsx
+import ContactView from './views/ContactView';
+
+export default function ContactPage() {
+  return <ContactView />;
 }
 ```
 
