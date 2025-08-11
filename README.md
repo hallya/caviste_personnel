@@ -221,6 +221,52 @@ app/
 - 💼 **LinkedIn**: [🚴🏼‍♂️ Lucien Dulac](https://www.linkedin.com/in/%F0%9F%9A%B4%F0%9F%8F%BC%E2%80%8D%E2%99%82%EF%B8%8F-lucien-dulac-7197b6ab/)
 - 🌐 **Live Demo**: [Edouard - Caviste Personnel](https://caviste-personnel.vercel.app)
 
+## 📊 Web Vitals & Analytics
+
+The application includes a comprehensive Web Vitals monitoring system to track real user performance metrics.
+
+### Features
+
+- **Core Web Vitals Tracking**: CLS, LCP, FID, INP, FCP, TTFB
+- **Consent Management**: GDPR-compliant user consent system
+- **Batch Processing**: Efficient metric collection and transmission
+- **Privacy-First**: Only collects data with user consent
+- **Developer Friendly**: Auto-consent in development mode
+
+### Usage
+
+Web Vitals tracking is automatically enabled across all pages via the `WebVitalsTracker` component in the root layout.
+
+```typescript
+// Manual consent management
+import { consent } from './app/utils/consent';
+
+// Grant consent
+consent.grant();
+
+// Check status
+console.log(consent.getStatus()); // 'granted' | 'denied' | 'pending'
+
+// Listen to changes
+const unsubscribe = consent.onChange((status) => {
+  console.log('Consent changed:', status);
+});
+```
+
+### API Endpoints
+
+- `GET /api/analytics/web-vitals` - Health check
+- `POST /api/analytics/web-vitals` - Receive metrics
+
+### Testing
+
+```bash
+# Run Web Vitals tests
+npm test -- hooks/useWebVitals
+npm test -- utils/consent
+npm test -- api/analytics/web-vitals
+```
+
 ---
 
 <p align="center">

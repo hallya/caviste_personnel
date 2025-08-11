@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import LayoutContainer from "./components/layout/containers/LayoutContainer";
+import { WebVitalsTracker } from "./components/analytics/WebVitalsTracker";
 
 export const metadata: Metadata = {
   title: "Edouard, Caviste personnel",
@@ -40,5 +41,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <LayoutContainer>{children}</LayoutContainer>;
+  return (
+    <LayoutContainer>
+      <WebVitalsTracker />
+      {children}
+    </LayoutContainer>
+  );
 }

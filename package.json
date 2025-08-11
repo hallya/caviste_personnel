@@ -20,17 +20,15 @@
     "audit:dev": "npm run build && npm run start & sleep 10 && npm run audit && pkill -f 'next start'",
     "perf": "npm run audit:dev && open lighthouse-report.html",
     "audit:ci": "lhci autorun",
-    "audit:real:desktop": "lhci autorun --config=lighthouserc.real.desktop.js",
-    "audit:real:mobile":  "lhci autorun --config=lighthouserc.real.mobile.js",
-    "audit:real:poor":    "lhci autorun --config=lighthouserc.real.poor.js"
-
+    "audit:real": "lhci autorun --config=lighthouserc.real.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@vercel/speed-insights": "^1.2.0",
     "next": "15.4.5",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "web-vitals": "^5.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
