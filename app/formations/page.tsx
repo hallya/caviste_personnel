@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import FormationsClient from "./FormationsClient";
 import JsonLd from "../components/seo/JsonLd";
 import { EDUCATIONAL_ORGANIZATION_SCHEMA } from "../components/seo/schemas";
+import FormationsClient from "./FormationsClient";
 
 export const metadata: Metadata = {
   title: "Formations Œnologie - Edouard, Caviste personnel",
