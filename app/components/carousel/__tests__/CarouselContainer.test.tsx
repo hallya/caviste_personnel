@@ -12,11 +12,13 @@ jest.mock("../Carousel.module.css", () => ({
 
 const mockCollections: Collection[] = [
   {
+    id: "gid://shopify/Collection/1",
     title: "Collection 1",
     handle: "collection-1",
     image: "https://example.com/image1.jpg",
   },
   {
+    id: "gid://shopify/Collection/2",
     title: "Collection 2",
     handle: "collection-2",
     image: "https://example.com/image2.jpg",

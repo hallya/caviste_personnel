@@ -9,3 +9,10 @@ export {
   setupFetchMock,
   APIResponseFactories,
 } from './api-factory';
+
+export {
+  CollectionsTestFactories,
+  CollectionsSSRFactories,
+  CollectionsTestData,
+  SearchParamsFactories,
+} from './collections-factory';
