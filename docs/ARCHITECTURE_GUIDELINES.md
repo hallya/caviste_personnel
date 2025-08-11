@@ -12,51 +12,127 @@ This document outlines the architectural patterns and best practices for the Cav
 - **Data Management**: Handled in hooks and services
 - **Container Logic**: Minimal, only for connecting hooks to views
 
-### 2. Container/Presentational Pattern
-We follow the Container/Presentational pattern (also known as Smart/Dumb Components) to separate business logic from UI rendering.
+### 2. Binary Architecture Decision
+**Simple rule**: 
+- **Has business logic** → Use Container/View pattern
+- **No business logic** → Use Direct View pattern
 
-## Directory Structure
+No subjective "complexity" evaluation needed - it's binary and objective.
 
+## Architecture Patterns
+
+### Pattern 1: Container/View (When Business Logic Exists)
+Use this pattern when your feature has:
+- Form handling with API calls
+- State management
+- Data fetching and transformations
+- User interactions with side effects
+- Multiple hooks coordination
+
+**Structure**:
 ```
-app/
-├── components/
-│   └── [feature]/
-│       ├── containers/          # Minimal container components
-│       │   └── [Feature]Container.tsx
-│       ├── views/               # Presentational components
-│       │   ├── [Feature]View.tsx
-│       │   ├── [Feature]Content.tsx
-│       │   ├── [Feature]Empty.tsx
-│       │   └── [Feature]Loading.tsx
-│       ├── hooks/               # Custom hooks (business logic)
-│       │   ├── use[Feature].ts
-│       │   ├── use[Feature]Actions.ts
-│       │   └── use[Feature]Logic.ts
-│       ├── types.ts             # TypeScript interfaces
-│       ├── constants.ts         # Constants and configuration
-│       ├── utils.ts             # Utility functions
-│       └── __tests__/           # Test files
-└── [feature]/
-    └── page.tsx                 # Next.js page (minimal)
+app/components/
+├── featureName/
+│   ├── containers/
+│   │   └── FeatureContainer.tsx    # Orchestrates hooks and views
+│   ├── views/
+│   │   └── FeatureView.tsx         # Pure UI component
+│   ├── hooks/
+│   │   └── useFeature.ts           # Business logic
+│   ├── types.ts
+│   ├── constants.ts
+│   └── __tests__/
+```
+
+**Example**:
+```tsx
+// hooks/useFormations.ts (contains business logic)
+export function useFormations() {
+  const [formData, setFormData] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // API logic here
+  };
+  
+  return { formData, isSubmitting, handleSubmit };
+}
+
+// containers/FormationsContainer.tsx (orchestrates hooks)
+export default function FormationsContainer() {
+  const props = useFormations(); // Hook contains business logic
+  return <FormationsView {...props} />;
+}
+
+// views/FormationsView.tsx
+export default function FormationsView({ formData, isSubmitting, handleSubmit }) {
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* UI only */}
+    </form>
+  );
+}
+
+// page.tsx
+export default function FormationsPage() {
+  return <FormationsContainer />;
+}
+```
+
+### Pattern 2: Direct View (When No Business Logic)
+Use this pattern when your feature has:
+- Static content only
+- No API calls
+- No state management
+- No user interactions with side effects
+- Presentation-only components
+
+**Structure**:
+```
+app/featureName/
+├── views/
+│   └── FeatureView.tsx             # Pure UI component
+├── types.ts
+├── constants.ts
+└── __tests__/
+```
+
+**Example**:
+```tsx
+// views/ContactView.tsx
+export default function ContactView() {
+  return (
+    <div>
+      <h1>Contact Us</h1>
+      <p>Static content only</p>
+    </div>
+  );
+}
+
+// page.tsx
+export default function ContactPage() {
+  return <ContactView />;
+}
 ```
 
 ## Component Types
 
 ### 1. Container Components (`containers/`)
-**Purpose**: Connect hooks to presentational components. Should be minimal and contain no business logic.
+**Purpose**: Orchestrate hooks (which contain business logic) and connect them to presentational components. Should be minimal and contain no business logic themselves.
 
 **Characteristics**:
-- Import and use hooks
-- Pass data and callbacks to presentational components
-- No complex business logic
+- Import and use hooks (which contain the business logic)
+- Pass data and callbacks from hooks to presentational components
+- No business logic - only orchestration
 - No direct UI rendering
 - Simple data flow orchestration
 
 **Example**:
 ```tsx
-// containers/CartContainer.tsx
+// containers/CartContainer.tsx (orchestrates hooks)
 export default function CartContainer() {
-  const { cart, loading, error, onQuantityChange, onRemoveItem } = useCartLogic();
+  const { cart, loading, error, onQuantityChange, onRemoveItem } = useCartLogic(); // Hook contains business logic
 
   return (
     <CartView
@@ -99,9 +175,9 @@ export default function CartView({ cart, loading, error, onQuantityChange }: Car
 ```
 
 ### 3. Page Components
-**Purpose**: Next.js pages that should be minimal and import containers for complex logic or views directly for simple pages.
+**Purpose**: Next.js pages that should be minimal and follow the binary rule.
 
-**Complex Pages (with business logic)**:
+**With Business Logic (Container/View)**:
 ```tsx
 // app/cart/page.tsx
 import CartContainer from '../components/cart/containers/CartContainer';
@@ -111,7 +187,7 @@ export default function CartPage() {
 }
 ```
 
-**Simple Pages (static content)**:
+**Without Business Logic (Direct View)**:
 ```tsx
 // app/contact/page.tsx
 import ContactView from './views/ContactView';
@@ -134,7 +210,7 @@ export default function ContactPage() {
 - Return consistent interfaces
 - Handle loading and error states
 - Use TypeScript for all interfaces
-- **Business logic should be in hooks, not containers**
+- **Business logic should be in hooks, containers only orchestrate hooks**
 
 **Example**:
 ```tsx
@@ -269,75 +345,53 @@ interface CartViewProps {
 - Clear structure for team collaboration
 - Consistent patterns across the codebase
 
-## Migration Guidelines
+## Decision Flow
 
-When refactoring existing components:
+When creating a new feature, ask:
 
-1. **Identify the component type** (container or presentational)
-2. **Extract business logic** into containers
-3. **Create presentational components** for UI
-4. **Update imports** and file structure
-5. **Update tests** to match new structure
-6. **Verify functionality** remains the same
+1. **Does this feature have business logic?**
+   - API calls? → Container/View
+   - State management? → Container/View
+   - Form handling? → Container/View
+   - User interactions with side effects? → Container/View
 
-## Example Migration
+2. **Is this purely presentational?**
+   - Static content? → Direct View
+   - No API calls? → Direct View
+   - No state management? → Direct View
 
-### Before (Mixed Logic)
+**No subjective "complexity" evaluation needed.**
+
+## Common Anti-Patterns to Avoid
+
+### ❌ Business Logic in Pages
 ```tsx
-// CartPage.tsx
-export default function CartPage() {
-  const { cart, loading, error } = useCart();
-  const { updateQuantity } = useCartActions();
-
-  const handleQuantityChange = async (lineId: string, quantity: number) => {
+// Bad: Logic in page
+export default function FormationsPage() {
+  const [formData, setFormData] = useState({});
+  const handleSubmit = async (e) => {
     // Business logic here
   };
-
-  if (loading) return <div>Loading...</div>;
-  
-  return (
-    <div>
-      {/* UI rendering here */}
-    </div>
-  );
+  return <FormationsView formData={formData} onSubmit={handleSubmit} />;
 }
 ```
 
-### After (Separated)
+### ❌ Redundant Containers
 ```tsx
-// containers/CartContainer.tsx
-export default function CartContainer() {
-  const { cart, loading, error } = useCart();
-  const { updateQuantity } = useCartActions();
+// Bad: Container for static content
+export default function ContactContainer() {
+  return <ContactView />; // No logic needed
+}
+```
 
-  const handleQuantityChange = async (lineId: string, quantity: number) => {
-    // Business logic here
+### ❌ Mixed Responsibilities
+```tsx
+// Bad: View with business logic
+export default function FormationsView() {
+  const handleSubmit = async (e) => {
+    // Business logic in view
   };
-
-  return (
-    <CartView
-      cart={cart}
-      loading={loading}
-      error={error}
-      onQuantityChange={handleQuantityChange}
-    />
-  );
-}
-
-// views/CartView.tsx
-export default function CartView({ cart, loading, error, onQuantityChange }: CartViewProps) {
-  if (loading) return <CartLoading />;
-  
-  return (
-    <div>
-      {/* UI rendering here */}
-    </div>
-  );
-}
-
-// page.tsx
-export default function CartPage() {
-  return <CartContainer />;
+  return <form onSubmit={handleSubmit}>...</form>;
 }
 ```
 
@@ -350,4 +404,4 @@ Following these architectural guidelines ensures:
 - **Team collaboration** with consistent patterns
 - **Future-proof code** that's easy to modify and extend
 
-Always prioritize these principles when creating new features or refactoring existing code. 
+**Remember**: Binary decision - logic = Container/View, no logic = Direct View. 

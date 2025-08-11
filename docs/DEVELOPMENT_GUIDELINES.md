@@ -36,23 +36,27 @@ app/featureName/
 └── __tests__/
 ```
 
-### **Choosing Architecture Pattern**
+### **Binary Architecture Decision**
 
-**Use Container/View pattern either when**:
-- Multiple custom hooks required
-- Complex state management (cart, filters, etc.)
-- Async operations and side effects
-- Business logic and data transformations
-- Reusable components across pages
+**Simple rule**: 
+- **Has business logic** → Use Container/View pattern
+- **No business logic** → Use Direct View pattern
+
+**Use Container/View pattern when**:
+- Form handling with API calls
+- State management
+- Data fetching and transformations
+- User interactions with side effects
+- Multiple hooks coordination
 
 **Use Direct View pattern when**:
-- Static content pages (contact, about)
-- Simple forms without complex logic
+- Static content only
+- No API calls
+- No state management
+- No user interactions with side effects
 - Presentation-only components
-- Marketing pages
-- Single-purpose pages
 
-**Important**: Even with Direct View pattern, business logic should be extracted to custom hooks, not embedded in page components.
+**Important**: Business logic should always be in hooks, containers only orchestrate hooks, never in pages or views.
 
 ### **Examples of Our Architecture**
 
@@ -84,7 +88,55 @@ export default function FormationsPage() {
 
 **Key Principle**: No business logic in page components, always in hooks.
 
+### **Decision Flow**
+
+When creating a new feature, ask:
+
+1. **Does this feature have business logic?**
+   - API calls? → Container/View
+   - State management? → Container/View
+   - Form handling? → Container/View
+   - User interactions with side effects? → Container/View
+
+2. **Is this purely presentational?**
+   - Static content? → Direct View
+   - No API calls? → Direct View
+   - No state management? → Direct View
+
+**No subjective "complexity" evaluation needed.**
+
 ### **Common Anti-Patterns to Avoid**
+
+**❌ Business Logic in Pages**:
+```tsx
+// Bad: Logic in page
+export default function FormationsPage() {
+  const [formData, setFormData] = useState({});
+  const handleSubmit = async (e) => {
+    // Business logic here
+  };
+  return <FormationsView formData={formData} onSubmit={handleSubmit} />;
+}
+```
+
+**❌ Redundant Containers**:
+```tsx
+// Bad: Container for static content
+export default function ContactContainer() {
+  return <ContactView />; // No logic needed
+}
+```
+
+**❌ Mixed Responsibilities**:
+```tsx
+// Bad: View with business logic
+export default function FormationsView() {
+  const handleSubmit = async (e) => {
+    // Business logic in view
+  };
+  return <form onSubmit={handleSubmit}>...</form>;
+}
+```
 
 **❌ Redundant handleSubmit functions**:
 ```tsx
