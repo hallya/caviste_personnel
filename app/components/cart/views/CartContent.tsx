@@ -1,5 +1,8 @@
+import { useEffect, useRef } from 'react';
 import CartItem from '../CartItem';
 import CartActions from '../CartActions';
+import Announcement from '../Announcement';
+import { useAnnouncement } from '../../../hooks/useAnnouncement';
 import { calculateCartTotal } from '../utils';
 import type { Cart } from '../types';
 
@@ -18,12 +21,42 @@ export default function CartContent({
   onRemoveItem,
   onCheckout,
 }: CartContentProps) {
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const totalRef = useRef<HTMLSpanElement>(null);
+  const { announcement, announce } = useAnnouncement();
   const totalAmount = calculateCartTotal(cart.lines);
+
+  useEffect(() => {
+    titleRef.current?.focus();
+  }, []);
+
+  const handleQuantityChange = async (lineId: string, quantity: number) => {
+    const item = cart.lines.find(line => line.id === lineId);
+    await onQuantityChange(lineId, quantity);
+    if (item) {
+      announce(`Quantité de ${item.title} mise à jour à ${quantity}`);
+    }
+    totalRef.current?.focus();
+  };
+
+  const handleRemoveItem = async (lineId: string) => {
+    const item = cart.lines.find(line => line.id === lineId);
+    await onRemoveItem(lineId);
+    if (item) {
+      announce(`${item.title} supprimé du panier`);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-primary-50 p-4">
+      <Announcement message={announcement} />
+      
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-title text-primary-600 text-center mb-8">
+        <h1 
+          ref={titleRef}
+          className="text-title text-primary-600 text-center mb-8"
+          tabIndex={-1}
+        >
           Votre panier
         </h1>
         
@@ -33,8 +66,8 @@ export default function CartContent({
               <CartItem
                 key={item.id}
                 item={item}
-                onQuantityChange={onQuantityChange}
-                onRemove={onRemoveItem}
+                onQuantityChange={handleQuantityChange}
+                onRemove={handleRemoveItem}
                 loading={actionLoading}
               />
             ))}
@@ -43,7 +76,15 @@ export default function CartContent({
           <div className="mt-6 pt-6 border-t border-neutral-200">
             <div className="flex justify-between items-center mb-6">
               <span className="text-subtitle text-primary-600">Total:</span>
-              <span className="text-title text-primary-600">{totalAmount}</span>
+              <span 
+                ref={totalRef}
+                className="text-title text-primary-600"
+                tabIndex={-1}
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {totalAmount}
+              </span>
             </div>
             
             <CartActions onCheckout={onCheckout} />

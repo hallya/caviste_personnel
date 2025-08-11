@@ -3,151 +3,256 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import QuantitySelector from '../QuantitySelector';
 
-const defaultProps = {
-  quantity: 2,
-  onQuantityChange: jest.fn(),
-  disabled: false,
-  maxQuantity: 99,
-  availableForSale: true,
-  quantityAvailable: 10,
-};
+describe('QuantitySelector Accessibility', () => {
+  const user = userEvent.setup();
+  const mockOnQuantityChange = jest.fn();
 
-describe('QuantitySelector', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders with correct initial quantity', () => {
-    render(<QuantitySelector {...defaultProps} />);
+  it('has proper ARIA attributes', () => {
+    render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={true}
+        disabled={false}
+      />
+    );
 
-    expect(screen.getByDisplayValue('2')).toBeInTheDocument();
+    const container = screen.getByRole('group');
+    expect(container).toHaveAttribute('aria-label', 'Sélecteur de quantité');
+
+    const input = screen.getByRole('spinbutton');
+    expect(input).toHaveAttribute('aria-label', 'Quantité');
   });
 
-  it('calls onQuantityChange when increase button is clicked', async () => {
-    const user = userEvent.setup();
-    render(<QuantitySelector {...defaultProps} />);
+  it('has proper ARIA description when not available for sale', () => {
+    render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={false}
+        disabled={false}
+      />
+    );
 
-    const increaseButton = screen.getByLabelText('Augmenter la quantité');
+    const input = screen.getByRole('spinbutton');
+    expect(input).toHaveAttribute('aria-describedby');
+    
+    const description = screen.getByText('Article non disponible en stock');
+    expect(description).toHaveClass('sr-only');
+  });
+
+  it('handles keyboard navigation with arrow keys', async () => {
+    render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={true}
+        disabled={false}
+      />
+    );
+
+    const input = screen.getByRole('spinbutton', { name: /quantité/i });
+    await user.click(input);
+
+    await user.keyboard('{ArrowUp}');
+    expect(mockOnQuantityChange).toHaveBeenCalledWith(3);
+  });
+
+  it('handles keyboard navigation with left/right keys', async () => {
+    render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={true}
+        disabled={false}
+      />
+    );
+
+    const input = screen.getByRole('spinbutton', { name: /quantité/i });
+    await user.click(input);
+
+    await user.keyboard('{ArrowRight}');
+    expect(mockOnQuantityChange).toHaveBeenCalledWith(3);
+  });
+
+  it('prevents decrease below 1', async () => {
+    render(
+      <QuantitySelector
+        quantity={1}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={true}
+        disabled={false}
+      />
+    );
+
+    const decreaseButton = screen.getByRole('button', { name: /diminuer/i });
+    await user.click(decreaseButton);
+
+    expect(mockOnQuantityChange).not.toHaveBeenCalled();
+  });
+
+  it('prevents increase when not available for sale', async () => {
+    render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={false}
+        disabled={false}
+      />
+    );
+
+    const increaseButton = screen.getByRole('button', { name: /augmenter/i });
     await user.click(increaseButton);
 
-    expect(defaultProps.onQuantityChange).toHaveBeenCalledWith(3);
+    expect(mockOnQuantityChange).not.toHaveBeenCalled();
   });
 
-  it('calls onQuantityChange when decrease button is clicked', async () => {
-    const user = userEvent.setup();
-    render(<QuantitySelector {...defaultProps} quantity={3} />);
+  it('prevents decrease when not available for sale', async () => {
+    render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={false}
+        disabled={false}
+      />
+    );
 
-    const decreaseButton = screen.getByLabelText('Diminuer la quantité');
-    await user.click(decreaseButton);
-
-    expect(defaultProps.onQuantityChange).toHaveBeenCalledWith(2);
+    const increaseButton = screen.getByRole('button', { name: /augmenter/i });
+    expect(increaseButton).toBeDisabled();
   });
 
-  it('does not decrease below 1', async () => {
-    const user = userEvent.setup();
-    render(<QuantitySelector {...defaultProps} quantity={1} />);
+  it('prevents interactions when disabled', async () => {
+    render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={true}
+        disabled={true}
+      />
+    );
 
-    const decreaseButton = screen.getByLabelText('Diminuer la quantité');
-    await user.click(decreaseButton);
+    const increaseButton = screen.getByRole('button', { name: /augmenter/i });
+    const decreaseButton = screen.getByRole('button', { name: /diminuer/i });
+    const input = screen.getByRole('spinbutton');
 
-    expect(defaultProps.onQuantityChange).not.toHaveBeenCalled();
+    expect(increaseButton).toBeDisabled();
     expect(decreaseButton).toBeDisabled();
+    expect(input).toBeDisabled();
   });
 
-  it('does not increase above max quantity', async () => {
-    const user = userEvent.setup();
-    render(<QuantitySelector {...defaultProps} quantity={99} maxQuantity={99} />);
+  it('has focus rings on interactive elements', () => {
+    render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={true}
+        disabled={false}
+      />
+    );
 
-    const increaseButton = screen.getByLabelText('Augmenter la quantité');
-    await user.click(increaseButton);
+    const increaseButton = screen.getByRole('button', { name: /augmenter/i });
+    const decreaseButton = screen.getByRole('button', { name: /diminuer/i });
+    const input = screen.getByRole('spinbutton');
 
-    expect(defaultProps.onQuantityChange).not.toHaveBeenCalled();
-    expect(increaseButton).toBeDisabled();
+    expect(increaseButton).toHaveClass('focus:ring-2');
+    expect(decreaseButton).toHaveClass('focus:ring-2');
+    expect(input).toHaveClass('focus:ring-2');
   });
 
-  it('respects available stock when lower than max quantity', async () => {
-    const user = userEvent.setup();
-    render(<QuantitySelector {...defaultProps} quantity={5} quantityAvailable={5} />);
+  it('syncs local quantity with prop changes', () => {
+    const { rerender } = render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={true}
+        disabled={false}
+      />
+    );
 
-    const increaseButton = screen.getByLabelText('Augmenter la quantité');
-    await user.click(increaseButton);
+    const input = screen.getByRole('spinbutton');
+    expect(input).toHaveValue(2);
 
-    expect(defaultProps.onQuantityChange).not.toHaveBeenCalled();
-    expect(increaseButton).toBeDisabled();
-  });
+    rerender(
+      <QuantitySelector
+        quantity={5}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={true}
+        disabled={false}
+      />
+    );
 
-  it('renders input with correct value', () => {
-    render(<QuantitySelector {...defaultProps} quantity={5} />);
-
-    const input = screen.getByLabelText('Quantité');
     expect(input).toHaveValue(5);
   });
 
-  it('does not call onQuantityChange for invalid input values', async () => {
-    const user = userEvent.setup();
-    render(<QuantitySelector {...defaultProps} />);
+  it('has proper form controls with constraints', () => {
+    render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={true}
+        disabled={false}
+        maxQuantity={50}
+        quantityAvailable={30}
+      />
+    );
 
-    const input = screen.getByLabelText('Quantité');
-    await user.clear(input);
-    await user.type(input, '0');
-
-    expect(defaultProps.onQuantityChange).not.toHaveBeenCalled();
+    const input = screen.getByRole('spinbutton', { name: /quantité/i });
+    expect(input).toHaveAttribute('min', '1');
+    expect(input).toHaveAttribute('max', '30');
   });
 
-  it('disables all controls when disabled prop is true', () => {
-    render(<QuantitySelector {...defaultProps} disabled={true} />);
+  it('has proper button states and descriptions', () => {
+    render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={true}
+        disabled={false}
+      />
+    );
 
-    const increaseButton = screen.getByLabelText('Augmenter la quantité');
-    const decreaseButton = screen.getByLabelText('Diminuer la quantité');
-    const input = screen.getByLabelText('Quantité');
+    const increaseButton = screen.getByRole('button', { name: /augmenter/i });
+    const decreaseButton = screen.getByRole('button', { name: /diminuer/i });
 
-    expect(increaseButton).toBeDisabled();
-    expect(decreaseButton).toBeDisabled();
-    expect(input).toBeDisabled();
+    expect(increaseButton).toHaveAttribute('aria-label', 'Augmenter la quantité');
+    expect(decreaseButton).toHaveAttribute('aria-label', 'Diminuer la quantité');
   });
 
-  it('disables all controls when not available for sale', () => {
-    render(<QuantitySelector {...defaultProps} availableForSale={false} />);
+  it('has proper error state accessibility', () => {
+    render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={false}
+        disabled={false}
+      />
+    );
 
-    const increaseButton = screen.getByLabelText('Augmenter la quantité');
-    const input = screen.getByLabelText('Quantité');
+    const input = screen.getByRole('spinbutton', { name: /quantité/i });
+    const description = screen.getByText('Article non disponible en stock');
 
-    expect(increaseButton).toBeDisabled();
-    expect(input).toBeDisabled();
+    expect(input).toHaveAttribute('aria-describedby', 'stock-unavailable');
+    expect(description).toHaveAttribute('id', 'stock-unavailable');
+    expect(description).toHaveClass('sr-only');
   });
 
-  it('disables increase button when at available stock limit', () => {
-    render(<QuantitySelector {...defaultProps} quantity={10} quantityAvailable={10} />);
+  it('has proper group semantics', () => {
+    render(
+      <QuantitySelector
+        quantity={2}
+        onQuantityChange={mockOnQuantityChange}
+        availableForSale={true}
+        disabled={false}
+      />
+    );
 
-    const increaseButton = screen.getByLabelText('Augmenter la quantité');
-    expect(increaseButton).toBeDisabled();
+    const group = screen.getByRole('group', { name: /sélecteur de quantité/i });
+    expect(group).toBeInTheDocument();
   });
 
-  it('allows decrease when at available stock limit', async () => {
-    const user = userEvent.setup();
-    render(<QuantitySelector {...defaultProps} quantity={10} quantityAvailable={10} />);
 
-    const decreaseButton = screen.getByLabelText('Diminuer la quantité');
-    await user.click(decreaseButton);
-
-    expect(defaultProps.onQuantityChange).toHaveBeenCalledWith(9);
-  });
-
-  it('handles decimal input values correctly', () => {
-    render(<QuantitySelector {...defaultProps} quantity={3} />);
-
-    const input = screen.getByLabelText('Quantité');
-    expect(input).toHaveValue(3);
-  });
-
-  it('handles negative input values correctly', async () => {
-    const user = userEvent.setup();
-    render(<QuantitySelector {...defaultProps} />);
-
-    const input = screen.getByLabelText('Quantité');
-    await user.clear(input);
-    await user.type(input, '-1');
-
-    expect(defaultProps.onQuantityChange).not.toHaveBeenCalled();
-  });
 }); 

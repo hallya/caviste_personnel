@@ -16,3 +16,8 @@ export {
   CollectionsTestData,
   SearchParamsFactories,
 } from './collections-factory';
+
+export {
+  CartTestFactories,
+  CartTestData,
+} from './cart-factory';

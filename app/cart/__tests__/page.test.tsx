@@ -157,7 +157,7 @@ describe('CartPage', () => {
       const user = userEvent.setup();
       renderCartPage();
 
-      const removeButton = screen.getByLabelText('Supprimer l\'article');
+      const removeButton = screen.getByLabelText('Supprimer Château Margaux 2018 du panier');
       await user.click(removeButton);
 
       expect(mockRemoveItem).toHaveBeenCalledWith(
@@ -176,7 +176,7 @@ describe('CartPage', () => {
       renderCartPage();
 
       const increaseButton = screen.getByLabelText('Augmenter la quantité');
-      const removeButton = screen.getByLabelText('Supprimer l\'article');
+      const removeButton = screen.getByLabelText('Supprimer Château Margaux 2018 du panier');
 
       expect(increaseButton).toBeDisabled();
       expect(removeButton).toBeDisabled();
