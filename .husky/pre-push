@@ -10,8 +10,18 @@ fi
 
 echo "✅ TypeScript check passed!"
 
-# Get the list of changed files between current branch and remote (excluding test files)
-CHANGED_FILES=$(git diff --name-only origin/main...HEAD | grep -E '\.(js|jsx|ts|tsx)$' | grep -v -E '\.(test|spec)\.(js|jsx|ts|tsx)$' | tr '\n' ' ')
+# Get current branch name
+CURRENT_BRANCH=$(git branch --show-current)
+REMOTE_BRANCH="origin/$CURRENT_BRANCH"
+
+# Check if remote branch exists
+if git ls-remote --heads origin "$CURRENT_BRANCH" | grep -q "$CURRENT_BRANCH"; then
+  # Compare with remote branch
+  CHANGED_FILES=$(git diff --name-only "$REMOTE_BRANCH"...HEAD | grep -E '\.(js|jsx|ts|tsx)$' | grep -v -E '\.(test|spec)\.(js|jsx|ts|tsx)$' | tr '\n' ' ')
+else
+  # If remote branch doesn't exist, compare with main
+  CHANGED_FILES=$(git diff --name-only origin/main...HEAD | grep -E '\.(js|jsx|ts|tsx)$' | grep -v -E '\.(test|spec)\.(js|jsx|ts|tsx)$' | tr '\n' ' ')
+fi
 
 if [ -n "$CHANGED_FILES" ]; then
   echo "🔍 Running tests for changed files:"
@@ -32,7 +42,16 @@ if [ -n "$CHANGED_FILES" ]; then
     print indent"  📄 " $NF
   }'
   echo ""
+  
+  echo "🧪 Running Jest tests for related files..."
   npx jest --bail --findRelatedTests --passWithNoTests $CHANGED_FILES
+  
+  if [ $? -ne 0 ]; then
+    echo "❌ Tests failed. Please fix them before pushing."
+    exit 1
+  fi
+  
+  echo "✅ All tests passed!"
 else
-  echo "No TypeScript/JavaScript files changed, skipping tests"
+  echo "ℹ️  No TypeScript/JavaScript files changed, skipping tests"
 fi 
