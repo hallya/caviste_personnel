@@ -4,7 +4,6 @@ import type { SimplifiedProduct } from "../../../types/shopify";
 import { ANALYTICS_EVENTS } from "../../analytics/constants/analytics";
 import { FILTER_TYPES, FILTER_ACTIONS } from "../constants";
 
-// Mock useAnalytics hook
 const mockTrack = jest.fn();
 jest.mock("../../analytics/hooks/useAnalytics", () => ({
   useAnalytics: () => ({

@@ -1,18 +1,8 @@
 import { useEffect } from "react";
 
 import { CloseIcon } from "../design-system/icons";
-import type { NotificationData } from "./types";
+import type { IndividualNotificationProps } from "./types";
 import NotificationContent from "./NotificationContent";
-
-interface IndividualNotificationProps {
-  id: string;
-  type: NotificationData["type"];
-  title: string;
-  message: string;
-  onClose: () => void;
-  autoClose?: boolean;
-  autoCloseDelay?: number;
-}
 
 export default function IndividualNotification({
   id,
