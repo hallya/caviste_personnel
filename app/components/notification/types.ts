@@ -12,6 +12,16 @@ export interface NotificationData {
   timestamp: number;
 }
 
+export interface IndividualNotificationProps {
+  id: string;
+  type: NotificationData["type"];
+  title: string;
+  message: string;
+  onClose: () => void;
+  autoClose?: boolean;
+  autoCloseDelay?: number;
+}
+
 export interface NotificationOptions {
   autoClose?: boolean;
   autoCloseDelay?: number;
