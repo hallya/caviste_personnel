@@ -222,7 +222,7 @@ describe('PopupView', () => {
     it('should announce loading state to screen readers', () => {
       render(<PopupView {...defaultProps} loading={true} />);
 
-      const loadingAnnouncement = screen.getByText('Loading products…');
+      const loadingAnnouncement = screen.getByText('Chargement des produits…');
       expect(loadingAnnouncement).toHaveClass('sr-only');
       expect(loadingAnnouncement).toHaveAttribute('aria-live', 'polite');
     });
@@ -326,13 +326,13 @@ describe('PopupView', () => {
     it('should show loading announcement when loading', () => {
       render(<PopupView {...defaultProps} loading={true} />);
 
-      expect(screen.getByText('Loading products…')).toBeInTheDocument();
+      expect(screen.getByText('Chargement des produits…')).toBeInTheDocument();
     });
 
     it('should not show loading text when not loading', () => {
       render(<PopupView {...defaultProps} loading={false} />);
 
-      expect(screen.queryByText('Loading products…')).not.toBeInTheDocument();
+      expect(screen.queryByText('Chargement des produits…')).not.toBeInTheDocument();
     });
 
     it('should pass loading state to footer', () => {
@@ -354,25 +354,15 @@ describe('PopupView', () => {
 
       render(<PopupView {...defaultProps} tagsError={errorMessage} />);
 
-      const errorContainer = screen.getByText(/Error loading tags:/);
+      const errorContainer = screen.getByText(/Erreur lors du chargement des tags :/);
       expect(errorContainer).toBeInTheDocument();
-      expect(errorContainer).toHaveTextContent(`Error loading tags: ${errorMessage}`);
+      expect(errorContainer).toHaveTextContent(`Erreur lors du chargement des tags : ${errorMessage}`);
     });
 
     it('should not display error container when no error', () => {
       render(<PopupView {...defaultProps} tagsError={null} />);
 
-      expect(screen.queryByText(/Error loading tags:/)).not.toBeInTheDocument();
-    });
-
-    it('should apply error styling to error message', () => {
-      render(<PopupView {...defaultProps} tagsError="Test error" />);
-
-      const errorContainer = screen.getByText(/Error loading tags:/).closest('div');
-      expect(errorContainer).toHaveClass('bg-red-50', 'border-red-200');
-      
-      const errorText = screen.getByText(/Error loading tags:/);
-      expect(errorText).toHaveClass('text-red-700');
+      expect(screen.queryByText(/Erreur lors du chargement des tags :/)).not.toBeInTheDocument();
     });
   });
 

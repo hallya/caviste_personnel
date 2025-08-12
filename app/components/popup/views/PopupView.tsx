@@ -62,13 +62,13 @@ export default function PopupView({
 
         <main className="flex-1 overflow-y-auto px-8 py-4">
           <p className="sr-only" aria-live="polite">
-            {loading ? "Loading products…" : ""}
+            {loading ? "Chargement des produits…" : ""}
           </p>
           
           {tagsError && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
               <p className="text-sm text-red-700">
-                Error loading tags: {tagsError}
+                Erreur lors du chargement des tags : {tagsError}
               </p>
             </div>
           )}

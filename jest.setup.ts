@@ -22,6 +22,7 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('@vercel/analytics', () => ({
   track: jest.fn(),
+  Analytics: () => null,
 }));
 
 jest.mock('@vercel/analytics/react', () => ({

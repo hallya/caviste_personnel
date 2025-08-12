@@ -53,3 +53,18 @@ export const COLLECTION_CACHE_CONFIG = {
   MAX_SIZE: 20, // Maximum number of cached collections
   TTL_MS: 5 * TIMING.SECONDS_PER_MINUTE * TIMING.MILLISECONDS_PER_SECOND, // 5 minutes TTL for tags cache
 } as const;
+
+export const FILTER_TYPES = {
+  TAG: 'tag',
+  SEARCH: 'search',
+  SORT: 'sort',
+} as const;
+
+export const FILTER_ACTIONS = {
+  ADD: 'add',
+  REMOVE: 'remove',
+  CLEAR: 'clear',
+} as const;
+
+export type FilterType = typeof FILTER_TYPES[keyof typeof FILTER_TYPES];
+export type FilterAction = typeof FILTER_ACTIONS[keyof typeof FILTER_ACTIONS];

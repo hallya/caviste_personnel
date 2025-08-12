@@ -1,6 +1,9 @@
+export type NotificationType =
+  typeof import("./constants").NOTIFICATION_TYPES[keyof typeof import("./constants").NOTIFICATION_TYPES];
+
 export interface NotificationData {
   id: string;
-  type: "success" | "error" | "loading";
+  type: NotificationType;
   title: string;
   message: string;
   autoClose?: boolean;
