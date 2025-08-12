@@ -1,36 +1,34 @@
-import "@testing-library/jest-dom";
-import { ImageProps } from "next/image";
-import React from "react";
+import '@testing-library/jest-dom';
+import 'jest-axe/extend-expect';
 
-jest.mock("next/router", () => ({
+jest.mock('next/navigation', () => ({
   useRouter() {
     return {
-      route: "/",
-      pathname: "/",
-      query: {},
-      asPath: "/",
       push: jest.fn(),
-      pop: jest.fn(),
-      reload: jest.fn(),
+      replace: jest.fn(),
+      prefetch: jest.fn(),
       back: jest.fn(),
-      prefetch: jest.fn().mockResolvedValue(undefined),
-      beforePopState: jest.fn(),
-      events: {
-        on: jest.fn(),
-        off: jest.fn(),
-        emit: jest.fn(),
-      },
-      isFallback: false,
+      forward: jest.fn(),
+      refresh: jest.fn(),
     };
+  },
+  useSearchParams() {
+    return new URLSearchParams();
+  },
+  usePathname() {
+    return '/';
   },
 }));
 
-jest.mock("next/image", () => ({
-  __esModule: true,
-  default: (props: ImageProps) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { unoptimized, ...domProps } = props;
-     
-    return React.createElement("img", domProps);
-  },
+jest.mock('@vercel/analytics', () => ({
+  track: jest.fn(),
+  Analytics: () => null,
+}));
+
+jest.mock('@vercel/analytics/react', () => ({
+  Analytics: () => null,
+}));
+
+jest.mock('@vercel/speed-insights/next', () => ({
+  SpeedInsights: () => null,
 }));

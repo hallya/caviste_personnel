@@ -4,14 +4,7 @@
 import { GET } from '../route';
 import { NextRequest } from 'next/server';
 import type { ShopifyProduct } from '../../../types/shopify';
-import {
-  API,
-  IDS,
-  HANDLES,
-  DATA,
-  URLS,
-  ERRORS,
-} from '../../../__tests__/constants';
+import { API } from '../../../__tests__/constants';
 
 const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 global.fetch = mockFetch;

@@ -43,7 +43,7 @@ describe('CartItem', () => {
 
     const image = screen.getByAltText('Château Margaux 2018');
     expect(image).toBeInTheDocument();
-    expect(image).toHaveAttribute('src', 'https://example.com/wine.jpg');
+    expect(image).toHaveAttribute('src', expect.stringContaining('example.com%2Fwine.jpg'));
   });
 
   it('does not display image when not available', () => {

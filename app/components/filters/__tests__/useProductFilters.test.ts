@@ -1,6 +1,15 @@
 import { renderHook, act } from "@testing-library/react";
 import { useProductFilters } from "../hooks/useProductFilters";
 import type { SimplifiedProduct } from "../../../types/shopify";
+import { ANALYTICS_EVENTS } from "../../analytics/constants/analytics";
+import { FILTER_TYPES, FILTER_ACTIONS } from "../constants";
+
+const mockTrack = jest.fn();
+jest.mock("../../analytics/hooks/useAnalytics", () => ({
+  useAnalytics: () => ({
+    track: mockTrack,
+  }),
+}));
 
 jest.mock("../utils", () => {
   const actual = jest.requireActual("../utils");
@@ -45,6 +54,7 @@ const mockProducts: SimplifiedProduct[] = [
 describe("useProductFilters", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrack.mockClear();
   });
 
   it("should initialize with default values", () => {
@@ -188,6 +198,97 @@ describe("useProductFilters", () => {
       searchQuery: "rouge",
       sortBy: "price",
       sortOrder: "desc",
+    });
+  });
+
+  describe("Analytics tracking", () => {
+    it("tracks FILTER_APPLIED event when adding tag", () => {
+      const { result } = renderHook(() => useProductFilters(mockProducts));
+
+      act(() => {
+        result.current.toggleTag("vin-leger");
+      });
+
+      expect(mockTrack).toHaveBeenCalledWith({
+        name: ANALYTICS_EVENTS.FILTER_APPLIED,
+        properties: {
+          filter_type: FILTER_TYPES.TAG,
+          tag: "vin-leger",
+          action: FILTER_ACTIONS.ADD,
+          total_tags: 1,
+        },
+      });
+    });
+
+    it("tracks FILTER_APPLIED event when removing tag", () => {
+      const { result } = renderHook(() => useProductFilters(mockProducts));
+
+      act(() => {
+        result.current.toggleTag("vin-leger");
+        result.current.toggleTag("vin-leger");
+      });
+
+      expect(mockTrack).toHaveBeenCalledWith({
+        name: ANALYTICS_EVENTS.FILTER_APPLIED,
+        properties: {
+          filter_type: FILTER_TYPES.TAG,
+          tag: "vin-leger",
+          action: FILTER_ACTIONS.REMOVE,
+          total_tags: 0,
+        },
+      });
+    });
+
+    it("tracks FILTER_CLEARED event when clearing filters", () => {
+      const { result } = renderHook(() => useProductFilters(mockProducts));
+
+      act(() => {
+        result.current.toggleTag("vin-leger");
+        result.current.setSearchQuery("test");
+      });
+
+      mockTrack.mockClear();
+
+      act(() => {
+        result.current.clearFilters();
+      });
+
+      expect(mockTrack).toHaveBeenCalledWith({
+        name: ANALYTICS_EVENTS.FILTER_CLEARED,
+        properties: {
+          previous_tags_count: 1,
+          previous_search_query: "test",
+        },
+      });
+    });
+
+    it("tracks SEARCH_PERFORMED event when searching", () => {
+      const { result } = renderHook(() => useProductFilters(mockProducts));
+
+      act(() => {
+        result.current.setSearchQuery("rouge");
+      });
+
+      expect(mockTrack).toHaveBeenCalledWith({
+        name: ANALYTICS_EVENTS.SEARCH_PERFORMED,
+        properties: {
+          query: "rouge",
+          results_count: 3,
+        },
+      });
+    });
+
+    it("does not track SEARCH_PERFORMED for empty queries", () => {
+      const { result } = renderHook(() => useProductFilters(mockProducts));
+
+      act(() => {
+        result.current.setSearchQuery("");
+      });
+
+      expect(mockTrack).not.toHaveBeenCalledWith({
+        name: ANALYTICS_EVENTS.SEARCH_PERFORMED,
+        properties: expect.any(Object),
+      });
     });
   });
 });

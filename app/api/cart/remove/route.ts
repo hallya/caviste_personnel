@@ -97,25 +97,29 @@ export async function POST(req: Request) {
     }
 
     const json = await res.json();
-    
+
     if (json?.errors?.length) {
       const graphqlError = json.errors[0];
-      
+
       if (graphqlError?.extensions?.code === "RESOURCE_NOT_FOUND") {
         return NextResponse.json(
-          { error: "Article déjà supprimé ou panier modifié par une autre session" },
-          { status: 409 } // Conflict
+          {
+            error:
+              "Article déjà supprimé ou panier modifié par une autre session",
+          },
+          { status: 409 }
         );
       }
-      
+
       return NextResponse.json(
         { error: graphqlError?.message || "Erreur GraphQL" },
         { status: 400 }
       );
     }
-    
+
     const payload = json?.data?.cartLinesRemove;
-    const userErrors = payload?.userErrors?.filter((e: ShopifyUserError) => e?.message) ?? [];
+    const userErrors =
+      payload?.userErrors?.filter((e: ShopifyUserError) => e?.message) ?? [];
 
     if (userErrors.length) {
       return NextResponse.json(
@@ -125,47 +129,39 @@ export async function POST(req: Request) {
     }
 
     const cart = payload?.cart;
-    
-    // Si le panier est null après suppression, c'est que la suppression a réussi mais le panier est vide
-    if (!cart) {
 
-      return NextResponse.json({
-        id: null,
-        totalQuantity: 0,
-        totalAmount: "0.00 EUR",
-        checkoutUrl: null,
-        lines: [],
-        message: "Produit supprimé avec succès"
-      });
+    if (!cart) {
+      return NextResponse.json({ success: true, message: "Item removed" });
     }
 
-    const lines = cart?.lines?.edges?.map((edge: { node: ShopifyCartLine }) => {
-      const node = edge.node;
-      const merchandise = node.merchandise;
-      const unitPrice = merchandise?.price?.amount
-        ? parseFloat(merchandise.price.amount)
-        : 0;
-      const currency = merchandise?.price?.currencyCode || "EUR";
-      const lineTotal = (unitPrice * node.quantity).toFixed(2);
+    const lines =
+      cart?.lines?.edges?.map((edge: { node: ShopifyCartLine }) => {
+        const node = edge.node;
+        const merchandise = node.merchandise;
+        const unitPrice = merchandise?.price?.amount
+          ? parseFloat(merchandise.price.amount)
+          : 0;
+        const currency = merchandise?.price?.currencyCode || "EUR";
+        const lineTotal = (unitPrice * node.quantity).toFixed(2);
 
-      return {
-        id: node.id,
-        quantity: node.quantity,
-        title:
-          merchandise?.product?.title ||
-          merchandise?.title ||
-          "Produit inconnu",
-        price: merchandise?.price?.amount
-          ? `${merchandise.price.amount} ${merchandise.price.currencyCode}`
-          : "Prix non disponible",
-        unitPrice,
-        currency,
-        lineTotal: `${lineTotal} ${currency}`,
-        image: merchandise?.product?.featuredImage?.url || null,
-        availableForSale: merchandise?.availableForSale ?? false,
-        quantityAvailable: merchandise?.quantityAvailable ?? 0,
-      };
-    }) || [];
+        return {
+          id: node.id,
+          quantity: node.quantity,
+          title:
+            merchandise?.product?.title ||
+            merchandise?.title ||
+            "Produit inconnu",
+          price: merchandise?.price?.amount
+            ? `${merchandise.price.amount} ${merchandise.price.currencyCode}`
+            : "Prix non disponible",
+          unitPrice,
+          currency,
+          lineTotal: `${lineTotal} ${currency}`,
+          image: merchandise?.product?.featuredImage?.url || null,
+          availableForSale: merchandise?.availableForSale ?? false,
+          quantityAvailable: merchandise?.quantityAvailable ?? 0,
+        };
+      }) || [];
 
     const totalAmount = cart?.cost?.subtotalAmount
       ? `${cart.cost.subtotalAmount.amount} ${cart.cost.subtotalAmount.currencyCode}`

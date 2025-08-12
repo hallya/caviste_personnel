@@ -174,11 +174,8 @@ describe('/api/cart/remove', () => {
       const data = await response.json();
 
       expect(response.status).toBe(HTTP_STATUS.OK);
-      expect(data.id).toBeNull();
-      expect(data.totalQuantity).toBe(0);
-      expect(data.totalAmount).toBe('0.00 EUR');
-      expect(data.lines).toEqual([]);
-      expect(data.message).toBe('Produit supprimé avec succès');
+      expect(data.success).toBe(true);
+      expect(data.message).toBe('Item removed');
     });
 
     it('should handle Shopify user errors', async () => {

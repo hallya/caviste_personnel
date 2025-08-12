@@ -18,4 +18,6 @@ export interface Cart {
   totalAmount: string;
   checkoutUrl: string;
   lines: CartItem[];
-} 
+}
+
+export type CartActionType = typeof import('./constants').CART_ACTIONS[keyof typeof import('./constants').CART_ACTIONS]; 

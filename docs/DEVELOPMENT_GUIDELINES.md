@@ -197,6 +197,46 @@ it('applies correct styling for success type', () => {
 - ✅ **Error handling** and edge cases
 - ✅ **Accessibility** attributes
 
+### **Constants Usage in Tests**
+```typescript
+// ❌ Hardcoded strings in tests
+expect(mockTrack).toHaveBeenCalledWith({
+  name: "cart_add",
+  properties: { variant_id: "variant-123" }
+});
+
+// ✅ Use constants from the application
+import { ANALYTICS_EVENTS } from "../../../analytics/constants/analytics";
+
+expect(mockTrack).toHaveBeenCalledWith({
+  name: ANALYTICS_EVENTS.CART_ADD,
+  properties: { variant_id: "variant-123" }
+});
+
+// ✅ Use constants for API endpoints
+import { API_ENDPOINTS } from "../../../constants/api";
+
+expect(mockFetch).toHaveBeenCalledWith(API_ENDPOINTS.CART, {
+  method: "GET",
+  headers: { "Content-Type": "application/json" }
+});
+
+// ✅ Use constants for test data
+import { TEST_CONSTANTS } from "../../../__tests__/constants";
+
+const mockCart = TEST_CONSTANTS.MOCK_CART;
+const mockProduct = TEST_CONSTANTS.MOCK_PRODUCT;
+```
+
+#### **Constants in Tests Guidelines**
+- ✅ **Import and use constants** from the application code
+- ✅ **Use analytics event constants** (`ANALYTICS_EVENTS`) in tracking tests
+- ✅ **Use API endpoint constants** (`API_ENDPOINTS`) in API tests
+- ✅ **Use test data constants** for consistent mock data
+- ✅ **Maintain consistency** between implementation and tests
+- ❌ **Avoid hardcoded strings** that duplicate application constants
+- ❌ **Avoid magic numbers** in test assertions
+
 ## 🔧 Code Quality Standards
 
 ### **Dead Code Elimination**

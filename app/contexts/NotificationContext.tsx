@@ -138,8 +138,11 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         {groupedNotifications.ungrouped.map((notification) => (
           <IndividualNotification
             key={notification.id}
-            notification={notification}
-            onClose={hideNotification}
+            id={notification.id}
+            type={notification.type}
+            title={notification.title}
+            message={notification.message}
+            onClose={() => hideNotification(notification.id)}
           />
         ))}
         
