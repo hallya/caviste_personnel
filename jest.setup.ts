@@ -1,10 +1,7 @@
-import "@testing-library/jest-dom";
-import { ImageProps } from "next/image";
-import React from "react";
-import 'jest-axe/extend-expect'
+import '@testing-library/jest-dom';
+import 'jest-axe/extend-expect';
 
-// Mock next/navigation (App Router) au lieu de next/router (Pages Router)
-jest.mock("next/navigation", () => ({
+jest.mock('next/navigation', () => ({
   useRouter() {
     return {
       push: jest.fn(),
@@ -15,20 +12,22 @@ jest.mock("next/navigation", () => ({
       refresh: jest.fn(),
     };
   },
-  usePathname() {
-    return "/";
-  },
   useSearchParams() {
     return new URLSearchParams();
   },
+  usePathname() {
+    return '/';
+  },
 }));
 
-jest.mock("next/image", () => ({
-  __esModule: true,
-  default: (props: ImageProps) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { unoptimized, ...domProps } = props;
-     
-    return React.createElement("img", domProps);
-  },
+jest.mock('@vercel/analytics', () => ({
+  track: jest.fn(),
+}));
+
+jest.mock('@vercel/analytics/react', () => ({
+  Analytics: () => null,
+}));
+
+jest.mock('@vercel/speed-insights/next', () => ({
+  SpeedInsights: () => null,
 }));

@@ -12,6 +12,7 @@
 ### 💼 What This Shows for Recruiters
 
 This is an **actively developed project** that demonstrates:
+
 - **Modern React patterns**: Container/Presentational architecture, custom hooks, TypeScript discipline
 - **UX innovation**: iOS-inspired notification system with 3D animations and smart grouping
 - **Real API integration**: Shopify GraphQL with proper error handling and type safety
@@ -23,6 +24,7 @@ This is an **actively developed project** that demonstrates:
 ### ✅ **Completed Features**
 
 #### **iOS-Style Notification System**
+
 ```typescript
 // Smart grouping prevents notification spam
 const getStackedStyle = (index: number) => ({
@@ -31,18 +33,21 @@ const getStackedStyle = (index: number) => ({
   zIndex: 10 - index,
 });
 ```
+
 - **Progressive stacking**: Similar notifications group with 3D depth effects
 - **Smooth animations**: Hardware-accelerated CSS transforms
 - **Loading states**: Progressive feedback with spinner-to-success transitions
 - **Mobile responsive**: Adaptive width and touch-friendly interactions
 
 #### **Shopify E-commerce Integration**
+
 - **Product catalog**: Collections and individual product fetching
 - **Shopping cart**: Add, update, remove operations with persistence
 - **Error handling**: Graceful degradation and user feedback
 - **Type safety**: Comprehensive TypeScript interfaces for all Shopify data
 
 #### **Video Carousel System**
+
 - **Touch navigation**: Swipe gestures and keyboard controls
 - **Device detection**: Optimized experience for mobile vs desktop
 - **Video management**: Safari/iOS compatibility with playback controls
@@ -51,17 +56,20 @@ const getStackedStyle = (index: number) => ({
 ### 🧪 **Quality Metrics**
 
 #### **Test Coverage: 56.73%**
+
 - **Strong coverage**: Cart functionality (92%), Design system (88%), Core hooks (100%)
 - **50+ test files**: Jest + React Testing Library with user-centric testing
 - **Focus areas**: Critical user paths, business logic validation, error scenarios
 
 #### **Performance (Lighthouse Audit)**
+
 - ✅ **Performance**: **98/100**
-- ✅ **Accessibility**: **99/100**  
+- ✅ **Accessibility**: **99/100**
 - ✅ **Best Practices**: **96/100**
 - ✅ **SEO**: **100/100**
 
 #### **Core Web Vitals**
+
 - ✅ **First Contentful Paint**: **0.9s**
 - ✅ **Largest Contentful Paint**: **2.3s**
 - ✅ **Total Blocking Time**: **10ms**
@@ -71,12 +79,14 @@ const getStackedStyle = (index: number) => ({
 ### 🔧 **Technical Architecture**
 
 #### **Code Organization**
+
 - **Container/Presentational pattern**: Consistent separation of concerns
 - **Custom hooks**: Reusable business logic (`useCart`, `useNotificationGroup`, `useCarouselNav`)
 - **TypeScript strict mode**: Zero `any` types in core application logic
 - **Design system**: Centralized icon components and utility functions
 
 #### **Performance Optimizations**
+
 - **Dynamic imports**: Code splitting for notifications and complex components
 - **Vercel Speed Insights**: Integrated performance monitoring
 - **Image optimization**: Next.js Image component with proper sizing
@@ -85,12 +95,14 @@ const getStackedStyle = (index: number) => ({
 ## 🛠️ Technology Stack
 
 ### **Core Technologies**
+
 - **Next.js 15**: Latest App Router features with React 19
 - **TypeScript**: Strict mode for comprehensive type safety
 - **Tailwind CSS 4**: Utility-first styling with custom design tokens
 - **Shopify Storefront API**: GraphQL integration for e-commerce backend
 
 ### **Quality Tools**
+
 - **Jest + React Testing Library**: Component and hook testing
 - **Lighthouse CLI**: Automated performance auditing
 - **ESLint**: Code quality enforcement
@@ -99,18 +111,21 @@ const getStackedStyle = (index: number) => ({
 ## 📊 **Quality Metrics**
 
 ### **Test Coverage**
+
 - **418 test cases** across 38 test suites
 - **83.7% statement coverage** with focus on critical business logic
 - **67.7% branch coverage** ensuring edge case handling
 - **80.1% function coverage** with comprehensive API testing
 
 ### **Test Strategy**
+
 - **API Integration**: Complete Shopify GraphQL endpoint testing
 - **Component Testing**: React Testing Library best practices
 - **Hook Testing**: Custom hook behavior and edge cases
 - **Page Testing**: Full user journey validation
 
 ### **Performance Standards**
+
 - **TypeScript**: 0 compilation errors with strict configuration
 - **ESLint**: Clean codebase with enforced quality standards
 - **Lighthouse**: Automated performance monitoring
@@ -119,13 +134,15 @@ const getStackedStyle = (index: number) => ({
 ## 💡 **Problem-Solving Examples**
 
 ### **Challenge: Notification UX Chaos**
+
 **Problem**: Multiple cart additions creating overwhelming notification spam  
 **Solution**: iOS-inspired grouping with progressive stacking and smart replacement
+
 ```typescript
 // Grouping logic prevents notification overload
 const groupedNotifications = useMemo(() => {
   const groups: Record<string, NotificationGroup> = {};
-  notifications.forEach(notification => {
+  notifications.forEach((notification) => {
     if (notification.groupId) {
       // Smart grouping and replacement logic
     }
@@ -135,14 +152,18 @@ const groupedNotifications = useMemo(() => {
 ```
 
 ### **Challenge: Mobile Video Performance**
+
 **Problem**: Video carousel causing performance issues on mobile devices  
 **Solution**: Device detection with optimized rendering and Safari-specific handling
+
 ```typescript
 // Adaptive performance based on device capabilities
 const style = useMemo(() => {
   const z = isMobile ? -(abs * abs) * 400 : -(abs * abs) * 220;
   const scale = isMobile ? 1 - abs * 0.15 : 1 - abs * 0.05;
-  return { transform: `translate3d(${x}px,0,0) translateZ(${z}px) scale(${scale})` };
+  return {
+    transform: `translate3d(${x}px,0,0) translateZ(${z}px) scale(${scale})`,
+  };
 }, [index, current, isMobile]);
 ```
 
@@ -168,12 +189,13 @@ npm run perf         # Full build + audit + report
 ```
 
 ### **Project Structure**
+
 ```
 app/
 ├── api/                     # Shopify GraphQL integration
 ├── components/
 │   ├── notification/        # iOS-style grouped notifications
-│   ├── cart/               # Shopping cart functionality  
+│   ├── cart/               # Shopping cart functionality
 │   ├── carousel/           # Video carousel with touch controls
 │   └── design-system/      # Reusable UI components and icons
 ├── contexts/               # React Context providers
@@ -183,18 +205,21 @@ app/
 ## 🎯 **What This Demonstrates**
 
 ### **For Frontend Roles**
+
 - Modern React patterns with performance optimization
 - Complex CSS animations and 3D transforms
 - TypeScript expertise with strict configuration
 - User experience innovation and responsive design
 
-### **For Full-Stack Roles**  
+### **For Full-Stack Roles**
+
 - GraphQL API integration with comprehensive error handling
 - Real-time state management across components
 - Testing strategy balancing coverage with meaningful assertions
 - Performance monitoring and optimization techniques
 
 ### **For Technical Leadership**
+
 - Architecture decisions with clear reasoning and documentation
 - Code organization for team scalability and maintainability
 - Pragmatic approach to testing (quality over quantity)
@@ -203,12 +228,14 @@ app/
 ## 🚀 **Current Development Focus**
 
 ### **Active Improvements**
+
 - Enhanced search and filtering capabilities
 - Extended test coverage for API integration layers
 - Performance optimization for mobile video playback
 - User authentication and account management system
 
 ### **Architecture Evolution**
+
 - Exploring micro-frontend patterns for feature scalability
 - Implementing comprehensive logging and error tracking
 - Evaluating headless CMS integration for content management
@@ -221,51 +248,39 @@ app/
 - 💼 **LinkedIn**: [🚴🏼‍♂️ Lucien Dulac](https://www.linkedin.com/in/%F0%9F%9A%B4%F0%9F%8F%BC%E2%80%8D%E2%99%82%EF%B8%8F-lucien-dulac-7197b6ab/)
 - 🌐 **Live Demo**: [Edouard - Caviste Personnel](https://caviste-personnel.vercel.app)
 
-## 📊 Web Vitals & Analytics
+## 📊 Analytics & Performance
 
-The application includes a comprehensive Web Vitals monitoring system to track real user performance metrics.
+The application uses Vercel Analytics and Speed Insights for performance monitoring and user analytics.
 
 ### Features
 
-- **Core Web Vitals Tracking**: CLS, LCP, FID, INP, FCP, TTFB
-- **Consent Management**: GDPR-compliant user consent system
-- **Batch Processing**: Efficient metric collection and transmission
-- **Privacy-First**: Only collects data with user consent
-- **Developer Friendly**: Auto-consent in development mode
+- **Vercel Analytics**: Automatic page view and custom event tracking
+- **Vercel Speed Insights**: Real user performance metrics (Core Web Vitals)
+- **Privacy-First**: Vercel's built-in privacy controls and anonymization
+- **Zero Configuration**: Automatic integration with Vercel deployment
 
-### Usage
+### Implementation
 
-Web Vitals tracking is automatically enabled across all pages via the `WebVitalsTracker` component in the root layout.
+Analytics and performance monitoring are automatically enabled via Vercel's native components in the root layout.
 
 ```typescript
-// Manual consent management
-import { consent } from './app/utils/consent';
+// Custom event tracking
+import { track } from "@vercel/analytics";
 
-// Grant consent
-consent.grant();
-
-// Check status
-console.log(consent.getStatus()); // 'granted' | 'denied' | 'pending'
-
-// Listen to changes
-const unsubscribe = consent.onChange((status) => {
-  console.log('Consent changed:', status);
+track("purchase_completed", {
+  product_id: "wine-123",
+  amount: 89.99,
 });
 ```
 
-### API Endpoints
+### Privacy
 
-- `GET /api/analytics/web-vitals` - Health check
-- `POST /api/analytics/web-vitals` - Receive metrics
+Vercel Analytics respects user privacy with:
 
-### Testing
-
-```bash
-# Run Web Vitals tests
-npm test -- hooks/useWebVitals
-npm test -- utils/consent
-npm test -- api/analytics/web-vitals
-```
+- Automatic anonymization of user data
+- No persistent user identifiers
+- GDPR-compliant data handling
+- Built-in consent management via cookies
 
 ---
 

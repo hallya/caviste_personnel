@@ -219,8 +219,8 @@ describe("Tests d'accessibilité - Pages principales", () => {
       
       const results = await axe(container, {
         rules: {
-          'landmark-banner-is-top-level': { enabled: false }, // Car testé dans un container isolé
-          'page-has-heading-one': { enabled: false }, // Car composant isolé
+          'landmark-banner-is-top-level': { enabled: false },
+          'page-has-heading-one': { enabled: false },
         }
       });
       
