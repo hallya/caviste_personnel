@@ -49,7 +49,7 @@ export function useCart(): UseCartReturn {
       setLoading(true);
       setError(null);
 
-      const res = await fetch("/api/cart", {
+      const res = await fetch(`/api/cart?cartId=${cartId}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });

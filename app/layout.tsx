@@ -3,6 +3,7 @@ import "./globals.css";
 import LayoutContainer from "./components/layout/containers/LayoutContainer";
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://caviste-personnel.vercel.app'),
   title: "Edouard, Caviste personnel",
   description:
     "Vins de vignerons français, sélection confidentielle, conseils personnalisés, livraison sur mesure et tarifs négociés.",

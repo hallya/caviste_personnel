@@ -170,7 +170,7 @@ describe("useCart", () => {
     renderHook(() => useCart());
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith("/api/cart", {
+      expect(mockFetch).toHaveBeenCalledWith("/api/cart?cartId=cart-123", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
