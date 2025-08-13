@@ -10,9 +10,11 @@ export class CollectionsApi {
     this.domain = process.env.SHOPIFY_STORE_DOMAIN!;
     this.token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
     this.apiVersion = process.env.SHOPIFY_API_VERSION ?? "2023-07";
-    
+
     if (!process.env.SHOPIFY_API_VERSION) {
-      console.warn(`SHOPIFY_API_VERSION not set, using fallback: ${this.apiVersion}`);
+      console.warn(
+        `SHOPIFY_API_VERSION not set, using fallback: ${this.apiVersion}`
+      );
     }
   }
 
@@ -59,7 +61,9 @@ export class CollectionsApi {
     `;
   }
 
-  private parseVideoUrl(node: any): string | null {
+  private parseVideoUrl(
+    node: ShopifyCollectionGraphQLEdge["node"]
+  ): string | null {
     if (
       node.metafield?.reference?.__typename === "GenericFile" &&
       node.metafield.reference.url
@@ -74,7 +78,9 @@ export class CollectionsApi {
     return null;
   }
 
-  private parseCollectionTags(node: any): string[] {
+  private parseCollectionTags(
+    node: ShopifyCollectionGraphQLEdge["node"]
+  ): string[] {
     if (!node.tagsMetafield?.value) {
       return [];
     }
@@ -109,15 +115,18 @@ export class CollectionsApi {
 
   async fetchCollections(): Promise<Collection[]> {
     try {
-      const res = await fetch(`https://${this.domain}/api/${this.apiVersion}/graphql.json`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Shopify-Storefront-Access-Token": this.token,
-        },
-        body: JSON.stringify({ query: this.getGraphQLQuery() }),
-        next: { revalidate: 300 }
-      });
+      const res = await fetch(
+        `https://${this.domain}/api/${this.apiVersion}/graphql.json`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Storefront-Access-Token": this.token,
+          },
+          body: JSON.stringify({ query: this.getGraphQLQuery() }),
+          next: { revalidate: 300 },
+        }
+      );
 
       if (!res.ok) {
         console.error("Shopify API error:", res.status, res.statusText);
@@ -132,7 +141,7 @@ export class CollectionsApi {
       }
 
       const edges = json?.data?.collections?.edges ?? [];
-      return edges.map((edge: ShopifyCollectionGraphQLEdge) => 
+      return edges.map((edge: ShopifyCollectionGraphQLEdge) =>
         this.transformShopifyNode(edge)
       );
     } catch (error) {
