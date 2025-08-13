@@ -60,6 +60,9 @@ describe('QuantitySelector Accessibility', () => {
 
     await user.keyboard('{ArrowUp}');
     expect(mockOnQuantityChange).toHaveBeenCalledWith(3);
+
+    await user.keyboard('{ArrowDown}');
+    expect(mockOnQuantityChange).toHaveBeenCalledWith(2);
   });
 
   it('handles keyboard navigation with left/right keys', async () => {
@@ -77,6 +80,9 @@ describe('QuantitySelector Accessibility', () => {
 
     await user.keyboard('{ArrowRight}');
     expect(mockOnQuantityChange).toHaveBeenCalledWith(3);
+
+    await user.keyboard('{ArrowLeft}');
+    expect(mockOnQuantityChange).toHaveBeenCalledWith(2);
   });
 
   it('prevents decrease below 1', async () => {
@@ -122,7 +128,10 @@ describe('QuantitySelector Accessibility', () => {
     );
 
     const increaseButton = screen.getByRole('button', { name: /augmenter/i });
+    const input = screen.getByRole('spinbutton');
+    
     expect(increaseButton).toBeDisabled();
+    expect(input).toBeDisabled();
   });
 
   it('prevents interactions when disabled', async () => {

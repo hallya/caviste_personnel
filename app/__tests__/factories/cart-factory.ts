@@ -1,3 +1,4 @@
+// Test-specific types - independent from component implementation
 interface TestCartItem {
   id: string;
   title: string;
