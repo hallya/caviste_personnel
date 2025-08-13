@@ -206,7 +206,7 @@ describe('IndividualNotification', () => {
       expect(screen.getByTestId('notification-title')).toHaveTextContent(longTitle);
       expect(screen.getByTestId('notification-message')).toHaveTextContent(longMessage);
       
-      const contentArea = screen.getByRole('alert').querySelector('.min-w-0');
+      const contentArea = screen.getByTestId('notification-content');
       expect(contentArea).toBeInTheDocument();
     });
 

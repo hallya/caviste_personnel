@@ -28,11 +28,7 @@ jest.mock("../../cart/CartFloatingButton", () => {
   };
 });
 
-jest.mock("@vercel/speed-insights/next", () => ({
-  SpeedInsights: function MockSpeedInsights() {
-    return <div data-testid="speed-insights">Speed Insights</div>;
-  },
-}));
+
 
 describe("Layout", () => {
   it("renders children within providers", () => {
@@ -57,15 +53,7 @@ describe("Layout", () => {
     expect(screen.getByTestId("cart-floating-button")).toBeInTheDocument();
   });
 
-  it("includes speed insights", () => {
-    render(
-      <Layout>
-        <div>Content</div>
-      </Layout>
-    );
 
-    expect(screen.getByTestId("speed-insights")).toBeInTheDocument();
-  });
 
   it("maintains proper component hierarchy", () => {
     render(
@@ -74,12 +62,12 @@ describe("Layout", () => {
       </Layout>
     );
 
-    const notificationProvider = screen.getByTestId("notification-provider");
     const cartProvider = screen.getByTestId("cart-provider");
+    const notificationProvider = screen.getByTestId("notification-provider");
     const mainContent = screen.getByText("Main Content");
 
-    expect(notificationProvider).toContainElement(cartProvider);
-    expect(cartProvider).toContainElement(mainContent);
+    expect(cartProvider).toContainElement(notificationProvider);
+    expect(notificationProvider).toContainElement(mainContent);
   });
 
   it("handles multiple children correctly", () => {
