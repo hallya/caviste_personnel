@@ -39,7 +39,7 @@ export default function IndividualNotification({
           className="text-neutral-400 hover:text-neutral-600 transition-colors ml-3 flex-shrink-0"
           aria-label={`Fermer la notification: ${title}`}
         >
-          <CloseIcon className="h-5 w-5" />
+          <CloseIcon />
         </button>
       </div>
     </div>

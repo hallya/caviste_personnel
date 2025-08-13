@@ -118,7 +118,6 @@ describe('useFormations', () => {
       result.current.handleSubmit(mockEvent);
     });
 
-    // Check loading notification
     expect(mockShowNotification).toHaveBeenCalledWith({
       id: NOTIFICATION_CONFIG.LOADING_ID,
       type: NOTIFICATION_TYPES.LOADING,
@@ -127,7 +126,6 @@ describe('useFormations', () => {
       autoClose: false,
     });
 
-    // Check error notification
     expect(mockShowNotification).toHaveBeenCalledWith({
       replaceId: NOTIFICATION_CONFIG.LOADING_ID,
       type: NOTIFICATION_TYPES.ERROR,
