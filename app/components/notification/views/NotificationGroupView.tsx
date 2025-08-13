@@ -96,7 +96,7 @@ export default function NotificationGroupView({
                     className="flex-shrink-0 text-neutral-400 hover:text-neutral-600 transition-colors ml-2"
                     aria-label={groupCloseAriaLabel}
                   >
-                    <CloseIcon className="w-4 h-4" />
+                    <CloseIcon />
                   </button>
                 )}
 
@@ -106,7 +106,7 @@ export default function NotificationGroupView({
                     className="text-neutral-400 hover:text-neutral-600 transition-colors"
                     aria-label={individualCloseAriaLabel}
                   >
-                    <CloseIcon className="w-3 h-3" />
+                    <CloseIcon />
                   </button>
                 )}
               </div>

@@ -20,7 +20,7 @@ jest.mock('../../carousel/Carousel', () => {
   };
 });
 
-jest.mock('../../PageHeader', () => {
+jest.mock('../../pageHeader', () => {
   return function MockPageHeader() {
     return <div data-testid="page-header">Page Header</div>;
   };

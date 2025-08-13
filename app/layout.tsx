@@ -1,6 +1,26 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import LayoutContainer from "./components/layout/containers/LayoutContainer";
+import { Geist, Geist_Mono, Prata } from "next/font/google";
+import Layout from "./components/layout/Layout";
+import JsonLd from "./components/seo/JsonLd";
+import { ORGANIZATION_SCHEMA, WEBSITE_SCHEMA } from "./components/seo/schemas";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const prata = Prata({
+  variable: "--font-prata",
+  subsets: ["latin"],
+  weight: "400",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://caviste-personnel.vercel.app'),
@@ -42,8 +62,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <LayoutContainer>
-      {children}
-    </LayoutContainer>
+    <html lang="fr">
+      <head>
+        <JsonLd data={ORGANIZATION_SCHEMA} />
+        <JsonLd data={WEBSITE_SCHEMA} />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${prata.variable} antialiased`}>
+        <Layout>{children}</Layout>
+        <SpeedInsights />
+      </body>
+    </html>
   );
 }

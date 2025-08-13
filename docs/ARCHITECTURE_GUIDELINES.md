@@ -12,51 +12,131 @@ This document outlines the architectural patterns and best practices for the Cav
 - **Data Management**: Handled in hooks and services
 - **Container Logic**: Minimal, only for connecting hooks to views
 
-### 2. Container/Presentational Pattern
-We follow the Container/Presentational pattern (also known as Smart/Dumb Components) to separate business logic from UI rendering.
+### 2. Binary Architecture Decision
+**Simple rule**: 
+- **Has business logic** → Use Container/View pattern
+- **No business logic** → Use Direct View pattern
 
-## Directory Structure
+No subjective "complexity" evaluation needed - it's binary and objective.
 
+## Architecture Patterns
+
+### Pattern 1: Container/View (When Business Logic Exists)
+Use this pattern when your feature has:
+- Form handling with API calls
+- State management
+- Data fetching and transformations
+- User interactions with side effects
+- Multiple hooks coordination
+
+**Structure**:
 ```
-app/
-├── components/
-│   └── [feature]/
-│       ├── containers/          # Minimal container components
-│       │   └── [Feature]Container.tsx
-│       ├── views/               # Presentational components
-│       │   ├── [Feature]View.tsx
-│       │   ├── [Feature]Content.tsx
-│       │   ├── [Feature]Empty.tsx
-│       │   └── [Feature]Loading.tsx
-│       ├── hooks/               # Custom hooks (business logic)
-│       │   ├── use[Feature].ts
-│       │   ├── use[Feature]Actions.ts
-│       │   └── use[Feature]Logic.ts
-│       ├── types.ts             # TypeScript interfaces
-│       ├── constants.ts         # Constants and configuration
-│       ├── utils.ts             # Utility functions
-│       └── __tests__/           # Test files
-└── [feature]/
-    └── page.tsx                 # Next.js page (minimal)
+app/components/
+├── featureName/
+│   ├── containers/
+│   │   └── FeatureContainer.tsx    # Orchestrates hooks and views (no tests needed)
+│   ├── views/
+│   │   ├── FeatureView.tsx         # Pure UI component
+│   │   └── __tests__/
+│   │       └── FeatureView.test.tsx # UI and interaction tests
+│   ├── hooks/
+│   │   ├── useFeature.ts           # Business logic
+│   │   └── __tests__/
+│   │       └── useFeature.test.ts  # Business logic tests
+│   ├── types.ts
+│   └── constants.ts
+```
+
+**Example**:
+```tsx
+// hooks/useFormations.ts (contains business logic)
+export function useFormations() {
+  const [formData, setFormData] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // API logic here
+  };
+  
+  return { formData, isSubmitting, handleSubmit };
+}
+
+// containers/FormationsContainer.tsx (orchestrates hooks)
+export default function FormationsContainer() {
+  const props = useFormations(); // Hook contains business logic
+  return <FormationsView {...props} />;
+}
+
+// views/FormationsView.tsx
+export default function FormationsView({ formData, isSubmitting, handleSubmit }) {
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* UI only */}
+    </form>
+  );
+}
+
+// page.tsx
+export default function FormationsPage() {
+  return <FormationsContainer />;
+}
+```
+
+### Pattern 2: Direct View (When No Business Logic)
+Use this pattern when your feature has:
+- Static content only
+- No API calls
+- No state management
+- No user interactions with side effects
+- Presentation-only components
+
+**Structure**:
+```
+app/featureName/
+├── views/
+│   ├── FeatureView.tsx             # Pure UI component
+│   └── __tests__/
+│       └── FeatureView.test.tsx    # UI and interaction tests
+├── types.ts
+└── constants.ts
+```
+
+**Example**:
+```tsx
+// views/ContactView.tsx
+export default function ContactView() {
+  return (
+    <div>
+      <h1>Contact Us</h1>
+      <p>Static content only</p>
+    </div>
+  );
+}
+
+// page.tsx
+export default function ContactPage() {
+  return <ContactView />;
+}
 ```
 
 ## Component Types
 
 ### 1. Container Components (`containers/`)
-**Purpose**: Connect hooks to presentational components. Should be minimal and contain no business logic.
+**Purpose**: Orchestrate hooks (which contain business logic) and connect them to presentational components. Should be minimal and contain no business logic themselves.
 
 **Characteristics**:
-- Import and use hooks
-- Pass data and callbacks to presentational components
-- No complex business logic
+- Import and use hooks (which contain the business logic)
+- Pass data and callbacks from hooks to presentational components
+- No business logic - only orchestration
 - No direct UI rendering
 - Simple data flow orchestration
 
 **Example**:
 ```tsx
-// containers/CartContainer.tsx
+// containers/CartContainer.tsx (orchestrates hooks)
 export default function CartContainer() {
-  const { cart, loading, error, onQuantityChange, onRemoveItem } = useCartLogic();
+  const { cart, loading, error, onQuantityChange, onRemoveItem } = useCartLogic(); // Hook contains business logic
 
   return (
     <CartView
@@ -99,15 +179,25 @@ export default function CartView({ cart, loading, error, onQuantityChange }: Car
 ```
 
 ### 3. Page Components
-**Purpose**: Next.js pages that should be minimal and only import containers.
+**Purpose**: Next.js pages that should be minimal and follow the binary rule.
 
-**Example**:
+**With Business Logic (Container/View)**:
 ```tsx
 // app/cart/page.tsx
 import CartContainer from '../components/cart/containers/CartContainer';
 
 export default function CartPage() {
   return <CartContainer />;
+}
+```
+
+**Without Business Logic (Direct View)**:
+```tsx
+// app/contact/page.tsx
+import ContactView from './views/ContactView';
+
+export default function ContactPage() {
+  return <ContactView />;
 }
 ```
 
@@ -124,7 +214,7 @@ export default function CartPage() {
 - Return consistent interfaces
 - Handle loading and error states
 - Use TypeScript for all interfaces
-- **Business logic should be in hooks, not containers**
+- **Business logic should be in hooks, containers only orchestrate hooks**
 
 **Example**:
 ```tsx
@@ -202,23 +292,88 @@ interface CartViewProps {
 
 ## Testing Strategy
 
-### 1. Container Tests
-- Test business logic
-- Mock hooks and dependencies
-- Test event handlers
-- Verify data flow
+### 1. Hook Tests (`hooks/__tests__/`)
+**Purpose**: Test business logic in isolation
+- Test state changes and state management
+- Test async operations (API calls, form submissions)
+- Test error handling and edge cases
+- Mock external dependencies (fetch, context)
+- Test complex business logic flows
 
-### 2. Presentational Tests
-- Test UI rendering
-- Test user interactions
-- Test prop changes
-- Use React Testing Library
+**Example**:
+```tsx
+// hooks/__tests__/useFormations.test.ts
+describe('useFormations', () => {
+  it('handles successful form submission', async () => {
+    // Test API call, state updates, notifications
+  });
+  
+  it('handles form submission errors', async () => {
+    // Test error handling, error notifications
+  });
+});
+```
 
-### 3. Hook Tests
-- Test state changes
-- Test async operations
+### 2. View Tests (`views/__tests__/`)
+**Purpose**: Test UI rendering and user interactions
+- Test component rendering with different props
+- Test user interactions (clicks, form inputs, navigation)
+- Test accessibility features (ARIA, keyboard navigation)
+- Test conditional rendering (loading, error, success states)
+- Test prop changes and their effects
+
+**Example**:
+```tsx
+// views/__tests__/FormationsView.test.tsx
+describe('FormationsView', () => {
+  it('renders form with proper accessibility', () => {
+    // Test form structure, labels, ARIA attributes
+  });
+  
+  it('handles user interactions correctly', async () => {
+    // Test form submission, input changes
+  });
+});
+```
+
+### 3. Page Tests (Minimal)
+**Purpose**: Test page-level integration (only when necessary)
+- Test that pages render the correct components
+- Test metadata and SEO elements
+- Test routing and navigation
+- **Avoid testing business logic** (tested in hooks)
+- **Avoid testing UI details** (tested in views)
+
+**Example**:
+```tsx
+// __tests__/page.test.tsx (only for complex pages)
+describe('FormationsPage', () => {
+  it('renders FormationsView with form logic', () => {
+    // Test component composition, not business logic
+  });
+});
+```
+
+### 4. API Route Tests (`api/__tests__/`)
+**Purpose**: Test server-side logic
+- Test request validation (Zod schemas)
+- Test response formatting
 - Test error handling
-- Mock external dependencies
+- Test business logic in route handlers
+
+**Example**:
+```tsx
+// api/formations/register/__tests__/route.test.ts
+describe('POST /api/formations/register', () => {
+  it('validates request data correctly', () => {
+    // Test Zod validation
+  });
+  
+  it('returns proper response format', () => {
+    // Test response structure
+  });
+});
+```
 
 ## File Naming Conventions
 
@@ -245,9 +400,10 @@ interface CartViewProps {
 - Reduced coupling between components
 
 ### 2. Testability
-- Business logic can be tested independently
-- UI components can be tested in isolation
-- Hooks can be tested separately
+- **Business logic tested in hooks** - isolated and focused
+- **UI components tested in views** - presentation and interactions
+- **Pages tested minimally** - only integration when necessary
+- **API routes tested separately** - server-side logic validation
 
 ### 3. Reusability
 - Presentational components can be reused
@@ -259,76 +415,78 @@ interface CartViewProps {
 - Clear structure for team collaboration
 - Consistent patterns across the codebase
 
-## Migration Guidelines
+## Decision Flow
 
-When refactoring existing components:
+When creating a new feature, ask:
 
-1. **Identify the component type** (container or presentational)
-2. **Extract business logic** into containers
-3. **Create presentational components** for UI
-4. **Update imports** and file structure
-5. **Update tests** to match new structure
-6. **Verify functionality** remains the same
+1. **Does this feature have business logic?**
+   - API calls? → Container/View
+   - State management? → Container/View
+   - Form handling? → Container/View
+   - User interactions with side effects? → Container/View
 
-## Example Migration
+2. **Is this purely presentational?**
+   - Static content? → Direct View
+   - No API calls? → Direct View
+   - No state management? → Direct View
 
-### Before (Mixed Logic)
+**No subjective "complexity" evaluation needed.**
+
+## Common Anti-Patterns to Avoid
+
+### ❌ Business Logic in Pages
 ```tsx
-// CartPage.tsx
-export default function CartPage() {
-  const { cart, loading, error } = useCart();
-  const { updateQuantity } = useCartActions();
-
-  const handleQuantityChange = async (lineId: string, quantity: number) => {
+// Bad: Logic in page
+export default function FormationsPage() {
+  const [formData, setFormData] = useState({});
+  const handleSubmit = async (e) => {
     // Business logic here
   };
-
-  if (loading) return <div>Loading...</div>;
-  
-  return (
-    <div>
-      {/* UI rendering here */}
-    </div>
-  );
+  return <FormationsView formData={formData} onSubmit={handleSubmit} />;
 }
 ```
 
-### After (Separated)
+### ❌ Redundant Containers
 ```tsx
-// containers/CartContainer.tsx
-export default function CartContainer() {
-  const { cart, loading, error } = useCart();
-  const { updateQuantity } = useCartActions();
+// Bad: Container for static content
+export default function ContactContainer() {
+  return <ContactView />; // No logic needed
+}
+```
 
-  const handleQuantityChange = async (lineId: string, quantity: number) => {
-    // Business logic here
+### ❌ Mixed Responsibilities
+```tsx
+// Bad: View with business logic
+export default function FormationsView() {
+  const handleSubmit = async (e) => {
+    // Business logic in view
   };
-
-  return (
-    <CartView
-      cart={cart}
-      loading={loading}
-      error={error}
-      onQuantityChange={handleQuantityChange}
-    />
-  );
+  return <form onSubmit={handleSubmit}>...</form>;
 }
+```
 
-// views/CartView.tsx
-export default function CartView({ cart, loading, error, onQuantityChange }: CartViewProps) {
-  if (loading) return <CartLoading />;
-  
-  return (
-    <div>
-      {/* UI rendering here */}
-    </div>
-  );
-}
+### ❌ Testing Anti-Patterns
+```tsx
+// Bad: Testing business logic in page tests
+describe('FormationsPage', () => {
+  it('handles form submission', async () => {
+    // Business logic should be tested in useFormations.test.ts
+  });
+});
 
-// page.tsx
-export default function CartPage() {
-  return <CartContainer />;
-}
+// Bad: Testing UI details in hook tests
+describe('useFormations', () => {
+  it('renders form correctly', () => {
+    // UI rendering should be tested in FormationsView.test.tsx
+  });
+});
+
+// Bad: Testing containers (redundant)
+describe('FormationsContainer', () => {
+  it('orchestrates hook and view', () => {
+    // Container logic is too simple to warrant separate tests
+  });
+});
 ```
 
 ## Conclusion
@@ -340,4 +498,4 @@ Following these architectural guidelines ensures:
 - **Team collaboration** with consistent patterns
 - **Future-proof code** that's easy to modify and extend
 
-Always prioritize these principles when creating new features or refactoring existing code. 
+**Remember**: Binary decision - logic = Container/View, no logic = Direct View. 

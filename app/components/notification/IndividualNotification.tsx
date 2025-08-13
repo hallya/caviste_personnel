@@ -31,17 +31,15 @@ export default function IndividualNotification({
       aria-label={`${title}: ${message}`}
     >
       <div className="flex items-start justify-between">
-        <div className="flex items-center flex-1 min-w-0">
-          <NotificationContent
-            notification={{ id, type, title, message, timestamp: Date.now() }}
-          />
-        </div>
+        <NotificationContent
+          notification={{ id, type, title, message, timestamp: Date.now() }}
+        />
         <button
           onClick={onClose}
-          className="text-neutral-400 hover:text-neutral-600 transition-colors"
+          className="text-neutral-400 hover:text-neutral-600 transition-colors ml-3 flex-shrink-0"
           aria-label={`Fermer la notification: ${title}`}
         >
-          <CloseIcon className="h-5 w-5" />
+          <CloseIcon />
         </button>
       </div>
     </div>

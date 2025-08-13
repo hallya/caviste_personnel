@@ -1,14 +1,14 @@
 import { useCallback, useState, useEffect } from "react";
 import { useNotification } from "../../../contexts/NotificationContext";
 import { NOTIFICATION_GROUPS } from "../constants";
-import type { NotificationOptions, NotificationData } from "../types";
+import type { NotificationOptions, NotificationData, NotificationType } from "../types";
 
 export function useNotificationGroup() {
   const { showNotification } = useNotification();
 
   const showGroupedNotification = useCallback(
     (
-      type: "success" | "error" | "loading",
+      type: NotificationType,
       title: string,
       message: string,
       groupId: string,
@@ -30,7 +30,7 @@ export function useNotificationGroup() {
 
   const showCartNotification = useCallback(
     (
-      type: "success" | "error" | "loading",
+      type: NotificationType,
       title: string,
       message: string,
       options?: NotificationOptions

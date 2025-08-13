@@ -1,5 +1,10 @@
-export type NotificationType =
-  typeof import("./constants").NOTIFICATION_TYPES[keyof typeof import("./constants").NOTIFICATION_TYPES];
+export const NOTIFICATION_TYPES = {
+  SUCCESS: "success",
+  ERROR: "error",
+  LOADING: "loading",
+} as const;
+
+export type NotificationType = typeof NOTIFICATION_TYPES[keyof typeof NOTIFICATION_TYPES];
 
 export interface NotificationData {
   id: string;

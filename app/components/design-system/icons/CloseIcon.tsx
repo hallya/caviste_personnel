@@ -2,7 +2,7 @@ interface CloseIconProps {
   className?: string;
 }
 
-export default function CloseIcon({ className = "w-3 h-3" }: CloseIconProps) {
+export default function CloseIcon({ className = "w-4 h-4" }: CloseIconProps) {
   return (
     <svg 
       className={className} 

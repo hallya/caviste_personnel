@@ -6,9 +6,3 @@ export const NOTIFICATION_DEFAULTS = {
 export const NOTIFICATION_GROUPS = {
   CART: "cart",
 } as const;
-
-export const NOTIFICATION_TYPES = {
-  SUCCESS: "success",
-  ERROR: "error", 
-  LOADING: "loading",
-} as const;
