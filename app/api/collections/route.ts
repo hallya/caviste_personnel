@@ -9,6 +9,11 @@ export async function GET(req: Request) {
 
   const domain = process.env.SHOPIFY_STORE_DOMAIN!;
   const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
+  const apiVersion = process.env.SHOPIFY_API_VERSION ?? "2023-07";
+  
+  if (!process.env.SHOPIFY_API_VERSION) {
+    console.warn(`SHOPIFY_API_VERSION not set, using fallback: ${apiVersion}`);
+  }
 
   const query = /* GraphQL */ `
     query {
@@ -51,7 +56,7 @@ export async function GET(req: Request) {
     }
   `;
 
-  const res = await fetch(`https://${domain}/api/2023-07/graphql.json`, {
+  const res = await fetch(`https://${domain}/api/${apiVersion}/graphql.json`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -9,6 +9,7 @@ jest.mock('../Carousel.module.css', () => ({
 }));
 
 const mockCollection: Collection = {
+  id: 'gid://shopify/Collection/1',
   title: 'Test Collection',
   handle: 'test-collection',
   image: 'https://example.com/image.jpg',

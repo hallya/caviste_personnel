@@ -741,6 +741,27 @@ const remainingStock = (product.quantityAvailable || 0) - cartQuantity;
 - **Use present tense** for ongoing explanations
 - **Reference external constraints** when relevant
 
+### **🌐 Language Guidelines**
+
+#### **✅ Code & Documentation**
+- **Comments** - Always in English
+- **Variable names** - Always in English
+- **Function names** - Always in English
+- **Type definitions** - Always in English
+- **Documentation** - Always in English
+
+#### **✅ User Interface**
+- **UI text** - French (for French users)
+- **Placeholders** - French
+- **Button labels** - French
+- **Error messages** - French
+- **Page titles** - French
+- **Metadata descriptions** - French
+
+#### **📝 Clear Separation**
+- **Developer-facing content** (code, comments, docs) → English
+- **User-facing content** (UI, messages, metadata) → French
+
 ## 🎯 Specific Project Requirements
 
 ### **Tailwind Configuration**
