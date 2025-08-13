@@ -4,7 +4,7 @@ import "@testing-library/jest-dom";
 import RootLayout, { metadata } from "../layout";
 jest.mock("../components/layout/Layout", () => {
   return function MockLayout({ children }: { children: React.ReactNode }) {
-    return <div data-testid="layout-container">{children}</div>;
+    return <div data-testid="layout">{children}</div>;
   };
 });
 
@@ -13,18 +13,18 @@ describe("RootLayout", () => {
     jest.clearAllMocks();
   });
 
-  it("renders children within LayoutContainer", () => {
+  it("renders children within Layout", () => {
     const { getByTestId, getByText } = render(
       <RootLayout>
         <div>Test Content</div>
       </RootLayout>
     );
 
-    expect(getByTestId("layout-container")).toBeInTheDocument();
+    expect(getByTestId("layout")).toBeInTheDocument();
     expect(getByText("Test Content")).toBeInTheDocument();
   });
 
-  it("passes children to LayoutContainer correctly", () => {
+  it("passes children to Layout correctly", () => {
     const { getByTestId } = render(
       <RootLayout>
         <main>Main Content</main>
@@ -32,9 +32,9 @@ describe("RootLayout", () => {
       </RootLayout>
     );
 
-    const layoutContainer = getByTestId("layout-container");
-    expect(layoutContainer).toContainHTML("<main>Main Content</main>");
-    expect(layoutContainer).toContainHTML("<aside>Sidebar Content</aside>");
+    const layout = getByTestId("layout");
+    expect(layout).toContainHTML("<main>Main Content</main>");
+    expect(layout).toContainHTML("<aside>Sidebar Content</aside>");
   });
 });
 

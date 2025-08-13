@@ -13,4 +13,4 @@ export default function PageHeader({ isHomePage = false }: PageHeaderProps) {
       </HeaderElement>
     </div>
   );
-} 
+}

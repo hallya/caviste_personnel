@@ -7,7 +7,6 @@ export default function FormationsClient() {
   const {
     formData,
     isSubmitting,
-    submitStatus,
     handleSubmit,
     handleChange,
   } = useFormations();
@@ -18,7 +17,6 @@ export default function FormationsClient() {
       onSubmit={handleSubmit}
       onChange={handleChange}
       isSubmitting={isSubmitting}
-      submitStatus={submitStatus}
     />
   );
 }

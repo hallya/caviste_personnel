@@ -1,22 +1,34 @@
 import { useState } from "react";
-import type { FormationFormData, SubmitStatus } from "../types";
-import { API_ENDPOINTS } from "../constants";
+import { useNotification } from "../../contexts/NotificationContext";
+import { NOTIFICATION_TYPES } from "../../components/notification/types";
+import { API_ENDPOINTS, NOTIFICATION_CONFIG } from "../constants";
+import type { FormationFormData } from "../types";
+
+const INITIAL_FORM_DATA: FormationFormData = {
+  name: "",
+  email: "",
+  message: "",
+};
 
 export function useFormations() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle");
-  const [formData, setFormData] = useState<FormationFormData>({
-    name: '',
-    email: '',
-    message: '',
-  });
+  const [formData, setFormData] =
+    useState<FormationFormData>(INITIAL_FORM_DATA);
+  const { showNotification } = useNotification();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const submitForm = async () => {
       setIsSubmitting(true);
-      setSubmitStatus("idle");
+
+      showNotification({
+        id: NOTIFICATION_CONFIG.LOADING_ID,
+        type: NOTIFICATION_TYPES.LOADING,
+        title: "Envoi en cours...",
+        message: "Votre demande de formation est en cours d'envoi",
+        autoClose: false,
+      });
 
       try {
         const response = await fetch(API_ENDPOINTS.FORMATIONS_REGISTER, {
@@ -28,13 +40,32 @@ export function useFormations() {
         });
 
         if (!response.ok) {
-          throw new Error("Erreur lors de l'envoi du formulaire");
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        setSubmitStatus("success");
+        showNotification({
+          replaceId: NOTIFICATION_CONFIG.LOADING_ID,
+          type: NOTIFICATION_TYPES.SUCCESS,
+          title: "Demande envoyée !",
+          message:
+            "Votre demande a été envoyée avec succès. Je vous recontacterai rapidement.",
+          autoClose: true,
+          autoCloseDelay: NOTIFICATION_CONFIG.AUTO_CLOSE_DELAY,
+        });
+
+        setFormData(INITIAL_FORM_DATA);
       } catch (error) {
         console.error("Formation registration error:", error);
-        setSubmitStatus("error");
+
+        showNotification({
+          replaceId: NOTIFICATION_CONFIG.LOADING_ID,
+          type: NOTIFICATION_TYPES.ERROR,
+          title: "Erreur d'envoi",
+          message:
+            "Une erreur s'est produite. Veuillez réessayer ou me contacter directement.",
+          autoClose: true,
+          autoCloseDelay: NOTIFICATION_CONFIG.ERROR_AUTO_CLOSE_DELAY,
+        });
       } finally {
         setIsSubmitting(false);
       }
@@ -43,15 +74,16 @@ export function useFormations() {
     submitForm();
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return {
     formData,
     isSubmitting,
-    submitStatus,
     handleSubmit,
     handleChange,
   };

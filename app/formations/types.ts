@@ -3,5 +3,3 @@ export interface FormationFormData {
   email: string;
   message?: string;
 }
-
-export type SubmitStatus = 'idle' | 'success' | 'error';

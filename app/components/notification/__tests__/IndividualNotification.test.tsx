@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import IndividualNotification from '../IndividualNotification';
 import type { NotificationData } from '../types';
-import { NOTIFICATION_TYPES } from '../constants';
+import { NOTIFICATION_TYPES } from '../types';
 
 jest.mock('../NotificationContent', () => {
   return function MockNotificationContent({ notification }: { notification: NotificationData }) {

@@ -22,7 +22,6 @@ describe('FormationsView', () => {
     onSubmit: mockOnSubmit,
     onChange: jest.fn(),
     isSubmitting: false,
-    submitStatus: 'idle' as const,
   };
 
   beforeEach(() => {
@@ -87,15 +86,40 @@ describe('FormationsView', () => {
     expect(submitButton).toBeDisabled();
   });
 
-  it('shows success feedback after successful submission', () => {
-    render(<FormationsView {...defaultProps} submitStatus="success" />);
+  it('has proper ARIA attributes for accessibility', () => {
+    render(<FormationsView {...defaultProps} />);
 
-    expect(screen.getByText(/Votre demande a été envoyée avec succès/)).toBeInTheDocument();
+    const nameInput = screen.getByRole('textbox', { name: 'Nom complet *' });
+    const emailInput = screen.getByRole('textbox', { name: 'Email *' });
+
+    expect(nameInput).toHaveAttribute('aria-describedby', 'name-help');
+    expect(emailInput).toHaveAttribute('aria-describedby', 'email-help');
+
+    expect(screen.getByText('Votre nom complet est requis')).toHaveClass('sr-only');
+    expect(screen.getByText('Votre adresse email est requise')).toHaveClass('sr-only');
   });
 
-  it('shows error feedback when submission fails', () => {
-    render(<FormationsView {...defaultProps} submitStatus="error" />);
 
-    expect(screen.getByText(/Une erreur s'est produite/)).toBeInTheDocument();
+
+  it('provides accessible feedback during form submission', () => {
+    render(<FormationsView {...defaultProps} isSubmitting={true} />);
+
+    const submitButton = screen.getByRole('button', { name: 'Envoi en cours...' });
+    expect(submitButton).toHaveAttribute('aria-describedby', 'submitting-status');
+
+    const statusMessage = screen.getByText('Le formulaire est en cours d\'envoi, veuillez patienter');
+    expect(statusMessage).toHaveClass('sr-only');
+    expect(statusMessage).toHaveAttribute('id', 'submitting-status');
+  });
+
+  it('has proper form structure with semantic elements', () => {
+    render(<FormationsView {...defaultProps} />);
+
+    const form = screen.getByRole('button', { name: 'Envoyer ma demande' }).closest('form');
+    expect(form).toBeInTheDocument();
+
+    expect(screen.getByLabelText('Nom complet *')).toBeInTheDocument();
+    expect(screen.getByLabelText('Email *')).toBeInTheDocument();
+    expect(screen.getByLabelText('Message (optionnel)')).toBeInTheDocument();
   });
 });

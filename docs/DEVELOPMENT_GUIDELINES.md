@@ -11,7 +11,7 @@ This document defines the development standards and best practices for the **Cav
 **For complex features (with business logic)**:
 ```
 app/components/
-├── featureName/
+├── featureName/              # camelCase naming
 │   ├── containers/
 │   │   └── FeatureContainer.tsx
 │   ├── views/
@@ -26,7 +26,7 @@ app/components/
 
 **For simple features (presentation only)**:
 ```
-app/featureName/
+app/featureName/              # camelCase naming
 ├── views/
 │   └── FeatureView.tsx
 ├── types.ts
@@ -35,6 +35,13 @@ app/featureName/
 |   index.ts                 # export view here
 └── __tests__/
 ```
+
+#### **Naming Conventions**
+- ✅ **Use camelCase** for component folder names: `pageHeader`, `cartFloatingButton`
+- ✅ **Use PascalCase** for component files: `PageHeader.tsx`, `CartFloatingButton.tsx`
+- ✅ **Use kebab-case** for page routes: `contact`, `formations`
+- ❌ **Avoid PascalCase** for folders: `PageHeader/` → `pageHeader/`
+- ❌ **Avoid snake_case** for folders: `page_header/` → `pageHeader/`
 
 ### **Binary Architecture Decision**
 
@@ -85,6 +92,49 @@ export default function FormationsPage() {
   return <FormationsView {...props} />;
 }
 ```
+
+**Example 3: Layout (Direct View - Simple Composition)**:
+```tsx
+// app/components/layout/Layout.tsx
+import { NotificationProvider } from "../../contexts/NotificationContext";
+import { CartProvider } from "../../contexts/CartContext";
+
+export default function Layout({ children }: LayoutProps) {
+  return (
+    <div>
+      <NotificationProvider>
+        <CartProvider>
+          {children}
+          <CartFloatingButton />
+        </CartProvider>
+      </NotificationProvider>
+    </div>
+  );
+}
+```
+
+**Example 4: PageHeader (Direct View - UI Content)**:
+```tsx
+// app/components/pageHeader/PageHeader.tsx
+interface PageHeaderProps {
+  isHomePage?: boolean;
+}
+
+export default function PageHeader({ isHomePage = false }: PageHeaderProps) {
+  // Use H1 for homepage SEO, div for other pages to avoid multiple H1s
+  const HeaderElement = isHomePage ? 'h1' : 'div';
+  
+  return (
+    <div className="bg-primary-50 pt-8 pb-4">
+      <HeaderElement className="text-center text-title text-primary-600">
+        Edouard, Caviste personnel
+      </HeaderElement>
+    </div>
+  );
+}
+```
+
+**Note**: UI content (text, CSS classes) doesn't need constants - only business logic values do.
 
 **Key Principle**: No business logic in page components, always in hooks.
 
@@ -528,45 +578,77 @@ export const ComponentName = memo(function ComponentName({ ... }) {
 });
 ```
 
-### **Magic Numbers and Constants**
+### **Magic Values and Constants**
+
+#### **What to Eliminate (Magic Values)**
 ```typescript
-// ❌ Avoid magic numbers in code
-const res = await fetch(`/api/collection-products?handle=${handle}&first=250`);
-setTimeout(() => {}, 1000);
+// ❌ Magic strings to eliminate
+const apiUrl = "https://api.shopify.com/admin/api/2023-10/products.json";
+const errorMessage = "Failed to load products";
+const apiKey = "shpat_1234567890abcdef";
+const businessValue = "premium_tier";
 
-// ✅ Use named constants instead
-import { API_LIMITS, TIMING } from '../constants';
+// ❌ Magic numbers to eliminate
+const maxProducts = 250;
+const timeout = 5000;
+const retryAttempts = 3;
+```
 
-const res = await fetch(`/api/collection-products?handle=${handle}&first=${API_LIMITS.MAX_PRODUCTS_PER_COLLECTION}`);
-setTimeout(() => {}, TIMING.MILLISECONDS_PER_SECOND);
+#### **What NOT to Eliminate (UI Content)**
+```typescript
+// ✅ These are NOT magic strings - they're UI content
+const title = "Edouard, Caviste personnel";
+const className = "bg-primary-50 pt-8 pb-4";
+const buttonText = "Add to Cart";
 
-// ✅ Define constants in dedicated files
-// constants.ts
-export const API_LIMITS = {
+// ✅ These are NOT magic numbers - they're styling
+const padding = "pt-8 pb-4";
+const fontSize = "text-lg";
+```
+
+#### **Guidelines for Constants**
+```typescript
+// ✅ Use constants for business logic and configuration
+export const API_CONFIG = {
+  BASE_URL: "https://api.shopify.com/admin/api/2023-10",
   MAX_PRODUCTS_PER_COLLECTION: 250,
-  MAX_CACHE_SIZE: 50,
+  TIMEOUT_MS: 5000,
+  RETRY_ATTEMPTS: 3,
 } as const;
 
+export const ERROR_MESSAGES = {
+  NETWORK_ERROR: "Erreur de connexion",
+  VALIDATION_ERROR: "Données invalides",
+  NOT_FOUND: "Produit non trouvé",
+} as const;
+
+// ✅ Group related constants
 export const TIMING = {
   MILLISECONDS_PER_SECOND: 1000,
   SECONDS_PER_MINUTE: 60,
   MINUTES_PER_HOUR: 60,
 } as const;
-
-// ✅ Use descriptive names for magic numbers
-export const CACHE_CONFIG = {
-  TTL: 5 * TIMING.MINUTES_PER_HOUR * TIMING.SECONDS_PER_MINUTE * TIMING.MILLISECONDS_PER_SECOND,
-} as const;
 ```
 
-#### **Magic Number Guidelines**
-- ✅ **Define constants** for all numeric values that have business meaning
+#### **Magic Value Guidelines**
+- ✅ **Eliminate magic strings** for:
+  - URLs d'API
+  - Messages d'erreur
+  - Clés de configuration
+  - Valeurs métier
+- ✅ **Eliminate magic numbers** for:
+  - Limites d'API
+  - Timeouts
+  - Tentatives de retry
+  - Valeurs de configuration
+- ❌ **Don't over-engineer** UI content:
+  - Text content des balises HTML
+  - Classes CSS/Tailwind
+  - Labels et placeholders
 - ✅ **Use descriptive names** that explain the purpose
-- ✅ **Group related constants** in objects (e.g., `API_LIMITS`, `TIMING`)
+- ✅ **Group related constants** in objects
 - ✅ **Use `as const`** for type safety
 - ✅ **Import constants** from dedicated files
-- ❌ **Avoid hardcoded numbers** in component logic
-- ❌ **Avoid magic numbers** in calculations or API calls
 
 ## 🚀 Git Workflow
 
@@ -675,6 +757,25 @@ const remainingStock = (product.quantityAvailable || 0) - cartQuantity;
 - ✅ **Error handling** for network and API errors
 - ✅ **Cart persistence** in localStorage
 - ✅ **Checkout flow** integration
+
+### **API Route Structure**
+For Next.js API routes with validation schemas:
+
+```
+app/api/feature/
+├── route.ts              # Main route handler
+├── schemas.ts            # Zod validation schemas (shared)
+└── __tests__/
+    └── route.test.ts     # Tests (import schemas from schemas.ts)
+```
+
+**Key principles**:
+- ✅ **Extract schemas** to separate `schemas.ts` file
+- ✅ **Import schemas** in both route handler and tests
+- ✅ **Avoid redefining schemas** in test files
+- ✅ **Prevent Jest environment issues** by isolating server-side imports
+- ✅ **Use Zod for validation** with proper error handling
+- ✅ **Return consistent JSON responses** with status codes
 
 ### **Accessibility**
 - ✅ **ARIA attributes** for screen readers

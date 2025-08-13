@@ -1,7 +1,7 @@
 import Popup from "../../popup/Popup";
 import IntroText from "../../introText/IntroText";
 import Carousel from "../../carousel/Carousel";
-import PageHeader from "../../PageHeader";
+import PageHeader from "../../pageHeader";
 import SocialLinks from "./SocialLinks";
 import type { SimplifiedProduct } from "../../../types/shopify";
 import type { Collection } from "../../carousel/types";

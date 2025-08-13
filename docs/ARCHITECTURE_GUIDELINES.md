@@ -34,14 +34,17 @@ Use this pattern when your feature has:
 app/components/
 ├── featureName/
 │   ├── containers/
-│   │   └── FeatureContainer.tsx    # Orchestrates hooks and views
+│   │   └── FeatureContainer.tsx    # Orchestrates hooks and views (no tests needed)
 │   ├── views/
-│   │   └── FeatureView.tsx         # Pure UI component
+│   │   ├── FeatureView.tsx         # Pure UI component
+│   │   └── __tests__/
+│   │       └── FeatureView.test.tsx # UI and interaction tests
 │   ├── hooks/
-│   │   └── useFeature.ts           # Business logic
+│   │   ├── useFeature.ts           # Business logic
+│   │   └── __tests__/
+│   │       └── useFeature.test.ts  # Business logic tests
 │   ├── types.ts
-│   ├── constants.ts
-│   └── __tests__/
+│   └── constants.ts
 ```
 
 **Example**:
@@ -92,10 +95,11 @@ Use this pattern when your feature has:
 ```
 app/featureName/
 ├── views/
-│   └── FeatureView.tsx             # Pure UI component
+│   ├── FeatureView.tsx             # Pure UI component
+│   └── __tests__/
+│       └── FeatureView.test.tsx    # UI and interaction tests
 ├── types.ts
-├── constants.ts
-└── __tests__/
+└── constants.ts
 ```
 
 **Example**:
@@ -288,23 +292,88 @@ interface CartViewProps {
 
 ## Testing Strategy
 
-### 1. Container Tests
-- Test business logic
-- Mock hooks and dependencies
-- Test event handlers
-- Verify data flow
+### 1. Hook Tests (`hooks/__tests__/`)
+**Purpose**: Test business logic in isolation
+- Test state changes and state management
+- Test async operations (API calls, form submissions)
+- Test error handling and edge cases
+- Mock external dependencies (fetch, context)
+- Test complex business logic flows
 
-### 2. Presentational Tests
-- Test UI rendering
-- Test user interactions
-- Test prop changes
-- Use React Testing Library
+**Example**:
+```tsx
+// hooks/__tests__/useFormations.test.ts
+describe('useFormations', () => {
+  it('handles successful form submission', async () => {
+    // Test API call, state updates, notifications
+  });
+  
+  it('handles form submission errors', async () => {
+    // Test error handling, error notifications
+  });
+});
+```
 
-### 3. Hook Tests
-- Test state changes
-- Test async operations
+### 2. View Tests (`views/__tests__/`)
+**Purpose**: Test UI rendering and user interactions
+- Test component rendering with different props
+- Test user interactions (clicks, form inputs, navigation)
+- Test accessibility features (ARIA, keyboard navigation)
+- Test conditional rendering (loading, error, success states)
+- Test prop changes and their effects
+
+**Example**:
+```tsx
+// views/__tests__/FormationsView.test.tsx
+describe('FormationsView', () => {
+  it('renders form with proper accessibility', () => {
+    // Test form structure, labels, ARIA attributes
+  });
+  
+  it('handles user interactions correctly', async () => {
+    // Test form submission, input changes
+  });
+});
+```
+
+### 3. Page Tests (Minimal)
+**Purpose**: Test page-level integration (only when necessary)
+- Test that pages render the correct components
+- Test metadata and SEO elements
+- Test routing and navigation
+- **Avoid testing business logic** (tested in hooks)
+- **Avoid testing UI details** (tested in views)
+
+**Example**:
+```tsx
+// __tests__/page.test.tsx (only for complex pages)
+describe('FormationsPage', () => {
+  it('renders FormationsView with form logic', () => {
+    // Test component composition, not business logic
+  });
+});
+```
+
+### 4. API Route Tests (`api/__tests__/`)
+**Purpose**: Test server-side logic
+- Test request validation (Zod schemas)
+- Test response formatting
 - Test error handling
-- Mock external dependencies
+- Test business logic in route handlers
+
+**Example**:
+```tsx
+// api/formations/register/__tests__/route.test.ts
+describe('POST /api/formations/register', () => {
+  it('validates request data correctly', () => {
+    // Test Zod validation
+  });
+  
+  it('returns proper response format', () => {
+    // Test response structure
+  });
+});
+```
 
 ## File Naming Conventions
 
@@ -331,9 +400,10 @@ interface CartViewProps {
 - Reduced coupling between components
 
 ### 2. Testability
-- Business logic can be tested independently
-- UI components can be tested in isolation
-- Hooks can be tested separately
+- **Business logic tested in hooks** - isolated and focused
+- **UI components tested in views** - presentation and interactions
+- **Pages tested minimally** - only integration when necessary
+- **API routes tested separately** - server-side logic validation
 
 ### 3. Reusability
 - Presentational components can be reused
@@ -393,6 +463,30 @@ export default function FormationsView() {
   };
   return <form onSubmit={handleSubmit}>...</form>;
 }
+```
+
+### ❌ Testing Anti-Patterns
+```tsx
+// Bad: Testing business logic in page tests
+describe('FormationsPage', () => {
+  it('handles form submission', async () => {
+    // Business logic should be tested in useFormations.test.ts
+  });
+});
+
+// Bad: Testing UI details in hook tests
+describe('useFormations', () => {
+  it('renders form correctly', () => {
+    // UI rendering should be tested in FormationsView.test.tsx
+  });
+});
+
+// Bad: Testing containers (redundant)
+describe('FormationsContainer', () => {
+  it('orchestrates hook and view', () => {
+    // Container logic is too simple to warrant separate tests
+  });
+});
 ```
 
 ## Conclusion
