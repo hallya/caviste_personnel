@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import FormationsView from '../FormationsView';
 import '@testing-library/jest-dom';
 
-jest.mock('../../../components/PageHeader', () => {
+jest.mock('../../../components/pageHeader/PageHeader', () => {
   return function MockPageHeader() {
     return <header>Page Header</header>;
   };

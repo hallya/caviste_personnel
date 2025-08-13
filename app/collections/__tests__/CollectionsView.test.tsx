@@ -6,7 +6,7 @@ import CollectionsView from '../views/CollectionsView';
 import { Collection } from '../../components/carousel/types';
 import { CollectionsTestFactories, CollectionsTestData } from '../../__tests__/factories';
 
-jest.mock('../../components/PageHeader', () => {
+jest.mock('../../components/pageHeader/PageHeader', () => {
   return function MockPageHeader() {
     return <div data-testid="page-header">Collections</div>;
   };
@@ -92,6 +92,8 @@ const defaultProps = {
   onItemClick: jest.fn(),
   onLoadMore: jest.fn(),
   onClosePopup: jest.fn(),
+  loading: false,
+  error: null,
 };
 
 describe('CollectionsView', () => {
@@ -99,7 +101,7 @@ describe('CollectionsView', () => {
     jest.clearAllMocks();
   });
 
-  it('should render page header and collections', () => {
+  it('should render page header, collections carousel and filters section', () => {
     render(<CollectionsView {...defaultProps} />);
 
     expect(screen.getByTestId('page-header')).toHaveTextContent('Collections');
@@ -108,7 +110,7 @@ describe('CollectionsView', () => {
     expect(screen.getByText('Nos Collections')).toBeInTheDocument();
   });
 
-  it('should show empty state when no collections match search', () => {
+  it('should display "no results" message when search returns empty collections', () => {
     const emptyCollections = CollectionsTestData.emptyCollections();
 
     render(
@@ -143,7 +145,7 @@ describe('CollectionsView', () => {
     expect(screen.queryByTestId('popup')).not.toBeInTheDocument();
   });
 
-  it('should handle search input change', () => {
+  it('should call onSearchChange when user types in search input', () => {
     render(<CollectionsView {...defaultProps} />);
 
     const searchInput = screen.getByTestId('search-input');
@@ -152,7 +154,7 @@ describe('CollectionsView', () => {
     expect(defaultProps.onSearchChange).toHaveBeenCalledWith('test search');
   });
 
-  it('should handle clear filters', () => {
+  it('should call onClearFilters when user clicks clear filters button', () => {
     render(
       <CollectionsView 
         {...defaultProps} 
@@ -166,7 +168,7 @@ describe('CollectionsView', () => {
     expect(defaultProps.onClearFilters).toHaveBeenCalled();
   });
 
-  it('should handle collection item click', () => {
+  it('should call onItemClick when user clicks on collection item', () => {
     render(<CollectionsView {...defaultProps} />);
 
     const collectionButton = screen.getByText('Vins Rouges');
@@ -175,7 +177,7 @@ describe('CollectionsView', () => {
     expect(defaultProps.onItemClick).toHaveBeenCalledWith('vins-rouges');
   });
 
-  it('should handle many collections efficiently', () => {
+  it('should render carousel efficiently with many collections', () => {
     const manyCollections = CollectionsTestData.manyCollections(15);
 
     render(
@@ -189,7 +191,7 @@ describe('CollectionsView', () => {
     expect(manyCollections).toHaveLength(15);
   });
 
-  it('should work with collections without images', () => {
+  it('should handle collections without images gracefully', () => {
     const collectionsWithoutImages = [
       CollectionsTestFactories.collectionWithoutImage(),
       CollectionsTestFactories.collectionWithoutVideo(),

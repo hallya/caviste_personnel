@@ -1,4 +1,3 @@
-// Factory functions for Collections page and components testing
 import type { Collection } from '../../components/carousel/types';
 import type { ShopifyCollectionGraphQLNode } from '../../types/shopify';
 import { 
@@ -12,7 +11,6 @@ import {
 } from '../constants/shopify';
 import { TEST_URLS } from '../constants/api';
 
-// Convert Shopify GraphQL node to internal Collection type
 const convertToCollection = (node: ShopifyCollectionGraphQLNode): Collection => ({
   id: node.id,
   title: node.title,
@@ -53,9 +51,7 @@ const createTestCollection = (options: CollectionTestOptions = {}): Collection =
   };
 };
 
-// Factory for standard collections used in component tests
 export const CollectionsTestFactories = {
-  // Basic collections for UI tests
   wineCollection: (overrides: Partial<CollectionTestOptions> = {}): Collection =>
     createTestCollection({
       id: SHOPIFY_TEST_IDS.COLLECTIONS.VINS_ROUGES,
@@ -99,7 +95,6 @@ export const CollectionsTestFactories = {
       ...overrides,
     }),
 
-  // Collections for search/filter tests
   searchableCollections: (): Collection[] => [
     createTestCollection({
       id: 'gid://shopify/Collection/search-1',
@@ -121,7 +116,6 @@ export const CollectionsTestFactories = {
     }),
   ],
 
-  // Collections for sorting tests
   sortableCollections: (): Collection[] => [
     createTestCollection({
       id: 'gid://shopify/Collection/sort-1',
@@ -141,16 +135,13 @@ export const CollectionsTestFactories = {
   ],
 };
 
-// Factory for SSR data (Shopify API responses)
 export const CollectionsSSRFactories = {
-  // Convert from Shopify factories to our Collection type
   fromShopifyNode: (node: ShopifyCollectionGraphQLNode): Collection =>
     convertToCollection(node),
 
   fromShopifyNodes: (nodes: ShopifyCollectionGraphQLNode[]): Collection[] =>
     nodes.map(convertToCollection),
 
-  // Standard Shopify GraphQL response for SSR tests
   mockShopifyResponse: (collections?: ShopifyCollectionGraphQLNode[]) => {
     const defaultCollections = [
       CollectionFactories.wineCollection({
@@ -170,27 +161,21 @@ export const CollectionsSSRFactories = {
     return createMockCollectionsResponse(collections || defaultCollections);
   },
 
-  // Empty Shopify response for error/empty state tests
   emptyShopifyResponse: () => createMockCollectionsResponse([]),
 };
 
-// Common test data sets
 export const CollectionsTestData = {
-  // Standard set for most component tests
   defaultCollections: (): Collection[] => [
     CollectionsTestFactories.wineCollection(),
     CollectionsTestFactories.whiteWineCollection(),
   ],
 
-  // Single collection for focused tests
   singleCollection: (): Collection[] => [
     CollectionsTestFactories.wineCollection(),
   ],
 
-  // Empty set for empty state tests
   emptyCollections: (): Collection[] => [],
 
-  // Large set for pagination/performance tests
   manyCollections: (count: number = 10): Collection[] =>
     Array.from({ length: count }, (_, index) =>
       createTestCollection({
@@ -202,7 +187,6 @@ export const CollectionsTestData = {
     ),
 };
 
-// Search params factories for different test scenarios
 export const SearchParamsFactories = {
   empty: (): Record<string, string | string[] | undefined> => ({}),
   
@@ -221,7 +205,6 @@ export const SearchParamsFactories = {
     order,
   }),
 
-  // For Promise-based searchParams (Next.js 15)
   asPromise: (params: Record<string, string | string[] | undefined>) =>
     Promise.resolve(params),
 };

@@ -54,6 +54,8 @@ export default function CollectionsContainer({
       onItemClick={onItemClick}
       onLoadMore={onLoadMore}
       onClosePopup={onClosePopup}
+      loading={false}
+      error={null}
     />
   );
 }

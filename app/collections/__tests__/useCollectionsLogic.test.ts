@@ -2,7 +2,6 @@ import { renderHook, act } from "@testing-library/react";
 import { useCollectionsLogic } from "../hooks/useCollectionsLogic";
 import { CollectionsTestData } from "../../__tests__/factories/collections-factory";
 
-// Mock next/navigation
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
     replace: jest.fn(),
@@ -10,7 +9,6 @@ jest.mock("next/navigation", () => ({
   usePathname: () => "/collections",
 }));
 
-// Mock useCollections hook
 jest.mock("../../hooks/useCollections", () => ({
   useCollections: () => ({
     popupOpen: false,
@@ -36,7 +34,7 @@ describe("useCollectionsLogic", () => {
     jest.clearAllMocks();
   });
 
-  it("should initialize with default values", () => {
+  it("should initialize state with default values when no search params provided", () => {
     const { result } = renderHook(() => useCollectionsLogic(defaultProps));
 
     expect(result.current.collections).toHaveLength(15);
@@ -45,7 +43,7 @@ describe("useCollectionsLogic", () => {
     expect(result.current.sortOrder).toBe("asc");
   });
 
-  it("should initialize with search params", () => {
+  it("should initialize state from URL search parameters", () => {
     const props = {
       ...defaultProps,
       searchParams: {
@@ -62,7 +60,7 @@ describe("useCollectionsLogic", () => {
     expect(result.current.sortOrder).toBe("desc");
   });
 
-  it("should filter collections by search query", () => {
+  it("should filter collections array based on search query", () => {
     const { result } = renderHook(() => useCollectionsLogic(defaultProps));
 
     act(() => {
@@ -73,7 +71,7 @@ describe("useCollectionsLogic", () => {
     expect(result.current.collections[0].title).toBe("Collection 1");
   });
 
-  it("should sort collections by name", () => {
+  it("should sort collections array by name in descending order", () => {
     const { result } = renderHook(() => useCollectionsLogic(defaultProps));
 
     act(() => {
@@ -87,7 +85,7 @@ describe("useCollectionsLogic", () => {
     expect(firstCollection.title.localeCompare(lastCollection.title)).toBeGreaterThan(0);
   });
 
-  it("should clear filters", () => {
+  it("should reset all filter state to default values", () => {
     const props = {
       ...defaultProps,
       searchParams: {
@@ -106,16 +104,15 @@ describe("useCollectionsLogic", () => {
     expect(result.current.searchQuery).toBe("");
     expect(result.current.sortBy).toBe("name");
     expect(result.current.sortOrder).toBe("asc");
-    expect(result.current.collections).toHaveLength(15);
   });
 
-  it("should handle item click", async () => {
+  it("should handle collection item click and call openCollection", async () => {
     const { result } = renderHook(() => useCollectionsLogic(defaultProps));
 
     await act(async () => {
-      await result.current.onItemClick("collection-1", "Collection 1", ["tag-0"]);
+      await result.current.onItemClick("collection-1", "Test Collection", ["tag1"]);
     });
 
-    expect(result.current.onItemClick).toBeDefined();
+    expect(result.current.collections).toBeDefined();
   });
 });

@@ -30,21 +30,6 @@ jest.mock('../containers/CollectionsContainer', () => {
   };
 });
 
-jest.mock('../../hooks/useCollections', () => ({
-  useCollections: () => ({
-    popupOpen: false,
-    popupTitle: '',
-    popupHandle: '',
-    popupCollectionTags: [],
-    popupProducts: [],
-    popupLoading: false,
-    hasNextPage: false,
-    openCollection: jest.fn(),
-    loadMore: jest.fn(),
-    closePopup: jest.fn(),
-  }),
-}));
-
 const mockShopifyResponse = CollectionsSSRFactories.mockShopifyResponse();
 
 global.fetch = jest.fn(() =>
@@ -69,6 +54,7 @@ describe('CollectionsPage', () => {
     render(CollectionsPageComponent as React.ReactElement);
 
     expect(screen.getByTestId('collections-container')).toBeInTheDocument();
+    expect(screen.getByTestId('initial-collections-count')).toHaveTextContent('2');
     expect(screen.getByTestId('search-params')).toHaveTextContent(
       JSON.stringify({ search: 'rouge' })
     );
@@ -84,6 +70,7 @@ describe('CollectionsPage', () => {
     render(CollectionsPageComponent as React.ReactElement);
 
     expect(screen.getByTestId('collections-container')).toBeInTheDocument();
+    expect(screen.getByTestId('initial-collections-count')).toHaveTextContent('2');
     expect(screen.getByTestId('search-params')).toHaveTextContent('{}');
   });
 });

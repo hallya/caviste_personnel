@@ -1,6 +1,6 @@
 import type { Collection } from "../../components/carousel/types";
 import type { SimplifiedProduct } from "../../types/shopify";
-import PageHeader from "../../components/PageHeader";
+import PageHeader from "../../components/pageHeader/PageHeader";
 import Carousel from "../../components/carousel/Carousel";
 import Popup from "../../components/popup/Popup";
 import CollectionsFilters from "./CollectionsFilters";
@@ -24,6 +24,8 @@ interface CollectionsViewProps {
   onItemClick: (handle: string, title?: string, collectionTags?: string[]) => Promise<void>;
   onLoadMore: () => Promise<void>;
   onClosePopup: () => void;
+  loading: boolean;
+  error: string | null;
 }
 
 export default function CollectionsView({
@@ -45,6 +47,8 @@ export default function CollectionsView({
   onItemClick,
   onLoadMore,
   onClosePopup,
+  loading,
+  error,
 }: CollectionsViewProps) {
   const hasActiveFilters = Boolean(searchQuery || sortBy !== "name" || sortOrder !== "asc");
 
@@ -73,7 +77,13 @@ export default function CollectionsView({
           />
         </div>
 
-        {collections.length === 0 && searchQuery ? (
+        {error ? (
+          <div className="text-center py-12">
+            <p className="text-red-600">
+              Erreur lors du chargement des collections: {error}
+            </p>
+          </div>
+        ) : collections.length === 0 && searchQuery ? (
           <div className="text-center py-12">
             <p className="text-gray-600">
               Aucune collection trouvée pour &quot;{searchQuery}&quot;
@@ -82,8 +92,8 @@ export default function CollectionsView({
         ) : (
           <Carousel 
             collections={collections}
-            isLoading={false}
-            error={null}
+            isLoading={loading}
+            error={error}
             onItemClick={onItemClick}
           />
         )}

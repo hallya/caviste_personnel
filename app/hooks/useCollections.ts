@@ -15,7 +15,11 @@ interface UseCollectionsReturn {
   popupLoading: boolean;
   hasNextPage: boolean;
 
-  openCollection: (handle: string, title: string, collectionTags?: string[]) => Promise<void>;
+  openCollection: (
+    handle: string,
+    title: string,
+    collectionTags?: string[]
+  ) => Promise<void>;
   loadMore: () => Promise<void>;
   closePopup: () => void;
 }
@@ -39,7 +43,7 @@ export function useCollections(): UseCollectionsReturn {
   const loadCollections = useCallback(async () => {
     if (hasLoaded.current) return;
     hasLoaded.current = true;
-    
+
     try {
       setCollectionsLoading(true);
       setCollectionsError(null);
