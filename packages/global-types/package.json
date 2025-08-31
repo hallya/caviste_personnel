@@ -1,0 +1,12 @@
+{
+  "name": "@pkg/global-types",
+  "version": "0.1.0",
+  "private": true,
+  "types": "index.d.ts",
+  "devDependencies": {
+    "graphql": "^16.11.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "tsup": "^8.5.0"
+  }
+}
