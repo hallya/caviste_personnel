@@ -1,7 +1,8 @@
-const { pathsToModuleNameMapper } = require("ts-jest");
-const { compilerOptions } = require("./tsconfig.packages.json");
+import { pathsToModuleNameMapper } from "ts-jest";
+import { Config } from "jest";
+import { compilerOptions } from "./tsconfig.packages.json";
 
-module.exports = {
+export const baseConfig = {
   collectCoverageFrom: [
     "src/**/*.{ts,tsx}",
     "!src/**/*.d.ts",
@@ -38,4 +39,4 @@ module.exports = {
   transformIgnorePatterns: [
     "node_modules/(?!(@vercel/analytics|@vercel/speed-insights)/)",
   ],
-};
+} satisfies Config;
