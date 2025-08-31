@@ -1,57 +1,48 @@
 #!/usr/bin/env sh
 
-echo "🔍 TypeScript type checking..."
-npm run type-check
-
-if [ $? -ne 0 ]; then
-  echo "❌ TypeScript errors found. Please fix them before pushing."
-  exit 1
-fi
-
-echo "✅ TypeScript check passed!"
+echo "🚀 Pre-push checks for monorepo..."
 
 # Get current branch name
 CURRENT_BRANCH=$(git branch --show-current)
-REMOTE_BRANCH="origin/$CURRENT_BRANCH"
 
-# Check if remote branch exists
+# Determine comparison base
 if git ls-remote --heads origin "$CURRENT_BRANCH" | grep -q "$CURRENT_BRANCH"; then
-  # Compare with remote branch
-  CHANGED_FILES=$(git diff --name-only "$REMOTE_BRANCH"...HEAD | grep -E '\.(js|jsx|ts|tsx)$' | grep -v -E '\.(test|spec)\.(js|jsx|ts|tsx)$' | tr '\n' ' ')
+  BASE="origin/$CURRENT_BRANCH"
 else
-  # If remote branch doesn't exist, compare with main
-  CHANGED_FILES=$(git diff --name-only origin/main...HEAD | grep -E '\.(js|jsx|ts|tsx)$' | grep -v -E '\.(test|spec)\.(js|jsx|ts|tsx)$' | tr '\n' ' ')
+  BASE="origin/main"
 fi
 
-if [ -n "$CHANGED_FILES" ]; then
-  echo "🔍 Running tests for changed files:"
-  echo "$CHANGED_FILES" | tr ' ' '\n' | awk -F'/' '{
-    path=""
-    for(i=1; i<NF; i++) {
-      if(path=="") path=$i
-      else path=path"/"$i
-      if(!seen[path]) {
-        indent=""
-        for(j=1; j<i; j++) indent=indent"  "
-        print indent"📁 " path
-        seen[path]=1
-      }
-    }
-    indent=""
-    for(j=1; j<NF; j++) indent=indent"  "
-    print indent"  📄 " $NF
-  }'
+echo "📊 Comparing with $BASE..."
+
+# Check if any packages or app have changes
+CHANGED_FILES=$(git diff --name-only "$BASE"...HEAD)
+HAS_APP_CHANGES=$(echo "$CHANGED_FILES" | grep -q "^apps/" && echo "true" || echo "false")
+HAS_PACKAGE_CHANGES=$(echo "$CHANGED_FILES" | grep -q "^packages/" && echo "true" || echo "false")
+
+echo "📁 Changes detected:"
+[ "$HAS_APP_CHANGES" = "true" ] && echo "  ✓ Apps modified"
+[ "$HAS_PACKAGE_CHANGES" = "true" ] && echo "  ✓ Packages modified"
+
+# Run checks efficiently with Turborepo
+if [ "$HAS_APP_CHANGES" = "true" ] || [ "$HAS_PACKAGE_CHANGES" = "true" ]; then
   echo ""
+  echo "🔍 Running type checks..."
+  npm run type-check
   
-  echo "🧪 Running Jest tests for related files..."
-  npx jest --bail --findRelatedTests --passWithNoTests $CHANGED_FILES
+  if [ $? -ne 0 ]; then
+    echo "❌ TypeScript errors found. Please fix them before pushing."
+    exit 1
+  fi
+  
+  echo "🧪 Running tests for affected packages..."
+  npm run test:ci
   
   if [ $? -ne 0 ]; then
     echo "❌ Tests failed. Please fix them before pushing."
     exit 1
   fi
   
-  echo "✅ All tests passed!"
+  echo "✅ All pre-push checks passed!"
 else
-  echo "ℹ️  No TypeScript/JavaScript files changed, skipping tests"
+  echo "ℹ️  No significant changes detected, skipping checks"
 fi 
