@@ -1,0 +1,36 @@
+fragment Collections on CollectionConnection {
+  edges {
+    node {
+      id
+      title
+      handle
+      image {
+        url
+      }
+      metafield(namespace: "custom", key: "video_collection") {
+        type
+        reference {
+          __typename
+          ... on GenericFile {
+            url
+            mimeType
+          }
+          ... on Video {
+            sources {
+              url
+              mimeType
+              format
+            }
+            previewImage {
+              url
+            }
+          }
+        }
+      }
+      tagsMetafield: metafield(namespace: "custom", key: "balises") {
+        type
+        value
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+#import from "../fragments/money.fragment.graphql"
+
+fragment Product on Product {
+  availableForSale
+  featuredImage {
+    url
+  }
+  id
+  selectedOrFirstAvailableVariant {
+    id
+    price {
+      ...Money
+    }
+  }
+  tags
+  title
+  totalInventory
+}

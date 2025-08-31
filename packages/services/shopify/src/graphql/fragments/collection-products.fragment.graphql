@@ -1,0 +1,18 @@
+#import "./product.fragment.graphql";
+
+fragment CollectionProducts on Collection {
+  id
+  title
+  products(first: $first, after: $after, sortKey: $sortKey) {
+    edges {
+      cursor
+      node {
+        ...Product
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

@@ -1,0 +1,12 @@
+#import Money from "../fragments/money.fragment.graphql"
+
+fragment Cart on Cart {
+  checkoutUrl
+  cost {
+    totalAmount {
+      ...Money
+    }
+  }
+  id
+  totalQuantity
+}
