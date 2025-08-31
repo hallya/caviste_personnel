@@ -1,0 +1,116 @@
+name: 🔒 Security
+
+on:
+  schedule:
+    # Run security checks daily at 2 AM UTC
+    - cron: "0 2 * * *"
+  push:
+    branches: [main, develop]
+    paths:
+      - "package*.json"
+      - ".github/workflows/security.yml"
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: "20"
+  CI: true
+
+jobs:
+  # ================================================================
+  # 🔒 SECURITY AUDIT
+  # ================================================================
+  audit:
+    name: 🔒 Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🔒 NPM Audit
+        run: npm audit --audit-level=high
+
+      - name: 🔍 Audit CI
+        run: npx audit-ci --config ./audit-ci.json
+        continue-on-error: true
+
+  # ================================================================
+  # 🛡️ CODEQL ANALYSIS
+  # ================================================================
+  codeql:
+    name: 🛡️ CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["javascript"]
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🛡️ Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: 🏗️ Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: 🔍 Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+  # ================================================================
+  # 📊 DEPENDENCY REVIEW
+  # ================================================================
+  dependency-review:
+    name: 📊 Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📊 Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: always
+
+  # ================================================================
+  # 🔄 UPDATE DEPENDENCIES
+  # ================================================================
+  dependabot-auto-merge:
+    name: 🔄 Auto-merge Dependabot
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔄 Enable auto-merge
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              merge_method: 'merge'
+            })

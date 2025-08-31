@@ -1,0 +1,13 @@
+{
+  "moderate": true,
+  "high": true,
+  "critical": true,
+  "allowlist": [],
+  "report": {
+    "type": ["json", "text"],
+    "path": "./audit-reports/"
+  },
+  "advisories": [],
+  "whitelist": [],
+  "skip-dev": false
+}

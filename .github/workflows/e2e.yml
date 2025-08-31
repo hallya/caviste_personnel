@@ -1,0 +1,221 @@
+name: 🧪 E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "apps/**"
+      - "packages/**"
+      - "e2e/**"
+  schedule:
+    # Run E2E tests daily at 4 AM UTC
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: "20"
+  CI: true
+
+jobs:
+  # ================================================================
+  # 🧪 PLAYWRIGHT E2E TESTS
+  # ================================================================
+  e2e:
+    name: 🧪 E2E Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build application
+        run: npm run build:production
+        env:
+          NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN: ${{ secrets.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN }}
+          SHOPIFY_STOREFRONT_URL: ${{ secrets.SHOPIFY_STOREFRONT_URL }}
+
+      - name: 🎭 Install Playwright
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: 🚀 Start application
+        run: npm run start &
+        env:
+          PORT: 3000
+
+      - name: ⏳ Wait for application
+        run: npx wait-on http://localhost:3000
+
+      - name: 🧪 Run E2E tests
+        run: npx playwright test --project=${{ matrix.browser }}
+        env:
+          BASE_URL: http://localhost:3000
+
+      - name: 📊 Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: playwright-report/
+          retention-days: 7
+
+      - name: 📸 Upload screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-screenshots-${{ matrix.browser }}
+          path: test-results/
+          retention-days: 7
+
+  # ================================================================
+  # 👁️ VISUAL REGRESSION TESTS
+  # ================================================================
+  visual:
+    name: 👁️ Visual Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build application
+        run: npm run build:production
+
+      - name: 🎭 Install Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: 🚀 Start application
+        run: npm run start &
+
+      - name: ⏳ Wait for application
+        run: npx wait-on http://localhost:3000
+
+      - name: 👁️ Run visual tests
+        run: npx playwright test --project=visual
+        env:
+          BASE_URL: http://localhost:3000
+
+      - name: 📊 Upload visual diff report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diff-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  # ================================================================
+  # ♿ ACCESSIBILITY TESTS
+  # ================================================================
+  accessibility:
+    name: ♿ Accessibility
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build application
+        run: npm run build:production
+
+      - name: 🚀 Start application
+        run: npm run start &
+
+      - name: ⏳ Wait for application
+        run: npx wait-on http://localhost:3000
+
+      - name: ♿ Run accessibility tests
+        run: npx playwright test --project=accessibility
+        env:
+          BASE_URL: http://localhost:3000
+
+      - name: 📊 Upload accessibility report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: accessibility-report
+          path: playwright-report/
+          retention-days: 7
+
+  # ================================================================
+  # 📊 PERFORMANCE TESTS (Lighthouse CI)
+  # Note: This job runs Lighthouse CI for performance monitoring
+  # ================================================================
+  performance:
+    name: 📊 Performance
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build application
+        run: npm run build:production
+
+      - name: 🚀 Start application
+        run: npm run start &
+
+      - name: ⏳ Wait for application
+        run: npx wait-on http://localhost:3000
+
+      - name: 📊 Run Lighthouse
+        run: |
+          npm install -g @lhci/cli@0.12.x
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: 📊 Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/
+          retention-days: 7

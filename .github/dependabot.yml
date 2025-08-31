@@ -1,0 +1,103 @@
+version: 2
+updates:
+  # NPM dependencies for root
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    reviewers:
+      - "luciendulac"
+    assignees:
+      - "luciendulac"
+    labels:
+      - "dependencies"
+      - "npm"
+
+  # NPM dependencies for the app
+  - package-ecosystem: "npm"
+    directory: "/apps/caviste-app"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(app)"
+    reviewers:
+      - "luciendulac"
+    labels:
+      - "dependencies"
+      - "app"
+
+  # NPM dependencies for packages
+  - package-ecosystem: "npm"
+    directory: "/packages/core"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(core)"
+    labels:
+      - "dependencies"
+      - "core"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/design-system"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(design-system)"
+    labels:
+      - "dependencies"
+      - "design-system"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/cart"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(cart)"
+    labels:
+      - "dependencies"
+      - "cart"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/notifications"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(notifications)"
+    labels:
+      - "dependencies"
+      - "notifications"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "first-monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
+      - "github-actions"

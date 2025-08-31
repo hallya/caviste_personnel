@@ -1,0 +1,182 @@
+name: 🚀 CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: "20"
+  CI: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ================================================================
+  # 🔍 CHANGES DETECTION
+  # ================================================================
+  changes:
+    name: 🔍 Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.changes.outputs.packages }}
+      app: ${{ steps.changes.outputs.app }}
+      deps: ${{ steps.changes.outputs.deps }}
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔍 Detect changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            packages:
+              - 'packages/**'
+            app:
+              - 'apps/**'
+            deps:
+              - 'package*.json'
+              - 'turbo.json'
+              - 'tsconfig*.json'
+
+  # ================================================================
+  # 🏗️ BUILD & LINT
+  # ================================================================
+  build:
+    name: 🏗️ Build & Lint
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.packages == 'true' || needs.changes.outputs.app == 'true' || needs.changes.outputs.deps == 'true'
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build packages
+        run: npm run packages:build
+
+      - name: 🔍 Type check
+        run: npm run type-check
+
+      - name: 🧹 Lint
+        run: npm run lint
+
+  # ================================================================
+  # 🧪 TESTS
+  # ================================================================
+  test:
+    name: 🧪 Tests
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.packages == 'true' || needs.changes.outputs.app == 'true'
+
+    strategy:
+      matrix:
+        node-version: ["18", "20", "22"]
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build packages
+        run: npm run packages:build
+
+      - name: 🧪 Run tests
+        run: npm run test:ci
+
+      - name: 📊 Upload coverage
+        if: matrix.node-version == '20'
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+  # ================================================================
+  # 🏗️ APP BUILD
+  # ================================================================
+  app-build:
+    name: 🏗️ App Build
+    runs-on: ubuntu-latest
+    needs: [changes, build]
+    if: needs.changes.outputs.app == 'true' || needs.changes.outputs.packages == 'true'
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build packages first
+        run: npm run packages:build
+
+      - name: 🏗️ Build app
+        run: npm run app:build
+        env:
+          # Add your env vars here
+          NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN: ${{ secrets.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN }}
+          SHOPIFY_STOREFRONT_URL: ${{ secrets.SHOPIFY_STOREFRONT_URL }}
+
+      - name: 📦 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build
+          path: apps/caviste-app/.next
+          retention-days: 1
+
+  # ================================================================
+  # 📊 QUALITY GATE
+  # ================================================================
+  quality-gate:
+    name: 📊 Quality Gate
+    runs-on: ubuntu-latest
+    needs: [build, test, app-build]
+    if: always()
+
+    steps:
+      - name: ✅ All checks passed
+        if: needs.build.result == 'success' && needs.test.result == 'success' && (needs.app-build.result == 'success' || needs.app-build.result == 'skipped')
+        run: |
+          echo "🎉 All quality checks passed!"
+          echo "✅ Build: ${{ needs.build.result }}"
+          echo "✅ Tests: ${{ needs.test.result }}"
+          echo "✅ App Build: ${{ needs.app-build.result }}"
+
+      - name: ❌ Quality gate failed
+        if: needs.build.result == 'failure' || needs.test.result == 'failure' || needs.app-build.result == 'failure'
+        run: |
+          echo "❌ Quality gate failed!"
+          echo "Build: ${{ needs.build.result }}"
+          echo "Tests: ${{ needs.test.result }}"
+          echo "App Build: ${{ needs.app-build.result }}"
+          exit 1

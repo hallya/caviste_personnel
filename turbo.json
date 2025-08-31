@@ -1,0 +1,53 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true,
+      "inputs": ["$TURBO_DEFAULT$", ".env.local"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env.local"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+    },
+    "codegen": {
+      "inputs": ["$TURBO_DEFAULT$", ".env.local"],
+      "outputs": ["src/__generated__/**"]
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "lint:fix": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "type-check": {
+      "outputs": []
+    },
+    "test": {
+      "outputs": ["coverage/**"],
+      "inputs": [
+        "src/**/*.tsx",
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "test/**/*.tsx",
+        "**/__tests__/**/*.ts",
+        "**/__tests__/**/*.tsx"
+      ]
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "test:coverage": {
+      "outputs": ["coverage/**"]
+    },
+    "clean": {
+      "cache": false
+    }
+  },
+  "globalDependencies": []
+}

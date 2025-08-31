@@ -1,0 +1,44 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "monorepo": true,
+  "buildCommand": "npm run build:production",
+  "outputDirectory": "apps/caviste-app/.next",
+  "installCommand": "npm ci",
+  "rootDirectory": "apps/caviste-app",
+  "framework": "nextjs",
+  "functions": {
+    "apps/caviste-app/src/app/api/**/*.ts": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN": "@shopify_token",
+    "SHOPIFY_STOREFRONT_URL": "@shopify_url"
+  }
+}

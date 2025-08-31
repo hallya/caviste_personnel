@@ -1,0 +1,20 @@
+# Global owners
+* @luciendulac
+
+# Platform team owns design system and core tooling
+/packages/design-system/ @platform-team
+/packages/core/ @platform-team
+/tools/ @platform-team
+
+# Feature teams own their respective modules
+/packages/cart/ @cart-team
+/packages/notifications/ @notifications-team
+
+# Apps are owned by their respective teams
+/apps/caviste-app/ @frontend-team
+
+# Configuration and infrastructure
+/turbo.json @platform-team
+
+/.github/ @platform-team
+/CODEOWNERS @platform-team

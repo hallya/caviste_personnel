@@ -1,57 +1,95 @@
 {
-  "name": "caviste_personnel",
+  "name": "@caviste/monorepo",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "type-check": "tsc --noEmit",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:staged": "jest --bail --findRelatedTests",
-    "test:ci": "jest --ci --coverage --watchAll=false",
-    "audit": "lighthouse http://localhost:3000 --output=html --output-path=./lighthouse-report.html --chrome-flags=\"--headless --no-sandbox\"",
-    "audit:json": "lighthouse http://localhost:3000 --output=json --output-path=./lighthouse-report.json --chrome-flags=\"--headless --no-sandbox\" --quiet",
-    "audit:pages": "npm run audit:json -- && lighthouse http://localhost:3000/cart --output=json --output-path=./lighthouse-cart.json --chrome-flags=\"--headless --no-sandbox\" --quiet && lighthouse http://localhost:3000/products --output=json --output-path=./lighthouse-products.json --chrome-flags=\"--headless --no-sandbox\" --quiet",
-    "audit:dev": "npm run build && npm run start & sleep 10 && npm run audit && pkill -f 'next start'",
-    "perf": "npm run audit:dev && open lighthouse-report.html",
-    "audit:ci": "lhci autorun",
-    "audit:real": "lhci autorun --config=lighthouserc.real.js"
+  "packageManager": "npm@10.8.2",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
   },
-  "dependencies": {
-    "@heroicons/react": "^2.2.0",
-    "@vercel/analytics": "^1.5.0",
-    "@vercel/speed-insights": "^1.2.0",
-    "next": "15.4.5",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "zod": "^4.0.16"
+  "scripts": {
+    "build": "turbo run build",
+    "dev:all": "turbo run dev",
+    "dev": "NODE_ENV=development turbo run dev --filter=caviste-app",
+    "lint:fix": "turbo run lint:fix",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:affected": "turbo run test --filter='[HEAD^1]'",
+    "test:coverage": "turbo run test:coverage",
+    "app:build": "turbo run build --filter=./apps/*",
+    "app:dev": "turbo run dev --filter=caviste-app",
+    "app:lint": "turbo run lint --filter=./apps/*",
+    "app:test": "turbo run test --filter=./apps/*",
+    "app:type-check": "turbo run type-check --filter=./apps/*",
+    "changeset": "changeset",
+    "check:app": "turbo run lint type-check test --filter=./apps/*",
+    "check:packages": "turbo run lint type-check test --filter='./packages/*'",
+    "check": "turbo run lint type-check test",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "codegen": "turbo run codegen --filter=./packages/services/shopify",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "packages:build": "turbo run build --filter='./packages/*'",
+    "packages:dev": "turbo run dev --filter='./packages/*'",
+    "packages:lint": "turbo run lint --filter='./packages/*'",
+    "packages:test": "turbo run test --filter='./packages/*'",
+    "packages:type-check": "turbo run type-check --filter='./packages/*'",
+    "release": "turbo run build && changeset publish",
+    "reset": "npm run clean && npm install",
+    "start": "npm run dev",
+    "storybook": "turbo run dev --filter=@pkg/design-system",
+    "test:e2e": "playwright test",
+    "type-check": "turbo run type-check",
+    "version-packages": "changeset version"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@changesets/cli": "^2.27.1",
     "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.33.0",
     "@lhci/cli": "^0.12.0",
-    "@tailwindcss/postcss": "^4",
-    "@testing-library/jest-dom": "^6.6.4",
+    "@playwright/test": "^1.48.0",
+    "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
-    "@types/jest-axe": "^3.5.9",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9.32.0",
-    "eslint-config-next": "^15.4.5",
+    "audit-ci": "^7.1.0",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.33.0",
+    "eslint-config-next": "^15.4.7",
     "husky": "^9.1.7",
     "jest": "^30.0.5",
     "jest-axe": "^10.0.0",
     "jest-environment-jsdom": "^30.0.5",
     "lighthouse": "^12.8.1",
     "lint-staged": "^16.1.4",
-    "tailwindcss": "^4",
-    "typescript": "5.9.2"
+    "postcss": "^8.5.6",
+    "prettier": "^3.3.3",
+    "tailwindcss": "3.4.16",
+    "turbo": "^2.3.0",
+    "wait-on": "^8.0.1"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "packages/services/*"
+  ],
+  "overrides": {
+    "react": "19.x",
+    "react-dom": "19.x",
+    "typescript": "5.9.x",
+    "tailwindcss": "3.4.16",
+    "graphql": "16.11.x"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{md,json}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1"
   }
 }

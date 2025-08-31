@@ -1,0 +1,45 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@pkg/analytics": ["./packages.analytics/src"],
+      "@pkg/analytics/*": ["./packages.analytics/src/*"],
+      "@pkg/core": ["./packages/core/src"],
+      "@pkg/core/*": ["./packages/core/src/*"],
+      "@pkg/cart": ["./packages/cart/src"],
+      "@pkg/cart/*": ["./packages/cart/src/*"],
+      "@pkg/notifications": ["./packages/notifications/src"],
+      "@pkg/notifications/*": ["./packages/notifications/src/*"],
+      "@pkg/design-system": ["./packages/design-system/src"],
+      "@pkg/design-system/*": ["./packages/design-system/src/*"],
+      "@pkg/seo": ["./packages/seo/src"],
+      "@pkg/seo/*": ["./packages/seo/src/*"],
+      "@pkg/config": ["./packages/config/src"],
+      "@pkg/config/*": ["./packages/config/src/*"],
+      "@pkg/services-shopify": ["./packages/services/shopify/src"],
+      "@pkg/services-shopify/*": ["./packages/services/shopify/src/*"],
+      "@pkg/domain": ["./packages/domain/src"],
+      "@pkg/domain/*": ["./packages/domain/src/*"]
+    },
+    "types": [
+      "jest",
+      "node",
+      "@testing-library/jest-dom",
+      "@pkg/global-types",
+      "@pkg/domain"
+    ],
+    "noEmit": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "packages/**/__tests__/**/*",
+    "jest.setup.ts"
+  ],
+  "exclude": ["node_modules", "packages/**/dist", "packages/**/node_modules"]
+}
