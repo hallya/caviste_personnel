@@ -1,0 +1,22 @@
+.viewport {
+  perspective: 4000px;
+}
+
+.inner {
+  transform-style: preserve-3d;
+  perspective-origin: 50% 50%;
+}
+
+.item {
+  will-change: transform, opacity;
+  transition: transform 250ms cubic-bezier(0.25, 0.1, 0.25, 1), 
+              opacity 250ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  contain: layout style paint;
+  isolation: isolate;
+}
+
+.selected {
+  border: 2px solid #7a2d2d;
+}

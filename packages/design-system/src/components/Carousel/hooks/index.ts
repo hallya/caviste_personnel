@@ -1,0 +1,1 @@
+export { useDeviceDetection } from "./useDeviceDetection";
