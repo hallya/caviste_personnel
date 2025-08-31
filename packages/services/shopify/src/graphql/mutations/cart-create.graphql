@@ -1,0 +1,13 @@
+#import CartDetailed from "../fragments/cart-detailed.graphql"
+
+mutation CartCreate($lines: [CartLineInput!]!) {
+  cartCreate(input: { lines: $lines }) {
+    cart {
+      ...CartDetailed
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

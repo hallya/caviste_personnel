@@ -1,0 +1,12 @@
+#import from "../fragments/collection-products.fragment.graphql"
+
+query GetCollectionProducts(
+  $handle: String!
+  $first: Int!
+  $after: String
+  $sortKey: ProductCollectionSortKeys
+) {
+  collection(handle: $handle) {
+    ...CollectionProducts
+  }
+}

@@ -1,0 +1,7 @@
+#import Collections from "../fragments/collections.fragment.graphql"
+
+query GetCollections($first: Int!) {
+  collections(first: $first) {
+    ...Collections
+  }
+}

@@ -1,0 +1,14 @@
+#import CartDetailed from "../fragments/cart-detailed.fragment.graphql"
+
+mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+  cartLinesUpdate(cartId: $cartId, lines: $lines) {
+    cart {
+      ...CartDetailed
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+

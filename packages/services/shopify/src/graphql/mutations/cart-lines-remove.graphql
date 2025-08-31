@@ -1,0 +1,14 @@
+#import CartDetailed from "../fragments/cart-detailed.fragment.graphql"
+
+mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+  cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+    cart {
+      ...CartDetailed
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
