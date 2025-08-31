@@ -1,0 +1,32 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "incremental": true,
+    "types": [
+      "jest",
+      "node",
+      "@testing-library/jest-dom",
+      "@pkg/domain",
+      "@pkg/global-types"
+    ],
+    "paths": {
+      "@pkg/analytics": ["packages/analytics/src/index.ts"],
+      "@pkg/cart": ["packages/cart/src/index.ts"],
+      "@pkg/catalog": ["packages/catalog/src/index.ts"],
+      "@pkg/config": ["packages/config/src/index.ts"],
+      "@pkg/core": ["packages/core/src/index.ts"],
+      "@pkg/design-system": ["packages/design-system/src/index.ts"],
+      "@pkg/notifications": ["packages/notifications/src/index.ts"],
+      "@pkg/seo": ["packages/seo/src/index.ts"],
+      "@pkg/services-shopify": ["packages/services/shopify/src/index.ts"],
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "src/**/*",
+    ".next/types/**/*.ts",
+    "jest.setup.ts"
+  ],
+  "exclude": ["**/node_modules/**"]
+}
