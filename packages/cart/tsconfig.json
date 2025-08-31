@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.packages.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "jsx": "react-jsx"
+  },
+  "include": ["src/**/*","jest.setup.ts"],
+  "exclude": ["node_modules","dist"]
+}
