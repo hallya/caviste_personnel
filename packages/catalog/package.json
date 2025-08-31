@@ -1,0 +1,56 @@
+{
+  "name": "@pkg/catalog",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./src/index.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "require": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev:build": "tsup --watch",
+    "dev:type-check": "tsc -w --noEmit",
+    "dev": "npm run dev:build & npm run dev:type-check",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist && rm -rf node_modules",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "@pkg/analytics": "*",
+    "@pkg/cart": "*",
+    "@pkg/design-system": "*",
+    "@pkg/notifications": "*",
+    "react": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@pkg/config": "*",
+    "@testing-library/jest-dom": "^6.7.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
+    "@types/react": "^19",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "ts-jest": "^29.4.1",
+    "tsup": "^8.5.0",
+    "turbo": "^2.5.6",
+    "typescript": "5.9.2"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "graphql": ">=16.11.0"
+  }
+}
