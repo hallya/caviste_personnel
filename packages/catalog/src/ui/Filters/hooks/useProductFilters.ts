@@ -7,7 +7,6 @@ import {
   cleanUrl,
   productMatchesTags,
   productMatchesSearch,
-  sortProducts,
 } from "../utils";
 import type { ProductFilters, UseProductFiltersReturn } from "../types";
 import { FILTER_TYPES, FILTER_ACTIONS } from "../constants";
@@ -78,10 +77,6 @@ export function useProductFilters(
 
     return filtered;
   }, [products, selectedTags, searchQuery]);
-
-  const getFilteredAndSortedProducts = useCallback(() => {
-    return sortProducts(filteredProducts, sortBy || "name", sortOrder || "asc");
-  }, [filteredProducts, sortBy, sortOrder]);
 
   const toggleTag = useCallback(
     (tag: string) => {
@@ -157,7 +152,7 @@ export function useProductFilters(
   return {
     filters: { selectedTags, searchQuery, sortBy, sortOrder },
     availableTags,
-    filteredProducts: getFilteredAndSortedProducts(),
+    filteredProducts,
     setSelectedTags,
     toggleTag,
     clearFilters,
@@ -165,6 +160,5 @@ export function useProductFilters(
     setSearchQuery: handleSearchQueryChange,
     setSortBy,
     setSortOrder,
-    getFilteredAndSortedProducts,
   };
 }

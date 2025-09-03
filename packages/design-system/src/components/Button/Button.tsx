@@ -8,7 +8,7 @@ export interface ButtonProps
   loading?: boolean;
 }
 
-export default forwardRef<HTMLButtonElement, ButtonProps>(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
@@ -19,7 +19,7 @@ export default forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       ...props
     },
-    ref,
+    ref
   ) => {
     const baseClasses =
       "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
@@ -48,7 +48,7 @@ export default forwardRef<HTMLButtonElement, ButtonProps>(
           variants[variant],
           sizes[size],
           loading && "opacity-50 cursor-not-allowed",
-          className,
+          className
         )}
         ref={ref}
         disabled={disabled || loading}
@@ -78,6 +78,9 @@ export default forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </button>
     );
-  },
+  }
 );
 
+Button.displayName = "SimpleButton"
+
+export default Button;

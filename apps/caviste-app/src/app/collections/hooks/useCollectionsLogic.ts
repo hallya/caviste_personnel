@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import type { Collection } from "@pkg/domain";
 import { ProductCollectionSortKeys } from "@pkg/services-shopify";
-import { useCollections } from "../../hooks/useCollections";
+import { useCollections } from "../../components/home/hooks/useCollections";
 import { useDebounce } from "./useDebounce";
 
 interface UseCollectionsLogicProps {

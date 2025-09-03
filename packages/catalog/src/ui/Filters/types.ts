@@ -21,43 +21,26 @@ export interface UseProductFiltersReturn {
   setSearchQuery: (query: string) => void;
   setSortBy: (sortBy: ProductFilters["sortBy"]) => void;
   setSortOrder: (order: ProductFilters["sortOrder"]) => void;
-  getFilteredAndSortedProducts: () => Product[];
 }
 
 export interface UseCollectionFiltersProps {
-  products: Product[];
-  collectionTitle: string;
   collectionHandle: string;
   collectionTags: string[] | null;
 }
 
-export interface UseCollectionFiltersReturn {
-  availableTags: string[];
-  filteredProducts: Product[];
-  toggleTag: (tag: string) => void;
-  clearFilters: () => void;
-  hasActiveFilters: boolean;
-  setSearchQuery: (query: string) => void;
-  setSortBy: (sortBy: ProductFilters["sortBy"]) => void;
-  setSortOrder: (order: ProductFilters["sortOrder"]) => void;
-  filters: ProductFilters;
-  tagsLoading: boolean;
-  tagsError: string | null;
-}
-
 export interface FilterTagsViewProps {
   availableTags: string[];
-  selectedTags?: string[];
-  onToggleTag: (tag: string) => void;
-  onClearFilters: () => void;
   hasActiveFilters: boolean;
   searchQuery?: string;
-  onSearchChange?: (query: string) => void;
-  sortBy?: SortBy;
-  onSortByChange?: (sortBy: SortBy) => void;
-  sortOrder?: SortOrder;
-  onSortOrderChange?: (order: SortOrder) => void;
+  selectedTags?: string[];
   showSearch?: boolean;
   showSort?: boolean;
   showTags?: boolean;
+  sortBy?: SortBy;
+  sortOrder?: SortOrder;
+  onClearFilters: () => void;
+  onSearchChange?: (query: string) => void;
+  onSortByChange?: (sortBy: SortBy) => void;
+  onSortOrderChange?: (order: SortOrder) => void;
+  onToggleTag: (tag: string) => void;
 }

@@ -1,14 +1,9 @@
 import PopupContainer from "./containers/PopupContainer";
-import type { Product } from "@pkg/domain";
 
 interface PopupProps {
   title: string;
   onClose: () => void;
-  products: Product[];
-  loading: boolean;
-  hasNext: boolean;
-  onLoadMore: () => void;
-  collectionHandle?: string;
+  collectionHandle: string;
   collectionTags: string[] | null;
 }
 

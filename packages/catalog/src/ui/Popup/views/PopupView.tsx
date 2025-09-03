@@ -6,47 +6,47 @@ import type { Product } from "@pkg/domain";
 import type { SortBy, SortOrder } from "../../Filters/types";
 
 export interface PopupViewProps {
-  title: string;
-  onClose: () => void;
-  products: Product[];
-  filteredProducts: Product[];
-  loading: boolean;
-  hasNext: boolean;
-  onLoadMore: () => void;
   availableTags: string[];
-  selectedTags: string[];
-  onToggleTag: (tag: string) => void;
-  onClearFilters: () => void;
-  hasActiveFilters: boolean;
-  searchQuery?: string;
-  onSearchChange?: (query: string) => void;
-  sortBy?: SortBy;
-  onSortByChange?: (sortBy: SortBy) => void;
-  sortOrder?: SortOrder;
-  onSortOrderChange?: (order: SortOrder) => void;
+  collectionError?: string | null;
   collectionHandle?: string;
-  tagsError?: string | null;
+  filteredProducts: Product[];
+  hasActiveFilters: boolean;
+  hasNext: boolean;
+  loading: boolean;
+  products: Product[];
+  searchQuery?: string;
+  selectedTags: string[];
+  sortBy?: SortBy;
+  sortOrder?: SortOrder;
+  title: string;
+  onClearFilters: () => void;
+  onClose: () => void;
+  onLoadMore: () => void;
+  onSearchChange?: (query: string) => void;
+  onSortByChange?: (sortBy: SortBy) => void;
+  onSortOrderChange?: (order: SortOrder) => void;
+  onToggleTag: (tag: string) => void;
 }
 
 export default function PopupView({
-  title,
-  onClose,
-  filteredProducts,
-  loading,
-  hasNext,
-  onLoadMore,
   availableTags,
-  selectedTags,
-  onToggleTag,
-  onClearFilters,
+  collectionError,
+  filteredProducts,
   hasActiveFilters,
+  hasNext,
+  loading,
   searchQuery = "",
-  onSearchChange,
+  selectedTags,
   sortBy = "name",
-  onSortByChange,
   sortOrder = "asc",
+  title,
+  onClearFilters,
+  onClose,
+  onLoadMore,
+  onSearchChange,
+  onSortByChange,
   onSortOrderChange,
-  tagsError,
+  onToggleTag,
 }: PopupViewProps) {
   const gridId = "collection-products-grid";
 
@@ -65,10 +65,10 @@ export default function PopupView({
             {loading ? "Chargement des produits…" : ""}
           </p>
 
-          {tagsError && (
+          {collectionError && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
               <p className="text-sm text-red-700">
-                Erreur lors du chargement des tags : {tagsError}
+                Erreur lors du chargement des produits : {collectionError}
               </p>
             </div>
           )}

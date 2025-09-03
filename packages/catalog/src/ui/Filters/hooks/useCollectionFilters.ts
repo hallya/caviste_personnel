@@ -1,35 +1,26 @@
 import { useEffect, useCallback, useState, useMemo, useRef } from "react";
 import { useProductFilters } from "./useProductFilters";
-import { API_LIMITS, COLLECTION_CACHE_CONFIG } from "../constants";
 import type {
   UseCollectionFiltersProps,
-  UseCollectionFiltersReturn,
 } from "../types";
-import {
-  GetCollectionProductsDocument,
-  mapCollectionProductQueryDtoToDomain,
-  ProductCollectionSortKeys,
-  useShopify,
-} from "@pkg/services-shopify";
-
-interface CacheEntry {
-  tags: string[];
-  timestamp: number;
-}
-
-const tagsCache = new Map<string, CacheEntry>();
+import { ProductCollectionSortKeys } from "@pkg/services-shopify";
+import { Product } from "@pkg/domain";
+import { useCollectionProducts } from "./useCollectionProducts";
 
 export function useCollectionFilters({
-  products,
-  collectionTitle,
   collectionHandle,
   collectionTags = [],
-}: UseCollectionFiltersProps): UseCollectionFiltersReturn {
+}: UseCollectionFiltersProps) {
   const [allCollectionTags, setAllCollectionTags] = useState<string[]>([]);
-  const [tagsLoading, setTagsLoading] = useState(false);
-  const [tagsError, setTagsError] = useState<string | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [hasNextPage, setHasNextPage] = useState(false);
   const lastCollectionHandle = useRef<string>("");
-  const { query } = useShopify();
+  const {
+    fetchCollection,
+    isLoadingCollectionProducts,
+    collectionProductsError: collectionError,
+  } = useCollectionProducts();
 
   const {
     availableTags: productTags,
@@ -41,79 +32,67 @@ export function useCollectionFilters({
     setSortBy,
     setSortOrder,
     filters,
-  } = useProductFilters(products, undefined, [
-    collectionTitle,
-    collectionHandle,
-  ]);
+  } = useProductFilters(products, undefined, [collectionHandle]);
 
-  const loadCollectionTags = useCallback(async (handle: string) => {
-    if (!handle) return;
+  const loadCollectionProducts = useCallback(
+    async (handle: string) => {
+      if (!handle) return;
 
-    if (tagsCache.has(handle)) {
-      const entry = tagsCache.get(handle)!;
-      const isExpired =
-        Date.now() - entry.timestamp > COLLECTION_CACHE_CONFIG.TTL_MS;
-
-      if (!isExpired) {
-        setAllCollectionTags(entry.tags);
-        return;
-      } else {
-        tagsCache.delete(handle);
-      }
-    }
-
-    setTagsLoading(true);
-    setTagsError(null);
-    try {
-      const res = await query(GetCollectionProductsDocument, {
+      const data = await fetchCollection(
         handle,
-        first: API_LIMITS.MAX_PRODUCTS_PER_COLLECTION,
-        after: null,
-        sortKey: ProductCollectionSortKeys.CollectionDefault,
-      });
-      if (!res.errors) {
-        const data = mapCollectionProductQueryDtoToDomain(res.data);
-        const products = data?.products || [];
+        null,
+        ProductCollectionSortKeys.Created
+      );
+      const products = data?.products || [];
 
-        const allTags = products.flatMap(
-          (product: { tags: string[] }) => product.tags || []
-        );
-        const uniqueTags = [...new Set(allTags)]
-          .filter((tag): tag is string => typeof tag === "string")
-          .sort();
+      const allTags = products.flatMap(
+        (product: { tags: string[] }) => product.tags || []
+      );
+      const uniqueTags = [...new Set(allTags)]
+        .filter((tag): tag is string => typeof tag === "string")
+        .sort();
 
-        setAllCollectionTags(uniqueTags);
+      setProducts(products);
+      setAllCollectionTags(uniqueTags);
+      setNextCursor(data?.pageInfo.endCursor ?? null);
+      setHasNextPage(data?.pageInfo.hasNextPage ?? false);
+    },
+    [
+      fetchCollection,
+      setProducts,
+      setAllCollectionTags,
+      setNextCursor,
+      setHasNextPage,
+    ]
+  );
 
-        if (tagsCache.size >= COLLECTION_CACHE_CONFIG.MAX_SIZE) {
-          const firstKey = tagsCache.keys().next().value;
-          if (firstKey) {
-            tagsCache.delete(firstKey);
-          }
-        }
-        tagsCache.set(handle, { tags: uniqueTags, timestamp: Date.now() });
-      } else {
-        setTagsError(`Failed to load collection tags: ${res.errors[0].message}`);
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      setTagsError(`Error loading tags: ${errorMessage}`);
-      console.error("Error loading tags:", error);
-    } finally {
-      setTagsLoading(false);
-    }
-  }, []);
+  const onLoadMore = useCallback(async () => {
+    const data = await fetchCollection(
+      collectionHandle,
+      nextCursor,
+      ProductCollectionSortKeys.Created
+    );
+    setProducts((prev) => [...prev, ...(data?.products ?? [])]);
+    setNextCursor(data?.pageInfo.endCursor ?? null);
+    setHasNextPage(data?.pageInfo.hasNextPage ?? false);
+  }, [
+    collectionHandle,
+    nextCursor,
+    fetchCollection,
+    setProducts,
+    setNextCursor,
+    setHasNextPage,
+  ]);
 
   useEffect(() => {
     if (collectionHandle && collectionHandle !== lastCollectionHandle.current) {
       lastCollectionHandle.current = collectionHandle;
-      loadCollectionTags(collectionHandle);
+      loadCollectionProducts(collectionHandle);
     }
-  }, [collectionHandle, loadCollectionTags]);
+  }, [collectionHandle, loadCollectionProducts]);
 
   const availableTags = useMemo(() => {
     const combinedTags = [...new Set([...allCollectionTags, ...productTags])];
-
     const filteredTags = combinedTags.filter(
       (tag) =>
         !collectionTags?.some(
@@ -132,15 +111,17 @@ export function useCollectionFilters({
 
   return {
     availableTags,
+    collectionError,
     filteredProducts,
-    toggleTag,
-    clearFilters,
+    filters,
     hasActiveFilters,
+    hasNextPage,
+    isLoadingCollectionProducts,
+    clearFilters,
+    onLoadMore,
     setSearchQuery,
     setSortBy,
     setSortOrder,
-    filters,
-    tagsLoading,
-    tagsError,
+    toggleTag,
   };
 }

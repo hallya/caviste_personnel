@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import type { Collection } from "@pkg/domain";
 import { useCarouselNav } from "../useCarouselNav";
 import CarouselView from "../views/CarouselView";
@@ -35,9 +36,11 @@ export default function CarouselContainer({
     isMobile,
   } = useCarouselNav(collections.length, { initial: "center" });
 
-  const handleSelect = (i: number) => setCurrent(i);
-  const handleOpen = (c: Collection) =>
-    onItemClick?.(c.handle, c.title ?? c.handle, c.collectionTags, ProductCollectionSortKeys.CollectionDefault);
+  const handleSelect = useCallback((i: number) => setCurrent(i), [setCurrent]);
+
+  const handleOpen = useCallback((c: Collection) =>
+    onItemClick?.(c.handle, c.title, c.collectionTags, ProductCollectionSortKeys.CollectionDefault),
+  [onItemClick]);
 
   if (isLoading) {
     return <CarouselLoading />;

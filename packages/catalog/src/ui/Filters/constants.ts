@@ -49,11 +49,6 @@ export const CACHE_CONFIG = {
     TIMING.MILLISECONDS_PER_SECOND, // 5 hours in milliseconds
 } as const;
 
-export const COLLECTION_CACHE_CONFIG = {
-  MAX_SIZE: 20, // Maximum number of cached collections
-  TTL_MS: 5 * TIMING.SECONDS_PER_MINUTE * TIMING.MILLISECONDS_PER_SECOND, // 5 minutes TTL for tags cache
-} as const;
-
 export const FILTER_TYPES = {
   TAG: "tag",
   SEARCH: "search",

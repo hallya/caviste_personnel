@@ -3,44 +3,35 @@
 import { useEffect } from "react";
 import PopupView from "../views/PopupView";
 import { useCollectionFilters } from "../../Filters/hooks/useCollectionFilters";
-import type { Product } from "@pkg/domain";
 
 interface PopupContainerProps {
   title: string;
   onClose: () => void;
-  products: Product[];
-  loading: boolean;
-  hasNext: boolean;
-  onLoadMore: () => void;
-  collectionHandle?: string;
+  collectionHandle: string;
   collectionTags: string[] | null;
 }
 
 export default function PopupContainer({
   title,
   onClose,
-  products,
-  loading,
-  hasNext,
-  onLoadMore,
-  collectionHandle = "",
+  collectionHandle,
   collectionTags,
 }: PopupContainerProps) {
   const {
     availableTags,
+    collectionError,
     filteredProducts,
-    toggleTag,
-    clearFilters,
+    filters,
     hasActiveFilters,
+    hasNextPage,
+    isLoadingCollectionProducts,
+    clearFilters,
+    onLoadMore,
     setSearchQuery,
     setSortBy,
     setSortOrder,
-    filters,
-    tagsLoading,
-    tagsError,
+    toggleTag,
   } = useCollectionFilters({
-    products,
-    collectionTitle: title,
     collectionHandle,
     collectionTags,
   });
@@ -65,11 +56,11 @@ export default function PopupContainer({
   return (
     <PopupView
       title={title}
+      products={filteredProducts}
       onClose={onClose}
-      products={products}
       filteredProducts={filteredProducts}
-      loading={loading || tagsLoading}
-      hasNext={hasNext}
+      loading={isLoadingCollectionProducts}
+      hasNext={hasNextPage}
       onLoadMore={onLoadMore}
       availableTags={availableTags}
       selectedTags={filters.selectedTags}
@@ -83,7 +74,7 @@ export default function PopupContainer({
       sortOrder={filters.sortOrder}
       onSortOrderChange={setSortOrder}
       collectionHandle={collectionHandle}
-      tagsError={tagsError}
+      collectionError={collectionError}
     />
   );
 }

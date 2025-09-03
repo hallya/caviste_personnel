@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CAROUSEL_CONFIG } from "./constants";
 import type { CarouselOptions, CarouselReturn } from "../../types";
 import { useDeviceDetection } from "./hooks/useDeviceDetection";
@@ -10,7 +10,7 @@ const clamp = (n: number, min: number, max: number) =>
 
 export function useCarouselNav(
   totalItems: number,
-  opts?: CarouselOptions,
+  opts?: CarouselOptions
 ): CarouselReturn {
   const [current, setCurrent] = useState(() => {
     if (totalItems <= 0) return 0;
@@ -47,7 +47,7 @@ export function useCarouselNav(
       const nextIndex = clamp(index, 0, totalItems - 1);
       setCurrent(nextIndex);
     },
-    [totalItems],
+    [totalItems]
   );
 
   const goStep = useCallback(
@@ -58,7 +58,7 @@ export function useCarouselNav(
         return clamp(nextIndex, 0, totalItems - 1);
       });
     },
-    [totalItems],
+    [totalItems]
   );
 
   const handleWheel = useCallback(
@@ -81,7 +81,7 @@ export function useCarouselNav(
         scrollTimeout.current = null;
       }, CAROUSEL_CONFIG.WHEEL_DEBOUNCE);
     },
-    [goStep, isMobile],
+    [goStep, isMobile]
   );
 
   const handleKeydown = useCallback(
@@ -89,7 +89,7 @@ export function useCarouselNav(
       if (e.key === "ArrowRight") goStep(1);
       if (e.key === "ArrowLeft") goStep(-1);
     },
-    [goStep],
+    [goStep]
   );
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -114,7 +114,7 @@ export function useCarouselNav(
 
       touchStartX.current = null;
     },
-    [goStep],
+    [goStep]
   );
 
   useEffect(() => {
@@ -128,10 +128,10 @@ export function useCarouselNav(
   useEffect(() => {
     window.addEventListener("keydown", handleKeydown);
     return () => window.removeEventListener("keydown", handleKeydown);
-  }, [handleKeydown]);
+  }, [handleKeydown, containerRef]);
 
   // Memoize the return object to prevent unnecessary re-renders
-  const returnValue = useCallback(
+  const returnValue = useMemo(
     () => ({
       current,
       isMobile,
@@ -141,8 +141,8 @@ export function useCarouselNav(
       handleTouchEnd,
       setCurrent: navigateTo,
     }),
-    [current, isMobile, goStep, handleTouchStart, handleTouchEnd, navigateTo],
+    [current, isMobile, goStep, handleTouchStart, handleTouchEnd, navigateTo]
   );
 
-  return returnValue();
+  return returnValue;
 }

@@ -91,36 +91,3 @@ export function productMatchesSearch(
     product.tags.some((tag) => tag.toLowerCase().includes(query))
   );
 }
-
-export function sortProducts<
-  T extends { title: string; price?: string | null },
->(products: T[], sortBy: "name" | "price", sortOrder: "asc" | "desc"): T[] {
-  return [...products].sort((a, b) => {
-    let comparison = 0;
-
-    switch (sortBy) {
-      case "name": {
-        comparison = a.title.localeCompare(b.title);
-        break;
-      }
-      case "price": {
-        // Handle null/undefined prices - put them at the end
-        if (!a.price && !b.price) comparison = 0;
-        else if (!a.price) comparison = 1;
-        else if (!b.price) comparison = -1;
-        else {
-          const priceA = parseFloat(a.price);
-          const priceB = parseFloat(b.price);
-          comparison = priceA - priceB;
-        }
-        break;
-      }
-
-      default: {
-        comparison = a.title.localeCompare(b.title);
-      }
-    }
-
-    return sortOrder === "desc" ? -comparison : comparison;
-  });
-}

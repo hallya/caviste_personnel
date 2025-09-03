@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useCollections } from "../../../hooks/useCollections";
 import HomeView from "../views/HomeView";
+import { useHome } from "../hooks/useHome";
 
 export default function HomeContainer() {
   useEffect(() => {
@@ -11,35 +11,27 @@ export default function HomeContainer() {
 
   const {
     collections,
-    collectionsLoading,
+    isLoadingCollections,
     collectionsError,
-    popupOpen,
+    isPopupOpen,
     popupTitle,
     popupHandle,
     popupCollectionTags,
-    popupProducts,
-    popupLoading,
-    hasNextPage,
     openCollection,
-    loadMore,
     closePopup,
-  } = useCollections();
+  } = useHome();
 
   return (
     <HomeView
-        collections={collections}
-        collectionsLoading={collectionsLoading}
-        collectionsError={collectionsError}
-        popupOpen={popupOpen}
-        popupTitle={popupTitle}
-        popupHandle={popupHandle}
-        popupCollectionTags={popupCollectionTags}
-        popupProducts={popupProducts}
-        popupLoading={popupLoading}
-        hasNextPage={hasNextPage}
-        onItemClick={openCollection}
-        onLoadMore={loadMore}
-        onClosePopup={closePopup}
-      />
+      collections={collections}
+      isLoadingCollections={isLoadingCollections}
+      collectionsError={collectionsError}
+      isPopupOpen={isPopupOpen}
+      popupTitle={popupTitle}
+      popupHandle={popupHandle}
+      popupCollectionTags={popupCollectionTags}
+      onItemClick={openCollection}
+      onClosePopup={closePopup}
+    />
   );
 }
