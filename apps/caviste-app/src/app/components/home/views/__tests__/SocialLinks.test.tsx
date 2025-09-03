@@ -2,13 +2,6 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import SocialLinks from "../SocialLinks";
 
-jest.mock("@pkg/seo", () => ({
-  SOCIAL_LINKS: {
-    INSTAGRAM: "https://www.instagram.com/edouard_cavistepersonnel/",
-    FACEBOOK: "https://www.facebook.com/Edouard.Caviste.Personnel",
-  },
-}));
-
 jest.mock("@pkg/design-system", () => ({
   InstagramIcon: () => <div data-testid="instagram-icon">Instagram</div>,
   FacebookIcon: () => <div data-testid="facebook-icon">Facebook</div>,

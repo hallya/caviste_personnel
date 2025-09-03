@@ -2,7 +2,7 @@ import { render, screen, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { type Collection } from "@pkg/domain";
 import CarouselContainer from "../containers/CarouselContainer";
-import { __testHelpers__ } from "@pkg/services-shopify";
+import { __testHelpers__, ProductCollectionSortKeys } from "@pkg/services-shopify";
 
 const { collectionsFactory } = __testHelpers__;
 
@@ -112,7 +112,8 @@ describe("CarouselContainer", () => {
     expect(onItemClick).toHaveBeenCalledWith(
       "collection-1",
       "Collection 1",
-      undefined
+      mockCollections[0].collectionTags,
+      ProductCollectionSortKeys.CollectionDefault
     );
   });
 });

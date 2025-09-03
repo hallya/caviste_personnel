@@ -176,6 +176,7 @@ describe("NotificationModule", () => {
 
         const handleShowInvalid = () => {
           notificationModule.showNotification({
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             type: "invalid" as any,
             title: "",
             message: "",
