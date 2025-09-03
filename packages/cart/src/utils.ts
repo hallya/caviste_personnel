@@ -8,5 +8,5 @@ export function calculateCartTotal(items: CartLine[]): string {
   }, 0);
 
   const currency = items[0].currency || "EUR";
-  return `${total.toFixed(2)} ${currency}`;
+  return Number.isNaN(total) ? "N/A" : `${total.toFixed(2)} ${currency}`;
 }

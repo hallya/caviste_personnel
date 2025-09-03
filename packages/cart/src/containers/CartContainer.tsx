@@ -1,21 +1,17 @@
 "use client";
 
-import { useMemo } from "react";
-import { useCartContext } from "../contexts/CartContext";
-import CartView from "../views/CartView";
+import { useCart } from "../hooks";
+import { CartView } from "../views";
 
 export default function CartContainer() {
   const {
-    getCartState,
-    isLoading: loading,
-    error,
+    actionError,
+    isActionLoading,
     updateCart,
     removeFromCart,
-    actionLoading,
-    actionError,
-  } = useCartContext();
+    cart,
+  } = useCart();
 
-  const cart = useMemo(() => getCartState().cart, [getCartState]);
 
   const handleQuantityChange = async (lineId: string, quantity: number) => {
     await updateCart(lineId, quantity);
@@ -34,9 +30,8 @@ export default function CartContainer() {
   return (
     <CartView
       cart={cart}
-      loading={loading}
-      error={error || actionError}
-      actionLoading={actionLoading}
+      error={actionError}
+      actionLoading={isActionLoading}
       onQuantityChange={handleQuantityChange}
       onRemoveItem={handleRemoveItem}
       onCheckout={handleCheckout}

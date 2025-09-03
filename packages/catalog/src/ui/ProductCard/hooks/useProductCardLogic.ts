@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
-import { useCartContext } from "@pkg/cart";
 import { useNotificationGroup } from "@pkg/notifications";
 import type { Product } from "@pkg/domain";
+import { useCart } from "@pkg/cart";
 
 interface UseProductCardLogicProps {
   product: Product;
@@ -14,14 +14,14 @@ export function useProductCardLogic({ product }: UseProductCardLogicProps) {
   const [isAddingBottle, setIsAddingBottle] = useState(false);
   const [isAddingCarton, setIsAddingCarton] = useState(false);
   const { showCartNotification } = useNotificationGroup();
-  const { getCartState, addToCart } = useCartContext();
+  const { cart, addToCart } = useCart();
 
   const cartQuantity = useMemo(
     () =>
-      getCartState().cart?.lines?.find(
+      cart?.lines?.find(
         (line) => line.variantId === product.variantId
       )?.quantity || 0,
-    [getCartState, product.variantId]
+    [cart, product.variantId]
   );
 
   const availableQuantity = useMemo(

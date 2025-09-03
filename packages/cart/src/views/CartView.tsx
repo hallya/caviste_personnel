@@ -5,7 +5,6 @@ import CartContent from "./CartContent";
 
 interface CartViewProps {
   cart: CartDetailed | null;
-  loading: boolean;
   error: string | null;
   actionLoading: boolean;
   onQuantityChange: (lineId: string, quantity: number) => Promise<void>;
@@ -15,18 +14,17 @@ interface CartViewProps {
 
 export default function CartView({
   cart,
-  loading,
   error,
   actionLoading,
   onQuantityChange,
   onRemoveItem,
   onCheckout,
 }: CartViewProps) {
-  if (loading) {
+  if (!cart && actionLoading) {
     return <CartLoading />;
   }
 
-  if (error || !cart) {
+  if (error || !cart || cart.totalQuantity === 0) {
     return <CartEmpty error={error} />;
   }
 

@@ -1,28 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
-import { useCartContext } from "./contexts/CartContext";
+import { useCart } from "./hooks";
 
 export default function CartFloatingButton() {
   const router = useRouter();
-  const { getCartState, refetch } = useCartContext();
-  const { cart } = getCartState();
+  const { cart } = useCart();
 
   const cartCount = cart?.totalQuantity ?? 0;
-
-  useEffect(() => {
-    const handleCartUpdate = () => {
-      refetch();
-    };
-
-    window.addEventListener("cart-updated", handleCartUpdate);
-
-    return () => {
-      window.removeEventListener("cart-updated", handleCartUpdate);
-    };
-  }, [refetch]);
 
   if (cartCount === 0) return null;
 

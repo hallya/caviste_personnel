@@ -30,13 +30,14 @@
     "@pkg/core": "*",
     "@pkg/design-system": "*",
     "@vercel/analytics": "^1.5.0",
-    "zod": "^4.0.16"
+    "zod": "^4.0.16",
+    "zustand": "^5.0.8"
   },
   "peerDependencies": {
+    "graphql": ">=16.11.0",
     "next": ">=14.0.0",
     "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
-    "graphql": ">=16.11.0"
+    "react-dom": ">=18.0.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.7",

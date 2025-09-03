@@ -2,9 +2,8 @@
 
 import { AppShell, RouteRegistry } from "@pkg/core";
 import { NotificationProvider } from "@pkg/notifications";
-import { CartProvider, CartFloatingButton, CartModule } from "@pkg/cart";
+import { CartFloatingButton } from "@pkg/cart";
 import { AnalyticsProvider } from "@pkg/analytics";
-
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,14 +14,10 @@ function LayoutWrapper({ children }: LayoutProps) {
     <AnalyticsProvider>
       <AppShell>
         <RouteRegistry>
-          <CartProvider>
             <NotificationProvider>
-              <CartModule>
-                {children}
-                <CartFloatingButton />
-              </CartModule>
+              {children}
+              <CartFloatingButton />
             </NotificationProvider>
-          </CartProvider>
         </RouteRegistry>
       </AppShell>
     </AnalyticsProvider>

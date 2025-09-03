@@ -1,9 +1,7 @@
-import { CartModule, CartContainer } from "@pkg/cart";
+import { CartContainer } from "@pkg/cart";
 
 export default function CartPage() {
   return (
-    <CartModule>
-      <CartContainer />
-    </CartModule>
+    <CartContainer />
   );
 }

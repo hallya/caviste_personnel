@@ -73,7 +73,7 @@ export default function CartContent({
             ))}
           </div>
 
-          <div className="mt-6 pt-6 border-t border-neutral-200">
+          <div className="pt-6">
             <div className="flex justify-between items-center mb-6">
               <span className="text-subtitle text-primary-600">Total:</span>
               <span
