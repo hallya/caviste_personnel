@@ -1,11 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const preset: Pick<Config, "theme" | "plugins" | "content"> = {
-  content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       colors: {
@@ -133,6 +129,7 @@ const preset: Pick<Config, "theme" | "plugins" | "content"> = {
         "cubic-bezier": "cubic-bezier(0.25, 0.1, 0.25, 1)",
       },
       zIndex: {
+        content: "100",
         modal: "3000",
         "modal-header": "3100",
         "modal-footer": "3200",

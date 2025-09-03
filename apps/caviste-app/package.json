@@ -29,7 +29,9 @@
     "zod": "^4.0.16"
   },
   "devDependencies": {
-    "@pkg/config": "*",
+    "@pkg/config-env": "*",
+    "@pkg/config-jest": "*",
+    "@pkg/config-tailwind": "*",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

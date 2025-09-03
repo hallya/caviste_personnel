@@ -1,4 +1,4 @@
-import { env } from "@pkg/config";
+import { env } from "@pkg/config-env";
 import { GraphQLClient } from "./graphql-client";
 import { GraphQLClientConfig } from "../../core";
 

@@ -8,7 +8,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "lib": ["DOM","DOM.Iterable","ES2022"],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "noEmit": true,
@@ -25,52 +25,43 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@pkg/analytics": [
-        "packages/analytics"
-      ],
-      "@pkg/cart": [
-        "packages/cart"
-      ],
-      "@pkg/catalog": [
-        "packages/catalog"
-      ],
-      "@pkg/config": [
-        "packages/config"
-      ],
-      "@pkg/core": [
-        "packages/core"
-      ],
-      "@pkg/design-system": [
-        "packages/design-system"
-      ],
-      "@pkg/notifications": [
-        "packages/notifications"
-      ],
-      "@pkg/seo": [
-        "packages/seo"
-      ],
-      "@pkg/services-shopify": [
-        "packages/services/shopify"
-      ]
+      "@pkg/analytics": ["packages/analytics/src"],
+      "@pkg/analytics/*": ["packages/analytics/src/*"],
+      "@pkg/core": ["packages/core/src"],
+      "@pkg/core/*": ["packages/core/src/*"],
+      "@pkg/cart": ["packages/cart/src"],
+      "@pkg/cart/*": ["packages/cart/src/*"],
+      "@pkg/notifications": ["packages/notifications/src"],
+      "@pkg/notifications/*": ["packages/notifications/src/*"],
+      "@pkg/design-system": ["packages/design-system/src"],
+      "@pkg/design-system/*": ["packages/design-system/src/*"],
+      "@pkg/seo": ["packages/seo/src"],
+      "@pkg/seo/*": ["packages/seo/src/*"],
+      "@pkg/config-env": ["packages/config/env/src"],
+      "@pkg/config-env/*": ["packages/config/env/src/*"],
+      "@pkg/config-jest": ["packages/config/jest/src"],
+      "@pkg/config-jest/*": ["packages/config/jest/src/*"],
+      "@pkg/config-tailwind": ["packages/config/tailwind/src"],
+      "@pkg/config-tailwind/*": ["packages/config/tailwind/src/*"],
+      "@pkg/services-shopify": ["packages/services/shopify/src"],
+      "@pkg/services-shopify/*": ["packages/services/shopify/src/*"],
+      "@pkg/domain": ["packages/domain/src"],
+      "@pkg/domain/*": ["packages/domain/src/*"]
     },
     "types": [
+      "jest",
       "node",
-      "@pkg/global-types",
-      "@pkg/domain"
+      "@testing-library/jest-dom",
+      "@pkg/domain",
+      "@pkg/global-types"
     ],
     "sourceMap": true,
     "inlineSourceMap": false,
     "inlineSources": false
   },
-  "include": ["src/**/*", ".next/types/**/*.ts"],
   "exclude": [
-    "node_modules",
-    "dist",
-    ".next",
-    "**/__tests__/**/*",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx"
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.next/**",
   ]
 }

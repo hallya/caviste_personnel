@@ -1,10 +1,10 @@
 {
-  "name": "@pkg/config",
+  "name": "@pkg/config-tailwind",
   "version": "0.1.0",
   "private": true,
   "main": "./index.ts",
   "module": "./index.ts",
-  "types": "./src/index.d.ts",
+  "types": "./src/index.ts",
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -22,8 +22,6 @@
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "react": "19.1.1",
-    "react-dom": "19.1.1",
     "tsup": "^8.5.0",
     "typescript": "5.9.2"
   },

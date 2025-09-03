@@ -1,6 +1,10 @@
 import { pathsToModuleNameMapper } from "ts-jest";
 import { Config } from "jest";
-import { compilerOptions } from "./tsconfig.packages.json";
+import { compilerOptions } from "../../../../tsconfig.packages.json";
+import * as path from "path";
+import dotenv from "dotenv";
+
+dotenv.config({ path: path.resolve(__dirname, "../../../.env.local") });
 
 export const baseConfig = {
   collectCoverageFrom: [
@@ -14,9 +18,14 @@ export const baseConfig = {
   coverageReporters: ["text", "lcov", "html"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "graphql", "gql"],
   moduleNameMapper: {
-    ...pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/../.." }),
+    ...pathsToModuleNameMapper(compilerOptions.paths, {
+      prefix: "<rootDir>/../..",
+    }),
   },
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+  setupFilesAfterEnv: [
+    "<rootDir>/../../packages/config/src/jest.setup.base.ts",
+    "<rootDir>/jest.setup.ts",
+  ],
   testEnvironment: "jsdom",
   testMatch: ["<rootDir>/src/**/__tests__/**/*.(test|spec).(ts|tsx)"],
   testPathIgnorePatterns: ["/node_modules/", "/dist/"],
@@ -34,7 +43,7 @@ export const baseConfig = {
         },
       },
     ],
-    '^.+\\.(graphql|gql)$': 'jest-transform-graphql'
+    "^.+\\.(graphql|gql)$": "jest-transform-graphql",
   },
   transformIgnorePatterns: [
     "node_modules/(?!(@vercel/analytics|@vercel/speed-insights)/)",

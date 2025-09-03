@@ -16,6 +16,7 @@ module.exports = [
       "**/.next/**",
       "**/.turbo/**",
       "coverage/**",
+      "packages/services/shopify/src/__generated__/graphql.ts",
     ],
   },
   js.configs.recommended,
@@ -40,6 +41,6 @@ module.exports = [
         "error",
         "apps/caviste-app/src/app",
       ],
-    },
+    }
   },
 ];

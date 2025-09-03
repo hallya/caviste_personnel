@@ -72,7 +72,8 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "packages/services/*"
+    "packages/services/*",
+    "packages/config/*"
   ],
   "overrides": {
     "react": "19.x",

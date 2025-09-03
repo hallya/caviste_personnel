@@ -1,8 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "monorepo": true,
-  "buildCommand": "npm run build:production",
   "outputDirectory": "apps/caviste-app/.next",
   "installCommand": "npm ci",
   "rootDirectory": "apps/caviste-app",
@@ -39,6 +37,7 @@
   ],
   "env": {
     "NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN": "@shopify_token",
-    "SHOPIFY_STOREFRONT_URL": "@shopify_url"
+    "NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN": "@shopify_domain",
+    "NEXT_PUBLIC_SHOPIFY_API_VERSION": "@shopify_api_version"
   }
 }

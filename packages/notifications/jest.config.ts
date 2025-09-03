@@ -1,4 +1,4 @@
-import { baseConfig } from "../../jest.package.base";
+import { baseConfig } from "@pkg/config-jest";
 import { Config } from "jest";
 
 const config: Config = {

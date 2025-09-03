@@ -33,7 +33,7 @@
     "react-dom": ">=18.0.0"
   },
   "devDependencies": {
-    "@pkg/config": "*",
+    "@pkg/config-tailwind": "*",
     "@pkg/global-types": "*",
     "@pkg/services-shopify": "*",
     "@testing-library/jest-dom": "^6.7.0",

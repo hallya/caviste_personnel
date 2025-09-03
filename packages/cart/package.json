@@ -40,7 +40,8 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.7",
-    "@pkg/config": "*",
+    "@pkg/config-jest": "*",
+    "@pkg/config-tailwind": "*",
     "@pkg/domain": "*",
     "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^16.3.0",

@@ -1,5 +1,5 @@
 import { Config } from "jest";
-import { baseConfig } from "../../jest.package.base";
+import { baseConfig } from "@pkg/config-jest";
 
 const config: Config = {
   ...baseConfig,

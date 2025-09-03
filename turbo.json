@@ -3,18 +3,18 @@
   "ui": "tui",
   "tasks": {
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": [],
       "cache": false,
       "persistent": true,
-      "inputs": ["$TURBO_DEFAULT$", ".env.local"]
+      "inputs": ["$TURBO_DEFAULT$"]
     },
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env.local"],
+      "inputs": ["$TURBO_DEFAULT$"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "codegen": {
-      "inputs": ["$TURBO_DEFAULT$", ".env.local"],
+      "inputs": ["$TURBO_DEFAULT$"],
       "outputs": ["src/__generated__/**"]
     },
     "lint": {
@@ -36,6 +36,11 @@
         "test/**/*.tsx",
         "**/__tests__/**/*.ts",
         "**/__tests__/**/*.tsx"
+      ],
+      "env": [
+        "NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN",
+        "NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN",
+        "NEXT_PUBLIC_SHOPIFY_API_VERSION"
       ]
     },
     "test:watch": {
@@ -49,5 +54,8 @@
       "cache": false
     }
   },
-  "globalDependencies": []
+  "globalDependencies": [
+    ".env.local",
+    "tsconfig.base.json"
+  ]
 }
