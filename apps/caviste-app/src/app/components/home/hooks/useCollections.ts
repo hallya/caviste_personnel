@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import type { Collection } from "@pkg/domain";
 import {
   GetCollectionsDocument,
@@ -21,14 +21,13 @@ export function useCollections(): UseCollectionsReturn {
     loading: isLoadingCollections,
   } = useShopify();
 
-  const loadCollections = useCallback(async () => {
-    const response = await query(GetCollectionsDocument, { first: 10 });
-    setCollections(mapGetCollectionsQueryDtoToDomain(response.data) ?? []);
-  }, [query]);
-
   useEffect(() => {
+    async function loadCollections() {
+      const response = await query(GetCollectionsDocument, { first: 10 });
+      setCollections(mapGetCollectionsQueryDtoToDomain(response.data) ?? []);
+    }
     loadCollections();
-  }, []);
+  }, [query]);
 
   return {
     collections,
