@@ -33,7 +33,7 @@
     "@pkg/config-env": "*",
     "@pkg/config-jest": "*",
     "@pkg/config-tailwind": "*",
-    "@types/node": "^20",
+    "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",

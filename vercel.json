@@ -6,7 +6,7 @@
   "framework": "nextjs",
   "functions": {
     "apps/caviste-app/src/app/api/**/*.ts": {
-      "runtime": "nodejs20.x"
+      "runtime": "nodejs22.x"
     }
   },
   "redirects": [
