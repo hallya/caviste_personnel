@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
 import SocialLinks from "../SocialLinks";
 
 jest.mock("@pkg/design-system", () => ({
@@ -24,8 +23,14 @@ describe("SocialLinks", () => {
     const instagramLink = screen.getByLabelText("Suivez-nous sur Instagram");
     const facebookLink = screen.getByLabelText("Suivez-nous sur Facebook");
 
-    expect(instagramLink).toHaveAttribute("href", "https://www.instagram.com/edouard_cavistepersonnel/");
-    expect(facebookLink).toHaveAttribute("href", "https://www.facebook.com/Edouard.Caviste.Personnel");
+    expect(instagramLink).toHaveAttribute(
+      "href",
+      "https://www.instagram.com/edouard_cavistepersonnel/",
+    );
+    expect(facebookLink).toHaveAttribute(
+      "href",
+      "https://www.facebook.com/Edouard.Caviste.Personnel",
+    );
   });
 
   it("opens links in new tab", () => {
