@@ -28,12 +28,10 @@
       "outputs": []
     },
     "test": {
-      "outputs": ["coverage/**"],
       "inputs": [
-        "src/**/*.tsx",
-        "src/**/*.ts",
-        "test/**/*.ts",
-        "test/**/*.tsx",
+        "apps/caviste-app/src/**/*.tsx",
+        "packages/**/*.test.ts",
+        "packages/**/*.test.tsx",
         "**/__tests__/**/*.ts",
         "**/__tests__/**/*.tsx"
       ],
@@ -54,8 +52,5 @@
       "cache": false
     }
   },
-  "globalDependencies": [
-    ".env.local",
-    "tsconfig.base.json"
-  ]
+  "globalDependencies": [".env.local", "tsconfig.base.json"]
 }

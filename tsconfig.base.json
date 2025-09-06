@@ -26,27 +26,16 @@
     "baseUrl": ".",
     "paths": {
       "@pkg/analytics": ["packages/analytics/src"],
-      "@pkg/analytics/*": ["packages/analytics/src/*"],
       "@pkg/core": ["packages/core/src"],
-      "@pkg/core/*": ["packages/core/src/*"],
       "@pkg/cart": ["packages/cart/src"],
-      "@pkg/cart/*": ["packages/cart/src/*"],
       "@pkg/notifications": ["packages/notifications/src"],
-      "@pkg/notifications/*": ["packages/notifications/src/*"],
       "@pkg/design-system": ["packages/design-system/src"],
-      "@pkg/design-system/*": ["packages/design-system/src/*"],
       "@pkg/seo": ["packages/seo/src"],
-      "@pkg/seo/*": ["packages/seo/src/*"],
       "@pkg/config-env": ["packages/config/env/src"],
-      "@pkg/config-env/*": ["packages/config/env/src/*"],
       "@pkg/config-jest": ["packages/config/jest/src"],
-      "@pkg/config-jest/*": ["packages/config/jest/src/*"],
       "@pkg/config-tailwind": ["packages/config/tailwind/src"],
-      "@pkg/config-tailwind/*": ["packages/config/tailwind/src/*"],
       "@pkg/services-shopify": ["packages/services/shopify/src"],
-      "@pkg/services-shopify/*": ["packages/services/shopify/src/*"],
-      "@pkg/domain": ["packages/domain/src"],
-      "@pkg/domain/*": ["packages/domain/src/*"]
+      "@pkg/domain": ["packages/domain/src"]
     },
     "types": [
       "jest",
@@ -59,9 +48,5 @@
     "inlineSourceMap": false,
     "inlineSources": false
   },
-  "exclude": [
-    "**/node_modules/**",
-    "**/dist/**",
-    "**/.next/**",
-  ]
+  "exclude": ["**/node_modules/**", "**/dist/**", "**/.next/**"]
 }

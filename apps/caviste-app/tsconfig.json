@@ -1,12 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "../..",
     "jsx": "preserve",
     "incremental": true
   },
-  "include": [
-    "src/**/*",
-    ".next/types/**/*.ts"
-  ]
+  "include": ["src/**/*", ".next/types/**/*.ts"]
 }
