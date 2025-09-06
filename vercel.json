@@ -3,7 +3,6 @@
   "version": 2,
   "outputDirectory": "apps/caviste-app/.next",
   "installCommand": "npm ci",
-  "rootDirectory": "apps/caviste-app",
   "framework": "nextjs",
   "functions": {
     "apps/caviste-app/src/app/api/**/*.ts": {
@@ -34,10 +33,5 @@
         }
       ]
     }
-  ],
-  "env": {
-    "NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN": "@shopify_token",
-    "NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN": "@shopify_domain",
-    "NEXT_PUBLIC_SHOPIFY_API_VERSION": "@shopify_api_version"
-  }
+  ]
 }
