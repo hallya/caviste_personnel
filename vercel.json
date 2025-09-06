@@ -4,11 +4,6 @@
   "outputDirectory": "apps/caviste-app/.next",
   "installCommand": "npm ci",
   "framework": "nextjs",
-  "functions": {
-    "apps/caviste-app/src/app/api/**/*.ts": {
-      "runtime": "nodejs22.x"
-    }
-  },
   "redirects": [
     {
       "source": "/api/(.*)",
