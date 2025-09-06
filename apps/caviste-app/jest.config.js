@@ -1,4 +1,4 @@
-import nextJest from "next/jest";
+import nextJest from "next/jest.js";
 import { baseConfig } from "@pkg/config-jest";
 
 const createJestConfig = nextJest({
@@ -8,7 +8,8 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   ...baseConfig,
   moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/$1",
+    ...baseConfig.moduleNameMapper,
+    "^@/(.*)$": "<rootDir>/src/$1",
   },
   testPathIgnorePatterns: [
     "<rootDir>/.next/",
@@ -19,13 +20,8 @@ const customJestConfig = {
 
 const nextConfig = createJestConfig(customJestConfig);
 
-module.exports = async () => {
-  const config = await nextConfig();
-  return {
-    ...config,
-    moduleNameMapper: {
-      ...config.moduleNameMapper,
-      "^@pkg/(.*)$": "<rootDir>/../../packages/$1/src",
-    }
-  };
+const config = async () => {
+  return await nextConfig();
 };
+
+export default config;

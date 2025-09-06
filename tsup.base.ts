@@ -11,7 +11,7 @@ export function createTsupConfig(packageDir = ".") {
 
   const alwaysExternal = ["react", "react-dom", "next"];
   const internalPackages = dependencies.filter((dep) =>
-    dep.startsWith("@pkg/")
+    dep.startsWith("@pkg/"),
   );
 
   const external = [

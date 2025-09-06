@@ -1,3 +1,4 @@
+/* global jest */
 jest.mock("next/server", () => {
   return {
     NextResponse: {
@@ -8,7 +9,7 @@ jest.mock("next/server", () => {
         ...options,
       })),
     },
-    NextRequest: jest.fn().mockImplementation((url: string) => {
+    NextRequest: jest.fn().mockImplementation((url) => {
       const urlObj = new URL(url);
       return {
         url,
@@ -17,5 +18,3 @@ jest.mock("next/server", () => {
     }),
   };
 });
-
-export default {};

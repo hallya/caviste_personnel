@@ -1,12 +1,31 @@
 import { pathsToModuleNameMapper } from "ts-jest";
-import { Config } from "jest";
-import { compilerOptions } from "../../../../tsconfig.packages.json";
+import fs from "node:fs";
 import * as path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 import dotenv from "dotenv";
 
-dotenv.config({ path: path.resolve(__dirname, "../../../.env.local") });
+const tsconfig = JSON.parse(
+  fs.readFileSync(
+    new URL("../../../../tsconfig.packages.json", import.meta.url),
+    "utf8",
+  ),
+);
 
-export const baseConfig = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const rootDir = path.resolve(__dirname, "../../../../");
+
+dotenv.config({ path: `${rootDir}/.env.local` });
+
+const mappedPathsToModuleNameWrapper = pathsToModuleNameMapper(
+  tsconfig.compilerOptions.paths,
+  {
+    prefix: "<rootDir>/../..",
+  },
+);
+
+const appConfig = {
   collectCoverageFrom: [
     "src/**/*.{ts,tsx}",
     "!src/**/*.d.ts",
@@ -16,15 +35,18 @@ export const baseConfig = {
   ],
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov", "html"],
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "graphql", "gql"],
+  extensionsToTreatAsEsm: [".ts", ".tsx"],
+  globals: {
+    useESM: true,
+  },
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "graphql", "gql", "css"],
   moduleNameMapper: {
-    ...pathsToModuleNameMapper(compilerOptions.paths, {
-      prefix: "<rootDir>/../..",
-    }),
+    ...mappedPathsToModuleNameWrapper,
+    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
   },
   setupFilesAfterEnv: [
-    "<rootDir>/../../packages/config/src/jest.setup.base.ts",
     "<rootDir>/jest.setup.ts",
+    rootDir + "/packages/config/jest/src/jest.setup.base.cjs",
   ],
   testEnvironment: "jsdom",
   testMatch: ["<rootDir>/src/**/__tests__/**/*.(test|spec).(ts|tsx)"],
@@ -33,11 +55,12 @@ export const baseConfig = {
     "^.+\\.(ts|tsx)$": [
       "ts-jest",
       {
+        useESM: true,
         tsconfig: {
           jsx: "react-jsx",
           esModuleInterop: true,
           allowSyntheticDefaultImports: true,
-          moduleResolution: "node",
+          moduleResolution: "bundler",
           resolveJsonModule: true,
           isolatedModules: true,
         },
@@ -48,4 +71,6 @@ export const baseConfig = {
   transformIgnorePatterns: [
     "node_modules/(?!(@vercel/analytics|@vercel/speed-insights)/)",
   ],
-} satisfies Config;
+};
+
+export default appConfig;
