@@ -24,8 +24,20 @@ export const shopifyPage: ShopifyPageAdapter = createShopifyPage({
   apiVersion,
 });
 
-export const useShopify: ShopifyHookAdapter = createShopifyHook({
-  url,
-  token,
-  apiVersion,
-});
+export const useShopify: ShopifyHookAdapter = (() => {
+  if (typeof window === "undefined") {
+    return () => ({
+      query: () =>
+        Promise.reject(new Error("useShopify cannot be used on server")),
+      mutate: () =>
+        Promise.reject(new Error("useShopify cannot be used on server")),
+      loading: false,
+      error: null,
+    });
+  }
+  return createShopifyHook({
+    url,
+    token,
+    apiVersion,
+  });
+})();
