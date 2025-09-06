@@ -5,6 +5,4 @@ const config = {
   },
 };
 
-console.log("✅ PostCSS config loaded");
-
 export default config;
