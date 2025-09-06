@@ -2,10 +2,10 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
   schema: {
-    [`https://${process.env.SHOPIFY_STORE_DOMAIN!}/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`]: {
+    [`https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN!}/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`]: {
       headers: {
         "X-Shopify-Storefront-Access-Token":
-          process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!,
+          process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN!,
       },
     },
   },
