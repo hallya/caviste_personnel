@@ -115,7 +115,7 @@ export const CarouselItem = memo(function CarouselItem({
           isSelected={isSelected}
         />
       )}
-      <div className="absolute inset-0 bg-white/50 rounded-xl z-content"></div>
+      <div className="absolute inset-0 bg-white/20 rounded-xl z-content"></div>
       <div
         className={`relative z-card transition-all duration-300 ease-in-out ${
           isSelected
