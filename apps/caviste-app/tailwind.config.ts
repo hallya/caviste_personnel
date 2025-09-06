@@ -11,4 +11,3 @@ const config = {
   ],
 };
 export default config;
-console.log("✅ Tailwind config loaded");
