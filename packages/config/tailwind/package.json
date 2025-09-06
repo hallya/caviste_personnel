@@ -2,16 +2,10 @@
   "name": "@pkg/config-tailwind",
   "version": "0.1.0",
   "private": true,
-  "main": "./index.ts",
   "module": "./index.ts",
   "type": "module",
-  "types": "./index.ts",
   "exports": {
-    ".": {
-      "types": "./index.ts",
-      "import": "./index.ts",
-      "require": "./index.ts"
-    }
+    ".": "./src/index.ts"
   },
   "scripts": {
     "build": "tsup",

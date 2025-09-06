@@ -2,6 +2,7 @@
   "name": "@pkg/global-types",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "types": "index.d.ts",
   "devDependencies": {
     "graphql": "^16.11.0",
