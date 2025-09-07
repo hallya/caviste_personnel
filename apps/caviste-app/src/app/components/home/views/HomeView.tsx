@@ -33,7 +33,7 @@ export default function HomeView({
   onClosePopup,
 }: HomeViewProps) {
   return (
-    <main className="bg-primary-50 min-h-screen overflow-hidden touch-pan-y flex flex-col gap-10">
+    <main className="min-h-screen overflow-hidden touch-pan-y flex flex-col gap-10">
       <PageHeader isHomePage={true} />
       <SocialLinks />
       <IntroText />

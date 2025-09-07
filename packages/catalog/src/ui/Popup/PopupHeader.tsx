@@ -5,7 +5,7 @@ interface PopupHeaderProps {
 
 export default function PopupHeader({ title, onClose }: PopupHeaderProps) {
   return (
-    <header className="sticky top-0 bg-primary-50 rounded-t-xl px-8 pt-4 pb-4 border-b border-primary-200 z-modal-header">
+    <header className="sticky top-0 rounded-t-xl px-8 pt-4 pb-4 border-b border-primary-200 z-modal-header">
       <div className="flex justify-between items-start">
         <h2
           id="popup-title"

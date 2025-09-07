@@ -39,7 +39,7 @@ export default function ProductCardView({
 
   return (
     <article
-      className="bg-primary-50 rounded-md p-3 text-center flex flex-col min-h-[400px] group"
+      className="rounded-md p-3 text-center flex flex-col min-h-[400px] group"
       aria-labelledby={`product-title-${product.variantId}`}
     >
       <figure className="relative flex-1 min-h-0 rounded overflow-hidden">

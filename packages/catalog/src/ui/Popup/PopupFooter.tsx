@@ -18,7 +18,7 @@ export default function PopupFooter({
       : "Tout est chargé";
 
   return (
-    <footer className="sticky bottom-0 bg-primary-50 rounded-b-xl px-8 pt-4 pb-4 border-t border-primary-200 z-modal-footer">
+    <footer className="sticky bottom-0 rounded-b-xl px-8 pt-4 pb-4 border-t border-primary-200 z-modal-footer">
       <div className="flex justify-center">
         <button
           type="button"

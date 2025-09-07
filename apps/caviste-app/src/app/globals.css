@@ -16,7 +16,7 @@
 
 @layer base {
   body {
-    @apply bg-white text-neutral-900;
+    @apply bg-primary-50 text-neutral-900;
     font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   }
   

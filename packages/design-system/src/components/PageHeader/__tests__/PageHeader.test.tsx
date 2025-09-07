@@ -35,7 +35,7 @@ describe("PageHeader", () => {
     const container = screen.getByText(
       "Edouard, Caviste personnel",
     ).parentElement;
-    expect(container).toHaveClass("bg-primary-50", "pt-8", "pb-4");
+    expect(container).toHaveClass("pt-8", "pb-4");
 
     const header = screen.getByRole("heading", { level: 1 });
     expect(header).toHaveClass("text-center", "text-title", "text-primary-600");

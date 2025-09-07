@@ -5,7 +5,7 @@ export default function ContactView() {
     <main className="min-h-screen">
       <PageHeader />
 
-      <div className="bg-primary-50">
+      <div>
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <header className="text-center mb-12">
             <h1 className="text-title text-primary-800 mb-6">

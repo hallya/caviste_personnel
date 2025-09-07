@@ -6,7 +6,7 @@ interface CartEmptyProps {
 
 export default function CartEmpty({ error }: CartEmptyProps) {
   return (
-    <div className="min-h-screen bg-primary-50 p-4">
+    <div className="min-h-screen p-4">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-title text-primary-600 text-center mb-8">
           Votre panier

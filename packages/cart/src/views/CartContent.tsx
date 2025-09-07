@@ -48,7 +48,7 @@ export default function CartContent({
   };
 
   return (
-    <div className="min-h-screen bg-primary-50 p-4">
+    <div className="min-h-screen p-4">
       <Announcement message={announcement} />
 
       <div className="max-w-4xl mx-auto">

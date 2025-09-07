@@ -125,7 +125,7 @@ export default function PageHeader({ isHomePage = false }: PageHeaderProps) {
   const HeaderElement = isHomePage ? 'h1' : 'div';
   
   return (
-    <div className="bg-primary-50 pt-8 pb-4">
+    <div className="pt-8 pb-4">
       <HeaderElement className="text-center text-title text-primary-600">
         Edouard, Caviste personnel
       </HeaderElement>
